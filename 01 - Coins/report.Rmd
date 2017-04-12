@@ -1,0 +1,109 @@
+---
+title: 'Estudo de Caso 01: Moedas no Copo'
+author: "Author 1 - Relator, Author 2..."
+date: "March 00, 2015"
+output:
+  pdf_document:
+    fig_caption: yes
+---
+
+```{r setup,results='hide',warning=FALSE,echo=FALSE}
+if (!require(readr, quietly = TRUE)){
+  install.packages("readr")
+}
+if (!require(car, quietly = TRUE)){
+  install.packages("car")
+}
+if (!require(lmtest, quietly = TRUE)){
+  install.packages("lmtest")
+}
+
+v_data = readr::read_csv('data.csv')
+v_coins = v_data$coins
+v_value = v_data$value
+
+```
+## Sumário
+isaghiasdg
+
+# I. Descrição do Problema
+
+
+
+
+# II. Design Experimental
+
+
+
+# III. Análise Estatística
+
+## A. Validação das Premissas
+
+### 1.Normalidade
+```{r,results='hide',warning=FALSE,echo=FALSE}
+par(mfrow=c(1,2), mai=.4*c(2.5,1,1,1))
+qqPlot(v_coins)
+qqPlot(v_value)
+title("fdisdfi")
+
+par(mfrow=c(1,2), mai=.4*c(1,1,1,1))
+hist(v_coins)
+hist(v_value)
+
+shapiro.test(v_coins)
+shapiro.test(v_value)
+
+```
+
+### 2. Independência
+```{r,results='hide',warning=FALSE,echo=FALSE}
+dwtest(v_coins~1)
+dwtest(v_value~1)
+
+```
+
+## B. Análise Descritiva
+```{r,results='hide',warning=FALSE,echo=FALSE}
+v_coins.mean = mean(v_coins)
+v_coins.sd = sd(v_coins)
+v_coins.rsd = sd(v_coins)/mean(v_coins)
+
+v_value.mean = mean(v_value)
+v_value.sd = sd(v_value)
+v_value.rsd = sd(v_value)/mean(v_value)
+
+```
+
+
+## C. Teste de Hipóteses
+
+```{r,results='show',warning=FALSE,echo=FALSE}
+v_coins.mu0 = 130
+v_value.mu0 = 2.60 * 3.5
+t.test(v_coins, mu=v_coins.mu0)
+t.test(v_value, mu=v_value.mu0)
+
+```
+
+### Potência dos Tests
+```{r,results='hide',warning=FALSE,echo=FALSE}
+v_coins.delta = 10
+v_coins.desiredPower = 0.8
+v_coins.powerReal = power.t.test(n=29, delta=v_coins.delta, sd=v_coins.sd, sig.level=0.05, type="one.sample", alternative="two.sided")$power
+v_coins.n = power.t.test(power=v_coins.desiredPower, delta=v_coins.delta, sd=v_coins.sd, sig.level=0.05, type="one.sample", alternative="two.sided")$n
+
+v_value.delta = 0.5
+v_value.desiredPower = 0.8
+v_value.powerReal = power.t.test(n=29, delta=v_value.delta, sd=v_value.sd, sig.level=0.05, type="one.sample", alternative="two.sided")$power
+v_value.n = power.t.test(power=v_value.desiredPower, delta=v_value.delta, sd=v_value.sd, sig.level=0.05, type="one.sample", alternative="two.sided")$n
+
+```
+
+A potência é `r v_value.powerReal`
+
+# IV. Discussão e Conclusões
+
+
+# V. Atividades Desepenhadas
+
+
