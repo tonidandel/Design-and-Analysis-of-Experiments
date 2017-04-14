@@ -1,62 +1,133 @@
 ---
-title: 'Estudo de Caso 01: Moedas no Copo'
-author: "Author 1 - Relator, Author 2..."
-date: "March 00, 2015"
+title: 'Estudo de Caso 01: estudantes da disciplina _Design and Analisys of Experiments_ são bons estimadores para quantidade e valor de moedas colocadas em um copo?'
+author: 'Team 04' 
+
+header-includes:
+- \usepackage{fancyhdr}
+- \pagestyle{fancy}
+- \fancyfoot[CO,CE]{EEE933 - Design and Analisys of Experiments}
+- \fancyfoot[LE,RO]{\thepage}
+date: abril de 2017
 output:
   pdf_document:
     fig_caption: yes
 ---
+Coordenador: Gustavo Vieira    
+Relator: Danny Tonidandel  
+Verificador: Alessandro Dias
 
-```{r setup,results='hide',warning=FALSE,echo=FALSE}
-if (!require(readr, quietly = TRUE)){
-  install.packages("readr")
-}
-if (!require(car, quietly = TRUE)){
-  install.packages("car")
-}
-if (!require(lmtest, quietly = TRUE)){
-  install.packages("lmtest")
-}
-
-v_data = readr::read_csv('data.csv')
-v_coins = v_data$coins
-v_value = v_data$value
-
-```
-## Sumário
-isaghiasdg asdjash
-
-ajkdnas
-
-# I. Descrição do Problema
+Monitor: Bernardo Marques  
 
 
-
-
-# II. Design Experimental
-
-
-
-# III. Análise Estatística
-
-## A. Validação das Premissas
-
-### 1.Normalidade
-```{r,results='hide',warning=FALSE,echo=FALSE}
-par(mfrow=c(1,2), mai=.4*c(2.5,1,1,1))
-qqPlot(v_coins)
-qqPlot(v_value)
-title("fdisdfi")
-
-par(mfrow=c(1,2), mai=.4*c(1,1,1,1))
-hist(v_coins)
-hist(v_value)
-
+```{r setup,include=FALSE, results='hide',warning=FALSE,echo=FALSE}
+  if (!require(readr, quietly = TRUE)){
+    install.packages("readr")
+  }
+  if (!require(car, quietly = TRUE)){
+    install.packages("car")
+  }
+  if (!require(lmtest, quietly = TRUE)){
+    install.packages("lmtest")
+  }
+  
+  v_data = readr::read_csv('data.csv')
+  v_coins = v_data$coins
+  v_value = v_data$value
+  
+  
+  ###
+  v_coins.mean = mean(v_coins)
+  v_coins.sd = sd(v_coins)
+  v_coins.rsd = sd(v_coins)/mean(v_coins)
+  n = length(v_coins)
+  v_value.mean = mean(v_value)
+  v_value.sd = sd(v_value)
+  v_value.rsd = sd(v_value)/mean(v_value)
+  
+  ## normality assumption
+  qqPlot(v_coins)
+  qqPlot(v_value)
+  title("fdisdfi")
+  
+  hist(v_coins)
+  hist(v_value)
+  
 shapiro.test(v_coins)
 shapiro.test(v_value)
 
+#nivel de significancia
+alpha<-0.05
+
+## independence assumption
+dwtest(v_coins~1)
+dwtest(v_value~1)
+
+
+## inference
+t.test(v_coins, mu=130)
+t.test(v_value, mu=2.60*3.5) # mu = 9.10
+
+## 
+power.t.test(n=29, delta=10, sd=v_coins.sd, sig.level=0.05, type="one.sample", alternative="two.sided")
+power.t.test(power=0.8, delta=5, sd=v_coins.sd, sig.level=0.05, type="one.sample", alternative="two.sided")
+
+power.t.test(n=29, delta=0.05, sd=v_value.sd, sig.level=0.05, type="one.sample", alternative="two.sided")
+power.t.test(power=0.8, delta=0.5, sd=v_value.sd, sig.level=0.05, type="one.sample", alternative="two.sided")
 ```
 
+# 1- O experimento
+
+##**1.1 Introdução**
+Até que ponto a opinião de pessoas comuns, reunidas em grandes quantidades, podem revelar _"verdades"_  acerca da natureza de determinado objeto ou fenômeno? Segundo Steiner [1], que realizou uma série de testes baseados no _best seller_ _The Wisdom of Crouds_ [2], o mais famooso experimento desta natrureza foi realizado pelo Cientista Vitoriano _Francis Galton_, em uma carta enviada à revista _Nature_ [3], na qual analisa uma competição realizada em _Plymouth_ (Inglaterra), em que diversas pessoas deveriam estimar a massa de um boi. Obviamente ninguém acertou exatamente o valor, mas a média das tentativas das quase $800$ pessoas que participaram do concurso refletiu, com bastante proximidade, o real valor da medida procurada.  E o que Steiner realizou foi testar a ideia utilizando-se de uma garrafa cheia de moedas, convidando pessoas que acessavam a internet a fazerem o mesmo, a partir de uma foto que mostrava a garrafa com as moedas. Mas seria isto verdade? 
+
+##**1.2. Descrição do Problema**
+Da mesma forma podemos conjecturar que o experimento proposto pelo professor da disciplina _Design and Analisys of Experiments_ foi inspirado nos mesmos experimentos. Com a diferença de que o material utilizado foram dois recipientes $A$ e $B$, cheios de moedas, conforme descrito na referência [4] . O vigente estudo busca, portanto, investigar se as opiniões de `r n` estudantes, isto é, o quanto a média das opiniões dos estudantes pode refletir o número e o valor real das moedas depositadas nos recipientes $A$ e $B$?
+
+##**1.3. Design Experimental**
+Como a média real não foi dada a conhecer pelo proponente do estudo, o time decidiu realizar uma montagem experimental semelhante (replicação do experimento), utilizando um recipiente de mesma natureza (copo plástico de $200ml$) para uma estimativa inicial do número de moedas no recipiente $A$, sabendo que era composto por moedas de natureza diferente (25 e 50 centavos e 1 real) e, no recipiente $B$, moedas de mesma natureza (5 centavos), utilizando contagem manual das moedas. O resultado seria utilizado como estimativa inicial para as médias: $$Recipiente \, A: 182 \mbox{ moedas};  Recipiente \,\mbox{e } \\ B: \mbox{9 reais e 10 centavos}.$$
+Assim, formula-se a hipótese de que a média das estimativas dos estudantes é igual ou não ao "valor real": 
+
+$$\left\{\begin{array}{rc}
+H_{0}: \mu=130,\\
+H_{0}: \mu \neq 130.
+\end{array}\right.$$
+
+e $$\left\{\begin{array}{rc}
+H_{0}: \mu=9.10,\\
+H_{0}: \mu \neq 9.10.
+\end{array}\right.$$
+Por razões históricas e por conveniência, o time julgou ser suficiente um nível de significância para o experimento de $5\%$, i.e., $\alpha=0.05$, que implica em um grau de confiança $1-\alpha$ de $95\%$. 
+
+# 2 - Análise Estatística
+
+De antemão já é possível notar que é possível realizar uma análise estatística descritiva, porém esta análise só fornecerá informações sobre as opiniões dos estudantes, não da quantidade ou do valor real das moedas nos recipientes. 
+
+##**2.1 Validação das Premissas**
+Como não se tem informações sobre a variância da população, o time escolheu adotar o teste de _t student_, assumindo as premissas: 1) As estimativas dos estudantes se distribuem em torno do valor real. 2) As observações são independentes. 3) A distribuição das médias é normal.
+
+Normalidade e independência são facilmente verificáveis por testes, porém, como a premissa de que a média dos _"chutes"_ dos estudantes se aproxima do valor real não é facilmente testável _a priori_, sendo assim o ponto fraco da análise
+
+A premissa de normalidade foi realizada por meio do teste de Shapiro-Wilk
+
+Para o caso $A$, do número de moedas:
+```{r, warning=FALSE,echo=FALSE}
+shapiro.test(v_coins)
+```
+E para o caso $B$, para o valor:
+```{r, warning=FALSE,echo=FALSE}
+shapiro.test(v_value)
+```
+Para os dois casos, o valor de $W_{\alpha}$
+
+```{r,results='hide',warning=FALSE,echo=FALSE}
+hist(v_coins)
+hist(v_value)
+par(mfrow=c(1,2), mai=.4*c(2.5,1,1,1))
+qqPlot(v_coins)
+title("case A")
+qqPlot(v_value)
+title("caseB")
+```
 ### 2. Independência
 ```{r,results='hide',warning=FALSE,echo=FALSE}
 dwtest(v_coins~1)
@@ -101,11 +172,35 @@ v_value.n = power.t.test(power=v_value.desiredPower, delta=v_value.delta, sd=v_v
 
 ```
 
-A potência é `r v_value.powerReal`
+A potência é `r v_value.powerReal` 
 
-# IV. Discussão e Conclusões
-
+# Considerações finais
+Surowiecki, em seu estudo, lembra que a diferença não só contribui trazendo novas perspectivas para o ambiente, mas também ajuda os integrantes a expressarem mais livremente suas opiniões - sejam elas divergentes ou não [2, p. 38-39]. Isto revela o problema da coleta aberta no segundo caso, pois, não importa a magnitude do erro: mesmo que a "intuição" sugira o contrário, as pessoas dificilmente dariam respostas muito discrepantes da maioria. Gregory Berns, em seu _Iconoclast: A Neuroscientist Reveals How to Think Differently_[7] questiona inclusive a influência do grupo sobre a percepção das pessoas. Embora os estudantes garantirem terem dados a melhor resposta de acordo com suas observações, eles provavelmente questionavam suas convicções. Pode ser que alguns duvidassem daquilo que estavam vendo. Aparentemente as percepções permanecem intactas, mas a "fé" das pessoas nos seus sentidos, esta sim, parece ser moldada pela influência externa, alterando as decisões tomadas. E, no final, como o próprio prof. Campelo costuma afirmar em sala de aula, o que importa mesmo são as decisões.  Vale ressaltar que o grupo experienciou um certo "alívio" ao saber que a experiência era por isso, de certo modo, uma pequena farsa. 
 
 # V. Atividades Desepenhadas
+
+##**Referências**
+
+[1] Steiner, E. B. *Turns Out the Internet Is Bad at Guessing How Many Coins Are in a Jar*. Wired Magazine: USA, 2017. Disponível em <https://www.wired.com/2015/01/coin-jar-crowd-wisdom-experiment-results/>
+
+[2] Surowiecki, J. *The Wisdom of Crowds*. Anchor Books: New York, 2004. 
+
+[3] Galton, F. *Vox Populi*. Nature: England, mar. 1907.
+
+[4] Campelo, F. *Estudo de caso 01*. Arquivo da disciplina Design and Analisys of Experiments. Disponível em <https://goo.gl/b3IeAn>. 
+
+[5] Ramirez, J.G. *Statistical Intervals: Confidence, Prediction, Enclosure*. Disponível em <http://goo.gl/NJz7ot>
+
+[6] D.C. Montgomery, *Design and Analysis of Experiments*, 5th ed., John Wiley & Sons, 2001.   
+
+[7] Berns, G. *Iconoclast: A Neuroscientist Reveals How to Think Differently*. USA: Harvard Business press, 2008.
+
+Peng, Roger D., *R Programming for Data Science*, Lulu, Inc.  
+
+Peng, Roger D., *Report Writing for Data Science in R*, Lulu, Inc.
+
+Felipe Campelo, *Lecture Notes on Design and Analysis of Experiments*, 2015.
+
+
 
 
