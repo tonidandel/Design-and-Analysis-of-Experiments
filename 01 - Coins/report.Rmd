@@ -1,13 +1,25 @@
 ---
-title: 'Estudo de Caso 01: Moedas no Copo'
-author: "Author 1 - Relator, Author 2..."
-date: "March 00, 2015"
+title: 'Estudo de Caso 01: estudantes da disciplina _Design and Analisys of Experiments_ são bons estimadores para quantidade e valor de moedas colocadas em um copo?'
+author: 'Team 04' 
+
+header-includes:
+- \usepackage{fancyhdr}
+- \pagestyle{fancy}
+- \fancyfoot[CO,CE]{EEE933 - Design and Analisys of Experiments}
+- \fancyfoot[LE,RO]{\thepage}
+
+date: abril de 2017
 output:
   pdf_document:
     fig_caption: yes
 ---
+Coordenador: Gustavo Vieira    
+Relator: Danny Tonidandel  
+Verificador: Alessandro Dias   
+Monitor: Bernardo Marques  
 
-```{r setup,results='hide',warning=FALSE,echo=FALSE}
+
+```{r setup,include=FALSE, results='hide',warning=FALSE,echo=FALSE}
 if (!require(readr, quietly = TRUE)){
   install.packages("readr")
 }
@@ -21,16 +33,16 @@ if (!require(lmtest, quietly = TRUE)){
 v_data = readr::read_csv('data.csv')
 v_coins = v_data$coins
 v_value = v_data$value
-
+n = length(v_data$coins)
 ```
-## Sumário
-isaghiasdg asdjash
 
-ajkdnas
+# 1- O experimento
 
-# I. Descrição do Problema
+##**1.1 Introdução**
+Até que ponto a opinião de pessoas comuns, reunidas em grandes quantidades, podem revelar _"verdades"_  acerca da natureza de determinado objeto ou fenômeno? Segundo Steiner [1], que realizou uma série de testes baseados no _best seller_ _The Wisdom of Crouds_ [2], o mais famooso experimento desta natrureza foi realizado pelo Cientista Vitoriano _Francis Galton_, em uma carta enviada à revista _Nature_ [3], na qual analisa uma competição realizada em _Plymouth_ (Inglaterra), em que diversas pessoas deveriam estimar a massa de um boi. Obviamente ninguém acertou exatamente o valor, mas a média das tentativas das quase $800$ pessoas que participaram do concurso refletiu, com bastante proximidade, o real valor da medida procurada.  E o que Steiner realizou foi testar a ideia utilizando-se de uma garrafa cheia de moedas, convidando pessoas que acessavam a internet a fazerem o mesmo, a partir de uma foto que mostrava a garrafa com as moedas.
 
-
+##**1.2. Descrição do Problema**
+Da mesma forma podemos conjecturar que o experimento proposto pelo professorda disciplina _Design and Analisys of Experiments_ foi inspirado nos mesmos experimentos. Com a diferença de que o material utilizado foram dois recipientes $A$ e $B$, cheios de moedas, descritos no estudo de caso um [4] . O vigente estud busca, portanto, investigar se as opiniões de `r n` estudantes.
 
 
 # II. Design Experimental
@@ -101,11 +113,33 @@ v_value.n = power.t.test(power=v_value.desiredPower, delta=v_value.delta, sd=v_v
 
 ```
 
-A potência é `r v_value.powerReal`
+A potência é `r v_value.powerReal` 
 
 # IV. Discussão e Conclusões
 
 
 # V. Atividades Desepenhadas
+
+##**Referências**
+
+[1] Steiner, E. B. *Turns Out the Internet Is Bad at Guessing How Many Coins Are in a Jar*. Wired Magazine: USA, 2017. Disponível em <https://www.wired.com/2015/01/coin-jar-crowd-wisdom-experiment-results/>
+
+[2] Surowiecki, J. *The Wisdom of Crowds*. Anchor Books: New York, 2004. 
+
+[3] Galton, F. *Vox Populi*. Nature: England, mar. 1907.
+
+[4] Campelo, F. *Estudo de caso 01*. Arquivo da disciplina Design and Analisys of Experiments. Disponível em <https://goo.gl/b3IeAn>. 
+
+[] Ramirez, J.G. *Statistical Intervals: Confidence, Prediction, Enclosure*. Disponível em <http://goo.gl/NJz7ot>
+
+[3] D.C. Montgomery, *Design and Analysis of Experiments*, 5th ed., John Wiley & Sons, 2001.   
+
+Peng, Roger D., *R Programming for Data Science*, Lulu, Inc.  
+
+Peng, Roger D., *Report Writing for Data Science in R*, Lulu, Inc.
+
+Felipe Campelo, *Lecture Notes on Design and Analysis of Experiments*, 2015.
+
+
 
 
