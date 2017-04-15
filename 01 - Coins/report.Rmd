@@ -133,15 +133,15 @@ Como não se tem informações sobre a variância da população, o time escolhe
 Normalidade e independência são verificáveis por testes, porém, como a premissa de que a média dos _"chutes"_ dos estudantes se aproxima do valor real não é facilmente testável _a priori_, acresenta-se mais  um ponto de viéses para a análise.
 
 A premissa de normalidade foi testada visualmente a partir dos gráficos $QQplots$:
-```{r, include=FALSE,results='hide',warning=FALSE,echo=FALSE}
-hist(v_coins)
-hist(v_value)
+
+```{r, include=TRUE,results='hide',warning=FALSE,echo=FALSE}
 par(mfrow=c(1,2), mai=.4*c(2.5,1,1,1))
 qqPlot(v_coins)
 title("case A")
 qqPlot(v_value)
 title("caseB")
 ```
+
 o que demonstra que a população poderia não ser normal. Entretanto, dado o tamanho da amostra (`r n`), não é possível descartar ainda a hipótese de normalidade, segundo Montgomery [6]. Nestes casos, apenas uma severa disparidade nos dados poderia ser um indicativo de não-normalidade. A recomendação seria a de se usar uma amostra um pouco maior. Assim, os supostos _outliers_ não serão descartados e foi realizado o teste de _Shapiro-Wilk_ para normalidade. 
 Para o caso $A$, do número de moedas:
 ```{r, warning=TRUE,echo=FALSE}
