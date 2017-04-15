@@ -83,7 +83,7 @@ Da mesma forma podemos conjecturar que o experimento proposto pelo professor da 
 
 # 2. Design Experimental
 
-Como a média real não foi dada a conhecer pelo proponente do estudo, o time decidiu realizar uma montagem experimental semelhante (replicação do experimento), utilizando um recipiente de mesma natureza (copo plástico de $200ml$) para uma estimativa inicial do número de moedas no recipiente $A$, sabendo que era composto por moedas de natureza diferente (25 e 50 centavos e 1 real) e, no recipiente $B$, moedas de mesma natureza (5 centavos), utilizando contagem manual das moedas. O resultado seria utilizado como estimativa inicial para as médias: $Recipiente \, A: 182 \mbox{ moedas};  Recipiente \,\mbox{e } \\ B: \mbox{9 reais e 10 centavos}.$
+Como a média real não foi dada a conhecer pelo proponente do estudo, o time decidiu realizar uma montagem experimental semelhante (replicação do experimento), utilizando um recipiente de mesma natureza (copo plástico de $200ml$) para uma estimativa inicial do número de moedas no recipiente $A$, sabendo que era composto por moedas de natureza diferente (25 e 50 centavos e 1 real) e, no recipiente $B$, moedas de mesma natureza (5 centavos), utilizando contagem manual das moedas. O resultado seria utilizado como estimativa inicial para as médias: $Recipiente \, A: 130 \mbox{ moedas};  Recipiente \,\mbox{e } \\ B: \mbox{9 reais e 10 centavos}.$
 Assim, formula-se a hipótese de que a média das estimativas dos estudantes é igual ou não ao "valor real": 
 
 $$\left\{\begin{array}{rc}
@@ -101,33 +101,41 @@ O que forma um teste de hipóteses bilateral, considerando que os valores de $H_
 Por conveniência, julgou-se suficiente um nível de significância para o experimento de $5\%$, i.e., $\alpha=0.05$, que implica em um grau de confiança $1-\alpha$ de $95\%$. E a partir do conhecimento do time a respeito do problema em questão, adotou-se o menor efeito de significância prática como sendo $\delta^{\star}_A=10$ moedas (para o caso $A$) e $\delta^{\star}_B=0.50$ centavos (para o caso $B$).  Além disso, o nível de potência estatística para o experimento escolhida foi (inicialmente) de $(1-\beta)=0.8$.
 
 # 3. Teste de Hipóteses
-```{r, include=TRUE, results='show',warning=FALSE,echo=TRUE}
+```{r, include=TRUE, results='hide',warning=FALSE,echo=FALSE}
 teste.t.coins<-t.test(v_coins, mu=130)
 teste.t.value<-t.test(v_value, mu=9.10)
 teste.t.coins
 teste.t.value
 ```
-O teste de hipóteses para dois casos sugere rejeitar a hipótese nula, considerando que $|t_{0}|>0.05$ para `r teste.t.coins$parameter` graus de liberdade.
+O teste de hipóteses para dois casos sugere rejeitar a hipótese nula, considerando-se a estatística $t$ de `r round(teste.t.coins$statistic, digits=2)` ($|t_{0}|>0.05$ para `r teste.t.coins$parameter` graus de liberdade), no caso $A$, e `r round(teste.t.value$statistic,2)` ($|t_{0}|>0.05$ para `r teste.t.value$parameter` graus de liberdade) no caso $B$. 
 
-No entanto, considerando-se que o teste sugere a rejeição da hipótese nula, e considerando-se a potência desejada e o menor efeito de significância prática para os dois casos ($\delta^{\star}_A=10$ moedas e $\delta^{\star}_B=0.50$ centavos), realzou-se um teste de potência:
+Em contrapartida, considerando-se o menor efeito de significância prática para os dois casos ($\delta^{\star}_A=10$ moedas e $\delta^{\star}_B=0.50$ centavos), realizou-se um teste de potência para determinar a sua sensibilidade em relação à ocorrência de erros do tipo II (falhar em rejeitar $H_0$ quando ela é falsa):
 
-### Potência dos Tests
-```{r,results='hide',warning=FALSE,echo=TRUE}
+```{r,results='show',warning=FALSE,echo=FALSE}
+#teste de potência para o caso A
 v_coins.delta = 10
 v_coins.desiredPower = 0.8
+# fixando-se o tamanho da amostra
 v_coins.powerReal = power.t.test(n=29, delta=v_coins.delta, sd=v_coins.sd, sig.level=0.05, type="one.sample", alternative="two.sided")$power
+# fixando-se  potência do teste
 v_coins.n = power.t.test(power=v_coins.desiredPower, delta=v_coins.delta, sd=v_coins.sd, sig.level=0.05, type="one.sample", alternative="two.sided")$n
 
+# teste de potência para o caso B
 v_value.delta = 0.5
 v_value.desiredPower = 0.8
-v_value.powerReal = power.t.test(n=29, delta=v_value.delta, sd=v_value.sd, sig.level=0.05, type="one.sample", alternative="two.sided")$power
+# fixando-se o tamanho da amostra
+v_value.powerReal = power.t.test(n=29, delta=0.5, sd=v_value.sd, sig.level=0.05, type="one.sample", alternative="two.sided")$power
+# fixando-se  potência do teste
 v_value.n = power.t.test(power=v_value.desiredPower, delta=v_value.delta, sd=v_value.sd, sig.level=0.05, type="one.sample", alternative="two.sided")$n
 
 ```
 
-A potência é `r v_value.powerReal` 
+A potência do teste para o caso $A$ obtida foi `r round(v_coins.powerReal,2)` e, para o caso $B$, foi de `r round(v_value.powerReal,2)`, considerando fixas o tamanho da amostra e o nível de significância. O teste demonstrou uma fraca sensibilidade para detectar erros do tipo II. 
 
-##**2.1 Validação das Premissas**
+Como desejávamos aumentar a potência do teste para o valor desejado de `r round(v_coins.desiredPower,2)`, observou-se, no caso $A$, que seria necessário um tamanho amostral de `r ceiling(v_coins.n)` e, para o caso $B$, `r ceiling(v_value.n)`, o que não é possível alcançar-se, já que a amostra única possui tamanho fixo. 
+
+# 3. Validação das Premissas
+
 Como não se tem informações sobre a variância da população, o time escolheu adotar o teste de _t student_, assumindo as premissas: 1) As estimativas dos estudantes se distribuem em torno do valor real. 2) As observações são independentes. 3) A distribuição populacional das médias é normal.
 
 Normalidade e independência são verificáveis por testes, porém, como a premissa de que a média dos _"chutes"_ dos estudantes se aproxima do valor real não é facilmente testável _a priori_, acresenta-se mais  um ponto de viéses para a análise.
@@ -151,7 +159,7 @@ E para o caso $B$, para o valor:
 ```{r, warning=FALSE,echo=FALSE}
 shapiro.test(v_value)
 ```
-Para os dois casos, o valor de $W_{\alpha}$
+Para os dois casos, o valor de $W_{\alpha}$ e do valor $p$ indicam que a população não segue uma distribuição normal.
 
 ### 2. Independência
 ```{r,results='hide',warning=FALSE,echo=FALSE}
