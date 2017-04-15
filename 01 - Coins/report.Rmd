@@ -12,12 +12,10 @@ output:
   pdf_document:
     fig_caption: yes
 ---  
-
 Coordenador: Gustavo Vieira    
 Relator: Danny Tonidandel  
 Verificador: Alessandro Dias
 Monitor: Bernardo Marques  
-
 
 ```{r setup,include=FALSE, results='hide',warning=FALSE,echo=FALSE}
   if (!require(readr, quietly = TRUE)){
@@ -29,11 +27,9 @@ Monitor: Bernardo Marques
   if (!require(lmtest, quietly = TRUE)){
     install.packages("lmtest")
   }
-  
   v_data = readr::read_csv('data.csv')
   v_coins = v_data$coins
   v_value = v_data$value
-  
   
   ###
   v_coins.mean = mean(v_coins)
@@ -61,7 +57,6 @@ alpha<-0.05
 ## independence assumption
 dwtest(v_coins~1)
 dwtest(v_value~1)
-
 
 ## inference estatística - teste de t student
 t.test(v_coins, mu=130)
@@ -106,8 +101,10 @@ teste.t.coins<-t.test(v_coins, mu=130)
 teste.t.value<-t.test(v_value, mu=9.10)
 teste.t.coins
 teste.t.value
+#tzero.coins <- (teste.t.coins$estimate-teste.t.coins$null.value)/(v_coins.sd*sqrt(n))
+#tzero.value <- (teste.t.value$estimate-teste.t.value$null.value)/(v_value.sd*sqrt(n))
 ```
-O teste de hipóteses para dois casos sugere rejeitar a hipótese nula, considerando-se a estatística $t$ de `r round(teste.t.coins$statistic, digits=2)` ($|t_{0}|>0.05$ para `r teste.t.coins$parameter` graus de liberdade), no caso $A$, e `r round(teste.t.value$statistic,2)` ($|t_{0}|>0.05$ para `r teste.t.value$parameter` graus de liberdade) no caso $B$. 
+O teste de hipóteses para os dois casos sugere rejeitar a hipótese nula, com $t_{0.05,28} = -4.51$ e $valor-p = 0.0001052 << \alpha$, no caso $A$, e $t_{0.05,28} = -15.15$ e $valor-p = 5.06e-15 << \alpha$, para o caso $B$.  
 
 Em contrapartida, considerando-se o menor efeito de significância prática para os dois casos ($\delta^{\star}_A=10$ moedas e $\delta^{\star}_B=0.50$ centavos), realizou-se um teste de potência para determinar a sua sensibilidade em relação à ocorrência de erros do tipo II (falhar em rejeitar $H_0$ quando ela é falsa):
 
@@ -132,9 +129,9 @@ v_value.n = power.t.test(power=v_value.desiredPower, delta=v_value.delta, sd=v_v
 
 A potência do teste para o caso $A$ obtida foi `r round(v_coins.powerReal,2)` e, para o caso $B$, foi de `r round(v_value.powerReal,2)`, considerando fixas o tamanho da amostra e o nível de significância. O teste demonstrou uma fraca sensibilidade para detectar erros do tipo II. 
 
-Como desejávamos aumentar a potência do teste para o valor desejado de `r round(v_coins.desiredPower,2)`, observou-se, no caso $A$, que seria necessário um tamanho amostral de `r ceiling(v_coins.n)` e, para o caso $B$, `r ceiling(v_value.n)`, o que não é possível alcançar-se, já que a amostra única possui tamanho fixo. 
+Como desejáva-se aumentar a potência do teste para o valor desejado de `r round(v_coins.desiredPower,2)`, observou-se, no caso $A$, que seria necessário um tamanho amostral de `r ceiling(v_coins.n)` e, para o caso $B$, `r ceiling(v_value.n)`, o que não é possível alcançar-se, já que a amostra única possui tamanho fixo. Logo, o aumento do número de observações seria desejável.
 
-# 3. Validação das Premissas
+# 3. Validação
 
 Como não se tem informações sobre a variância da população, o time escolheu adotar o teste de _t student_, assumindo as premissas: 1) As estimativas dos estudantes se distribuem em torno do valor real. 2) As observações são independentes. 3) A distribuição populacional das médias é normal.
 
@@ -159,17 +156,20 @@ E para o caso $B$, para o valor:
 ```{r, warning=FALSE,echo=FALSE}
 shapiro.test(v_value)
 ```
-Para os dois casos, o valor de $W_{\alpha}$ e do valor $p$ indicam que a população não segue uma distribuição normal.
+Para os dois casos, o valor de $W_{\alpha}$ e do valor $p$ indicam que a população não segue uma distribuição normal. 
 
-### 2. Independência
-```{r,results='hide',warning=FALSE,echo=FALSE}
+Outro teste utilizado foi o de independência de Durbin-Watson:
+```{r,results='hide',warning=FALSE,echo=TRUE}
 dwtest(v_coins~1)
 dwtest(v_value~1)
-
 ```
 
-## B. Análise Descritiva
+A hipótese nula desse teste afirma que a autocorrelação dos resíduos dos dados é zero. O p-valor alto obtido ($p>>\alpha$, nos dois casos) após o teste sugere que não há indícios para a rejeição da hipótese nula. Dessa forma, os autores concluem pela independência dos dados.
+
+# Análise descritiva e recomendações
+
 ```{r,results='hide',warning=FALSE,echo=FALSE}
+# Análise descritiva
 v_coins.mean = mean(v_coins)
 v_coins.sd = sd(v_coins)
 v_coins.rsd = sd(v_coins)/mean(v_coins)
@@ -180,11 +180,20 @@ v_value.rsd = sd(v_value)/mean(v_value)
 
 ```
 
+A média dos valores obtida após a coleta das opiniões dos estudantes resultou em `r v_coins.mean` moedas, com desvio padrão `r v_coins.sd`  no caso $A$ e `r v_value.mean` reais, com desvio padrão de `r v_value.sd` no caso $B$, sendo que os valores "reais" eram, respectivamente, $130$ e $9,10$.
 
+O primeiro dado que, de certa forma, invalida o experimento é a observação do caráter de não normalidade da população, por meio dos testes. Neste caso, o teste de inferência de _t-student_ não pode ser aplicado, pois não é possível aplicar-se o teorema do limite central. 
 
+No entanto, assumindo-se a premissa de normalidade, foi detectada uma baixa potência para o menor efeito de importância e nível de significância desejados e, por isso, uma repetiçao do experimento com um número maior de observações seria desejável.
+
+A questão do cegamento dos participantes poderia ser repensada, pois acredita-se ter introduzido fontes de viéses na coleta dos dados. Uma sugestão seria a de se realizar uma replicação do experimento, utilizando grupos diferentes, altercando-se a ordem da coleta por grupo. Por exemplo, pergunta-se ao estudante 1 o número de moedas no recipiente $A$ e o valor das moedas no recipiente $B$ para o(a) estudante $2$, e assim sucessivamente.
+
+Outra sugestão seria a de diminuir o tempo de resposta de cada participante, de forma a reduzir diferenças entre simples "chutes" e possíves "cálculos mentais". Tais medidas poderiam, em princípio, sanar alguns do problemas em relação à normalidade da distribuição das médias. 
+
+Assim, a decisão final do time é a de que não há dados estatísticos suficientes para concluir que os alunos sejam bons estimadores para a quantidade ou valor das moedas depositadas nos recipientes $A$ e $B$, nem garantir que, caso o experimento seja refeito segundo as recomendações, os objetivos serão, por isso, atingidos .
 
 # Considerações finais
-Surowiecki, em seu estudo, lembra que a diferença não só contribui trazendo novas perspectivas para o ambiente, mas também ajuda os integrantes a expressarem mais livremente suas opiniões - sejam elas divergentes ou não [2, p. 38-39]. Isto revela o problema da coleta aberta no segundo caso, pois, não importa a magnitude do erro: mesmo que a "intuição" sugira o contrário, as pessoas dificilmente dariam respostas muito discrepantes da maioria. Gregory Berns, em seu _Iconoclast: A Neuroscientist Reveals How to Think Differently_[7] questiona inclusive a influência do grupo sobre a percepção das pessoas. Embora os estudantes garantirem terem dados a melhor resposta de acordo com suas observações, eles provavelmente questionavam suas convicções. Pode ser que alguns duvidassem daquilo que estavam vendo. Aparentemente as percepções permanecem intactas, mas a "fé" das pessoas nos seus sentidos, esta sim, parece ser moldada pela influência externa, alterando as decisões tomadas. E, no final, como o próprio prof. Campelo costuma afirmar em sala de aula, o que importa mesmo são as decisões.  Vale ressaltar que o grupo experienciou um certo "alívio" ao saber que a experiência era por isso, de certo modo, uma pequena farsa. 
+Surowiecki, em seu estudo, lembra que a diferença não só contribui trazendo novas perspectivas para o ambiente, mas também ajuda os integrantes a expressarem mais livremente suas opiniões - sejam elas divergentes ou não [2, p. 38-39]. Isto revela o problema da coleta aberta no segundo caso, pois, não importa a magnitude do erro: mesmo que a "intuição" sugira o contrário, as pessoas dificilmente dariam respostas muito discrepantes da maioria. Gregory Berns, em seu _Iconoclast: A Neuroscientist Reveals How to Think Differently_[7] questiona inclusive a influência do grupo sobre a percepção das pessoas. Embora os estudantes garantirem terem dados a melhor resposta de acordo com suas observações, eles provavelmente questionavam suas convicções. Pode ser que alguns duvidassem daquilo que estavam vendo. Aparentemente as percepções permanecem intactas, mas a "fé" das pessoas nos seus sentidos, esta sim, parece ser moldada pela influência externa, alterando as decisões tomadas. E, no final, o que importa mesmo são as decisões.  Vale ressaltar que o grupo experienciou um certo "alívio" ao saber que a experiência era por isso, de certo modo, uma pequena farsa.
 
 # V. Atividades Desepenhadas
 
