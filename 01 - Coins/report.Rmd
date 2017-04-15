@@ -7,6 +7,10 @@ header-includes:
 - \pagestyle{fancy}
 - \fancyfoot[CO,CE]{EEE933 - Design and Analisys of Experiments}
 - \fancyfoot[LE,RO]{\thepage}
+<<<<<<< HEAD
+=======
+
+>>>>>>> 612a9bcda7ad42c4d7055a137303e2a7ce5455d6
 date: abril de 2017
 output:
   pdf_document:
@@ -14,6 +18,7 @@ output:
 ---
 Coordenador: Gustavo Vieira    
 Relator: Danny Tonidandel  
+<<<<<<< HEAD
 Verificador: Alessandro Dias
 
 Monitor: Bernardo Marques  
@@ -74,6 +79,36 @@ power.t.test(power=0.8, delta=5, sd=v_coins.sd, sig.level=0.05, type="one.sample
 power.t.test(n=29, delta=0.05, sd=v_value.sd, sig.level=0.05, type="one.sample", alternative="two.sided")
 power.t.test(power=0.8, delta=0.5, sd=v_value.sd, sig.level=0.05, type="one.sample", alternative="two.sided")
 ```
+=======
+Verificador: Alessandro Dias   
+Monitor: Bernardo Marques  
+
+
+```{r setup,include=FALSE, results='hide',warning=FALSE,echo=FALSE}
+if (!require(readr, quietly = TRUE)){
+  install.packages("readr")
+}
+if (!require(car, quietly = TRUE)){
+  install.packages("car")
+}
+if (!require(lmtest, quietly = TRUE)){
+  install.packages("lmtest")
+}
+
+v_data = readr::read_csv('data.csv')
+v_coins = v_data$coins
+v_value = v_data$value
+n = length(v_data$coins)
+```
+
+# 1- O experimento
+
+##**1.1 Introdução**
+Até que ponto a opinião de pessoas comuns, reunidas em grandes quantidades, podem revelar _"verdades"_  acerca da natureza de determinado objeto ou fenômeno? Segundo Steiner [1], que realizou uma série de testes baseados no _best seller_ _The Wisdom of Crouds_ [2], o mais famooso experimento desta natrureza foi realizado pelo Cientista Vitoriano _Francis Galton_, em uma carta enviada à revista _Nature_ [3], na qual analisa uma competição realizada em _Plymouth_ (Inglaterra), em que diversas pessoas deveriam estimar a massa de um boi. Obviamente ninguém acertou exatamente o valor, mas a média das tentativas das quase $800$ pessoas que participaram do concurso refletiu, com bastante proximidade, o real valor da medida procurada.  E o que Steiner realizou foi testar a ideia utilizando-se de uma garrafa cheia de moedas, convidando pessoas que acessavam a internet a fazerem o mesmo, a partir de uma foto que mostrava a garrafa com as moedas.
+
+##**1.2. Descrição do Problema**
+Da mesma forma podemos conjecturar que o experimento proposto pelo professorda disciplina _Design and Analisys of Experiments_ foi inspirado nos mesmos experimentos. Com a diferença de que o material utilizado foram dois recipientes $A$ e $B$, cheios de moedas, descritos no estudo de caso um [4] . O vigente estud busca, portanto, investigar se as opiniões de `r n` estudantes.
+>>>>>>> 612a9bcda7ad42c4d7055a137303e2a7ce5455d6
 
 # 1- O experimento
 
@@ -173,6 +208,11 @@ v_value.n = power.t.test(power=v_value.desiredPower, delta=v_value.delta, sd=v_v
 ```
 
 A potência é `r v_value.powerReal` 
+<<<<<<< HEAD
+=======
+
+# IV. Discussão e Conclusões
+>>>>>>> 612a9bcda7ad42c4d7055a137303e2a7ce5455d6
 
 # Considerações finais
 Surowiecki, em seu estudo, lembra que a diferença não só contribui trazendo novas perspectivas para o ambiente, mas também ajuda os integrantes a expressarem mais livremente suas opiniões - sejam elas divergentes ou não [2, p. 38-39]. Isto revela o problema da coleta aberta no segundo caso, pois, não importa a magnitude do erro: mesmo que a "intuição" sugira o contrário, as pessoas dificilmente dariam respostas muito discrepantes da maioria. Gregory Berns, em seu _Iconoclast: A Neuroscientist Reveals How to Think Differently_[7] questiona inclusive a influência do grupo sobre a percepção das pessoas. Embora os estudantes garantirem terem dados a melhor resposta de acordo com suas observações, eles provavelmente questionavam suas convicções. Pode ser que alguns duvidassem daquilo que estavam vendo. Aparentemente as percepções permanecem intactas, mas a "fé" das pessoas nos seus sentidos, esta sim, parece ser moldada pela influência externa, alterando as decisões tomadas. E, no final, como o próprio prof. Campelo costuma afirmar em sala de aula, o que importa mesmo são as decisões.  Vale ressaltar que o grupo experienciou um certo "alívio" ao saber que a experiência era por isso, de certo modo, uma pequena farsa. 
@@ -189,11 +229,17 @@ Surowiecki, em seu estudo, lembra que a diferença não só contribui trazendo n
 
 [4] Campelo, F. *Estudo de caso 01*. Arquivo da disciplina Design and Analisys of Experiments. Disponível em <https://goo.gl/b3IeAn>. 
 
+<<<<<<< HEAD
 [5] Ramirez, J.G. *Statistical Intervals: Confidence, Prediction, Enclosure*. Disponível em <http://goo.gl/NJz7ot>
 
 [6] D.C. Montgomery, *Design and Analysis of Experiments*, 5th ed., John Wiley & Sons, 2001.   
 
 [7] Berns, G. *Iconoclast: A Neuroscientist Reveals How to Think Differently*. USA: Harvard Business press, 2008.
+=======
+[] Ramirez, J.G. *Statistical Intervals: Confidence, Prediction, Enclosure*. Disponível em <http://goo.gl/NJz7ot>
+
+[3] D.C. Montgomery, *Design and Analysis of Experiments*, 5th ed., John Wiley & Sons, 2001.   
+>>>>>>> 612a9bcda7ad42c4d7055a137303e2a7ce5455d6
 
 Peng, Roger D., *R Programming for Data Science*, Lulu, Inc.  
 

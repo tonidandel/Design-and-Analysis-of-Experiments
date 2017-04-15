@@ -1,37 +1,40 @@
-if (!require(readr, quietly = TRUE)){
-  install.packages("readr")
-}
-if (!require(car, quietly = TRUE)){
-  install.packages("car")
-}
-if (!require(lmtest, quietly = TRUE)){
-  install.packages("lmtest")
-}
-
-v_data = readr::read_csv('data.csv')
-v_coins = v_data$coins
-v_value = v_data$value
-
-
-###
-v_coins.mean = mean(v_coins)
-v_coins.sd = sd(v_coins)
-v_coins.rsd = sd(v_coins)/mean(v_coins)
-
-v_value.mean = mean(v_value)
-v_value.sd = sd(v_value)
-v_value.rsd = sd(v_value)/mean(v_value)
-
-## normality assumption
-qqPlot(v_coins)
-qqPlot(v_value)
-title("fdisdfi")
-
-hist(v_coins)
-hist(v_value)
-
+  if (!require(readr, quietly = TRUE)){
+    install.packages("readr")
+  }
+  if (!require(car, quietly = TRUE)){
+    install.packages("car")
+  }
+  if (!require(lmtest, quietly = TRUE)){
+    install.packages("lmtest")
+  }
+  
+  v_data = readr::read_csv('data.csv')
+  v_coins = v_data$coins
+  v_value = v_data$value
+  
+  
+  ###
+  v_coins.mean = mean(v_coins)
+  v_coins.sd = sd(v_coins)
+  v_coins.rsd = sd(v_coins)/mean(v_coins)
+  n = length(v_coins)
+  v_value.mean = mean(v_value)
+  v_value.sd = sd(v_value)
+  v_value.rsd = sd(v_value)/mean(v_value)
+  
+  ## normality assumption
+  qqPlot(v_coins)
+  qqPlot(v_value)
+  title("fdisdfi")
+  
+  hist(v_coins)
+  hist(v_value)
+  
 shapiro.test(v_coins)
 shapiro.test(v_value)
+
+#nivel de significancia
+alpha<-0.05
 
 ## independence assumption
 dwtest(v_coins~1)
