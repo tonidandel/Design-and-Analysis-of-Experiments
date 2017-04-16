@@ -74,11 +74,15 @@ power.t.test(power=0.8, delta=0.5, sd=v_value.sd, sig.level=0.05, type="one.samp
 
 Até que ponto a opinião de pessoas comuns, reunidas em grandes quantidades, podem revelar _"verdades"_  acerca da natureza de determinado objeto ou fenômeno? Segundo Steiner [1], que realizou uma série de testes baseados no _best seller_ _The Wisdom of Crouds_ [2], o mais famooso experimento desta natrureza foi realizado pelo Cientista Vitoriano _Francis Galton_, em uma carta enviada à revista _Nature_ [3], na qual analisa uma competição realizada em _Plymouth_ (Inglaterra), em que diversas pessoas deveriam estimar a massa de um boi. Obviamente ninguém acertou exatamente o valor, mas a média das tentativas das quase $800$ pessoas que participaram do concurso refletiu, com bastante proximidade, o real valor da medida procurada.  E o que Steiner realizou foi testar a ideia utilizando-se de uma garrafa cheia de moedas, convidando pessoas que acessavam a internet a fazerem o mesmo, a partir de uma foto que mostrava a garrafa com as moedas. Mas seria isto verdade?
 
-Da mesma forma podemos conjecturar que o experimento proposto pelo professor da disciplina _Design and Analisys of Experiments_ foi inspirado nos mesmos experimentos. Com a diferença de que o material utilizado foram dois recipientes $A$ e $B$, cheios de moedas, conforme descrito na referência [4] . O vigente estudo busca, portanto, investigar se as opiniões de `r n` estudantes, isto é, o quanto a média das opiniões dos estudantes pode refletir o número e o valor real das moedas depositadas nos recipientes $A$ e $B$?
+Foi realizada a coleta de dados em sala de aula, para um experimento similar à [1], em que os alunos foram questionados sobre a quantidade de moedas existentes num copo transparente de 200 ml (recipiente A). Foi informado que o recipiente continha moedas de natureza e gerações de fabricação diferentes (5, 10, 25, 50 centavos e 1 real). Esta primeira coleta foi feita com os alunos respondendo ao questionamento de forma secreta, o que evita uma indução de opinião entre os participantes.
 
-# 2. Design Experimental
+O segundo questionamento foi sobre a qual o valor em reais em um copo transparente de 200 ml contendo moedas de 5 centavos de mesma geração de fabricação (recipiente B). Neste momento, os alunos foram convidados a responder de em voz alta permitindo que cada um saiba a opinião dos demais. Acredita-se que esta forma de coleta promova indução de opiniões nos participantes de experimento.
 
-Como a média real não foi dada a conhecer pelo proponente do estudo, o time decidiu realizar uma montagem experimental semelhante (replicação do experimento), utilizando um recipiente de mesma natureza (copo plástico de $200ml$) para uma estimativa inicial do número de moedas no recipiente $A$, sabendo que era composto por moedas de natureza diferente (25 e 50 centavos e 1 real) e, no recipiente $B$, moedas de mesma natureza (5 centavos), utilizando contagem manual das moedas. O resultado seria utilizado como estimativa inicial para as médias: $Recipiente \, A: 130 \mbox{ moedas};  Recipiente \,\mbox{e } \\ B: \mbox{9 reais e 10 centavos}.$
+Da mesma forma podemos conjecturar que o experimento proposto pelo professor da disciplina Design and Analisys of Experiments [4], foi inspirado no mesmo experimento conforme [1]. O vigente estudo busca, portanto, investigar se as opiniões de `r n` estudantes, isto é, o quanto a média das opiniões dos estudantes pode refletir o número e o valor real das moedas depositadas nos recipientes $A$ e $B$?
+
+# 2. Projeto Experimental
+
+Inicialmente não foi possível definir um par de hipótese para o experimento por não ser sido fornecida a média real para o mesmo. Como a média real não foi dada a conhecer pelo proponente do estudo, o time decidiu realizar uma montagem experimental semelhante, utilizando um recipiente de mesma natureza (copo plástico de $200ml$) para uma estimativa inicial do número de moedas no recipiente $A$, sabendo que era composto por moedas de natureza e gerações diferentes (5, 10, 25, 50 centavos e 1 real) e, no recipiente $B$, moedas de mesma natureza (5 centavos), utilizando contagem manual das moedas. Durante este procedimento, avaliou-se que a repetibilidade quanto ao experimento original é comprometida por vários fatores, sendo que não se conhece a combinação original de tipo de moedas, a medida do nível de moedas no copo bem como o arranjo destas e seus espaços vazios no interior do copo. Contudo para efeitos didáticos, o grupo optou por prosseguir o com resultado encontrado: $Recipiente \, A: 130 \mbox{ moedas};  Recipiente \,\mbox{e } \\ B: \mbox{9 reais e 10 centavos}.$
 Assim, formula-se a hipótese de que a média das estimativas dos estudantes é igual ou não ao "valor real": 
 
 $$\left\{\begin{array}{rc}
@@ -106,7 +110,7 @@ teste.t.value
 ```
 O teste de hipóteses para os dois casos sugere rejeitar a hipótese nula, com $t_{0.05,28} = -4.51$ e $valor-p = 0.0001052 << \alpha$, no caso $A$, e $t_{0.05,28} = -15.15$ e $valor-p = 5.06e-15 << \alpha$, para o caso $B$.  
 
-Em contrapartida, considerando-se o menor efeito de significância prática para os dois casos ($\delta^{\star}_A=10$ moedas e $\delta^{\star}_B=0.50$ centavos), realizou-se um teste de potência para determinar a sua sensibilidade em relação à ocorrência de erros do tipo II (falhar em rejeitar $H_0$ quando ela é falsa):
+Em contrapartida, considerando-se o menor efeito de significância prática, para o qual o time baseadou-se na ordem de grandeza das médias, selecionando para os dois casos ($\delta^{\star}_A=10$ moedas e $\delta^{\star}_B=0.50$ centavos), entendendo ser inexpressivo, estes valores. Realizou-se um teste de potência para determinar a sua sensibilidade em relação à ocorrência de erros do tipo II (falhar em rejeitar $H_0$ quando ela é falsa):
 
 ```{r,results='show',warning=FALSE,echo=FALSE}
 #teste de potência para o caso A
@@ -147,7 +151,7 @@ qqPlot(v_value)
 title("caseB")
 ```
 
-o que demonstra que a população poderia não ser normal. Entretanto, dado o tamanho da amostra (`r n`), não é possível descartar ainda a hipótese de normalidade, segundo Montgomery [6]. Nestes casos, apenas uma severa disparidade nos dados poderia ser um indicativo de não-normalidade. A recomendação seria a de se usar uma amostra um pouco maior. Assim, os supostos _outliers_ não serão descartados e foi realizado o teste de _Shapiro-Wilk_ para normalidade. 
+o que demonstra que a população poderia não ser normal. Entretanto, dado o tamanho da amostra (`r n`), não é possível descartar ainda a hipótese de normalidade, segundo Montgomery [7]. Nestes casos, apenas uma severa disparidade nos dados poderia ser um indicativo de não-normalidade. A recomendação seria a de se usar uma amostra um pouco maior. Assim, os supostos _outliers_ não serão descartados e foi realizado o teste de _Shapiro-Wilk_ para normalidade. 
 Para o caso $A$, do número de moedas:
 ```{r, warning=TRUE,echo=FALSE}
 shapiro.test(v_coins)
@@ -156,7 +160,7 @@ E para o caso $B$, para o valor:
 ```{r, warning=FALSE,echo=FALSE}
 shapiro.test(v_value)
 ```
-Para os dois casos, o valor de $W_{\alpha}$ e do valor $p$ indicam que a população não segue uma distribuição normal. 
+Para os dois casos, o valor de $W_{\alpha}$, segundo a tabela verificada em [8] e do valor $p$, , sendo menor de o nível de significância, indicam que a população não segue uma distribuição normal. 
 
 Outro teste utilizado foi o de independência de Durbin-Watson:
 ```{r,results='hide',warning=FALSE,echo=TRUE}
@@ -164,7 +168,9 @@ dwtest(v_coins~1)
 dwtest(v_value~1)
 ```
 
-A hipótese nula desse teste afirma que a autocorrelação dos resíduos dos dados é zero. O p-valor alto obtido ($p>>\alpha$, nos dois casos) após o teste sugere que não há indícios para a rejeição da hipótese nula. Dessa forma, os autores concluem pela independência dos dados.
+A premissa de independência das amostras, a qual é necessárias para validar o teste t de Student, foi verificada por meio do teste de Durbin-Watson. A hipótese nula desse teste afirma que a autocorrelação dos resíduos dos dados é zero e sugere que não há indícios para a rejeição da hipótese nula do teste de Durbin-Watson,. Conforme teste no R para o caso A com WD=2.5314 e p-value=0.9296 e para o caso B com WD=1.8042 e p-value=0.2966, as amostras não apresentam independência
+
+Foi o que eu entendi desse teste?????????????????
 
 # Análise descritiva e recomendações
 
@@ -193,7 +199,7 @@ Outra sugestão seria a de diminuir o tempo de resposta de cada participante, de
 Assim, a decisão final do time é a de que não há dados estatísticos suficientes para concluir que os alunos sejam bons estimadores para a quantidade ou valor das moedas depositadas nos recipientes $A$ e $B$, nem garantir que, caso o experimento seja refeito segundo as recomendações, os objetivos serão, por isso, atingidos .
 
 # Considerações finais
-Surowiecki, em seu estudo, lembra que a diferença não só contribui trazendo novas perspectivas para o ambiente, mas também ajuda os integrantes a expressarem mais livremente suas opiniões - sejam elas divergentes ou não [2, p. 38-39]. Isto revela o problema da coleta aberta no segundo caso, pois, não importa a magnitude do erro: mesmo que a "intuição" sugira o contrário, as pessoas dificilmente dariam respostas muito discrepantes da maioria. Gregory Berns, em seu _Iconoclast: A Neuroscientist Reveals How to Think Differently_[7] questiona inclusive a influência do grupo sobre a percepção das pessoas. Embora os estudantes garantirem terem dados a melhor resposta de acordo com suas observações, eles provavelmente questionavam suas convicções. Pode ser que alguns duvidassem daquilo que estavam vendo. Aparentemente as percepções permanecem intactas, mas a "fé" das pessoas nos seus sentidos, esta sim, parece ser moldada pela influência externa, alterando as decisões tomadas. E, no final, o que importa mesmo são as decisões.  Vale ressaltar que o grupo experienciou um certo "alívio" ao saber que a experiência era por isso, de certo modo, uma pequena farsa.
+Surowiecki, em seu estudo, lembra que a diferença não só contribui trazendo novas perspectivas para o ambiente, mas também ajuda os integrantes a expressarem mais livremente suas opiniões - sejam elas divergentes ou não [2, p. 38-39]. Isto revela o problema da coleta aberta no segundo caso, pois, não importa a magnitude do erro: mesmo que a "intuição" sugira o contrário, as pessoas dificilmente dariam respostas muito discrepantes da maioria. Gregory Berns, em seu _Iconoclast: A Neuroscientist Reveals How to Think Differently_[8] questiona inclusive a influência do grupo sobre a percepção das pessoas. Embora os estudantes garantirem terem dados a melhor resposta de acordo com suas observações, eles provavelmente questionavam suas convicções. Pode ser que alguns duvidassem daquilo que estavam vendo. Aparentemente as percepções permanecem intactas, mas a "fé" das pessoas nos seus sentidos, esta sim, parece ser moldada pela influência externa, alterando as decisões tomadas. E, no final, o que importa mesmo são as decisões.
 
 # V. Atividades Desepenhadas
 
@@ -209,12 +215,14 @@ Surowiecki, em seu estudo, lembra que a diferença não só contribui trazendo n
 
 [5] Ramirez, J.G. *Statistical Intervals: Confidence, Prediction, Enclosure*. Disponível em <http://goo.gl/NJz7ot>
 
-[6] D.C. Montgomery, *Design and Analysis of Experiments*, 5th ed., John Wiley & Sons, 2001.   
+[6] D.C. Montgomery, *Design and Analysis of Experiments*, 5th ed., John Wiley & Sons, 2001.
 
-[7] Berns, G. *Iconoclast: A Neuroscientist Reveals How to Think Differently*. USA: Harvard Business press, 2008.
+[7] Teste de Shapiro-Wilk. Disponível em: http://www.portalaction.com.br/inferencia/64-teste-de-shapiro-wilk. Acesso em:15/04/2017.
 
-[8] Ramirez, J.G. *Statistical Intervals: Confidence, Prediction, Enclosure*. Disponível em <http://goo.gl/NJz7ot>
+[8] Berns, G. *Iconoclast: A Neuroscientist Reveals How to Think Differently*. USA: Harvard Business press, 2008.
 
-[9] D.C. Montgomery, *Design and Analysis of Experiments*, 5th ed., John Wiley & Sons, 2001.   
+[9] Ramirez, J.G. *Statistical Intervals: Confidence, Prediction, Enclosure*. Disponível em <http://goo.gl/NJz7ot>
+
+[10] D.C. Montgomery, *Design and Analysis of Experiments*, 5th ed., John Wiley & Sons, 2001.   
 
 [10] Felipe Campelo, *Lecture Notes on Design and Analysis of Experiments*, 2015.
