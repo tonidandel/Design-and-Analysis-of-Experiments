@@ -1,6 +1,6 @@
 ---
-title: 'Estudo de Caso 01: estudantes da disciplina _Design and Analisys of Experiments_ são bons estimadores para quantidade e valor de moedas colocadas em um copo?'
-author: 'Team 04' 
+title: 'Estudo de Caso 01: A Sabedoria das Massas - Estimativa para Moedas em um Copo'
+author: '' 
 
 header-includes:
 - \usepackage{fancyhdr}
@@ -14,7 +14,7 @@ output:
 ---  
 Coordenador: Gustavo Vieira    
 Relator: Danny Tonidandel  
-Verificador: Alessandro Dias
+Verificador: Alessandro Dias  
 Monitor: Bernardo Marques  
 
 ```{r setup,include=FALSE, results='hide',warning=FALSE,echo=FALSE}
