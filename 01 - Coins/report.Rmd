@@ -11,6 +11,8 @@ header-includes:
 output:
   pdf_document:
     fig_caption: yes
+bibliography: bibliography.bib
+csl: ieee.csl
 ---  
 Coordenador: Gustavo Vieira    
 Relator: Danny Tonidandel  
@@ -31,14 +33,18 @@ Monitor: Bernardo Marques
   v_coins = v_data$coins
   v_value = v_data$value
   
-  ###
+  v_sampleSize = length(v_coins)
+  
+  
   v_coins.mean = mean(v_coins)
-  v_coins.sd = sd(v_coins)
-  v_coins.rsd = sd(v_coins)/mean(v_coins)
-  n = length(v_coins)
-  v_value.mean = mean(v_value)
-  v_value.sd = sd(v_value)
-  v_value.rsd = sd(v_value)/mean(v_value)
+v_coins.sd = sd(v_coins)
+v_coins.rsd = sd(v_coins)/mean(v_coins)
+v_coins.interval = t.test(v_coins)$conf.int
+
+v_value.mean = mean(v_value)
+v_value.sd = sd(v_value)
+v_value.rsd = sd(v_value)/mean(v_value)
+v_value.interval = t.test(v_value)$conf.int
   
   ## normality assumption
   qqPlot(v_coins)
@@ -70,49 +76,84 @@ power.t.test(n=29, delta=0.05, sd=v_value.sd, sig.level=0.05, type="one.sample",
 power.t.test(power=0.8, delta=0.5, sd=v_value.sd, sig.level=0.05, type="one.sample", alternative="two.sided")
 ```
 
-# 1- O experimento
+# 1- Descrição do Problema
 
-Até que ponto a opinião de pessoas comuns, reunidas em grandes quantidades, podem revelar _"verdades"_  acerca da natureza de determinado objeto ou fenômeno? Segundo Steiner [1], que realizou uma série de testes baseados no _best seller_ _The Wisdom of Crouds_ [2], o mais famooso experimento desta natrureza foi realizado pelo Cientista Vitoriano _Francis Galton_, em uma carta enviada à revista _Nature_ [3], na qual analisa uma competição realizada em _Plymouth_ (Inglaterra), em que diversas pessoas deveriam estimar a massa de um boi. Obviamente ninguém acertou exatamente o valor, mas a média das tentativas das quase $800$ pessoas que participaram do concurso refletiu, com bastante proximidade, o real valor da medida procurada.  E o que Steiner realizou foi testar a ideia utilizando-se de uma garrafa cheia de moedas, convidando pessoas que acessavam a internet a fazerem o mesmo, a partir de uma foto que mostrava a garrafa com as moedas. Mas seria isto verdade?
+No livro _The Wisdom of Crowds_ [@surowiecki2005wisdom], são apresentados anedotas e estudos de caso que ilustram um argumento interessante: o julgamento médio de um conjunto diverso de indivíduos independentes tende a convergir para soluções corretas em alguns tipos de problemas. Essa idéia não é tão recente: em 1907, Francis Galton [@galton1907vox] relata na revista _Nature_ um experimento no qual 800 pessoas tentaram estimar a massa de um boi. Ele notou que, apesar de palpites diversos, a média de todos ele refletiu com bastante proximidade valor real.
 
-Foi realizada a coleta de dados em sala de aula, para um experimento similar à [1], em que os alunos foram questionados sobre a quantidade de moedas existentes num copo transparente de 200 ml (recipiente A). Foi informado que o recipiente continha moedas de natureza e gerações de fabricação diferentes (5, 10, 25, 50 centavos e 1 real). Esta primeira coleta foi feita com os alunos respondendo ao questionamento de forma secreta, o que evita uma indução de opinião entre os participantes.
+No entanto, a sabedoria das multidões não é infalível. Surowiecki expõe também diversas situações na qual o julgamento das massas errou e discute aspectos que influênciam a decisão. Segundo ele, dentre os fatores que podem prejudicar esse processo estão incluídos homogeneidade no grupo e ausência de independência entre as opiniões dos diversos indivíduos. Outros estudos subsequentes [@lorenz2011social] reforçam a ideia de que a influência da opinião de alguns indivíduos sobre os demais pode prejudicar o resultado final.
 
-O segundo questionamento foi sobre a qual o valor em reais em um copo transparente de 200 ml contendo moedas de 5 centavos de mesma geração de fabricação (recipiente B). Neste momento, os alunos foram convidados a responder de em voz alta permitindo que cada um saiba a opinião dos demais. Acredita-se que esta forma de coleta promova indução de opiniões nos participantes de experimento.
+A fim de explorar as ideias apresentadas, dois experimentos foram realizados [@campeloEC01]. No primeiro, foi apresentado a 29 alunos da disciplina de Planejamento e Análise de Experimentos um copo de 200ml contendo moedas diversas. Os alunos foram então instruídos a estimar a quantidade de moedas ali após 30 segundos de deliberação. Os palpites deveriam ser escritos secretamente em um papel e não deveria haver comunicação entre os indivíduos.
 
-Da mesma forma podemos conjecturar que o experimento proposto pelo professor da disciplina Design and Analisys of Experiments [4], foi inspirado no mesmo experimento conforme [1]. O vigente estudo busca, portanto, investigar se as opiniões de `r n` estudantes, isto é, o quanto a média das opiniões dos estudantes pode refletir o número e o valor real das moedas depositadas nos recipientes $A$ e $B$?
+O segundo experimento foi similar. Dado um mesmo copo de 200ml preenchido apenas com moedas de 5 centavos, os alunos foram instruídos a estimar o valor total das moedas nele. Nesse experimento, no entanto, os palpites foram realizados em sequência e em voz alta.
+
+A partir dos dados coletados, duas questões devem ser discutidas:
+
+1) Qual a quantidade real de moedas no primeiro experimento?
+2) Qual o valor real das moedas no segundo experimento?
 
 # 2. Projeto Experimental
 
-Inicialmente não foi possível definir um par de hipótese para o experimento por não ser sido fornecida a média real para o mesmo. Como a média real não foi dada a conhecer pelo proponente do estudo, o time decidiu realizar uma montagem experimental semelhante, utilizando um recipiente de mesma natureza (copo plástico de $200ml$) para uma estimativa inicial do número de moedas no recipiente $A$, sabendo que era composto por moedas de natureza e gerações diferentes (5, 10, 25, 50 centavos e 1 real) e, no recipiente $B$, moedas de mesma natureza (5 centavos), utilizando contagem manual das moedas. Durante este procedimento, avaliou-se que a repetibilidade quanto ao experimento original é comprometida por vários fatores, sendo que não se conhece a combinação original de tipo de moedas, a medida do nível de moedas no copo bem como o arranjo destas e seus espaços vazios no interior do copo. Contudo para efeitos didáticos, o grupo optou por prosseguir o com resultado encontrado: $Recipiente \, A: 130 \mbox{ moedas};  Recipiente \,\mbox{e } \\ B: \mbox{9 reais e 10 centavos}.$
-Assim, formula-se a hipótese de que a média das estimativas dos estudantes é igual ou não ao "valor real": 
+Para responder às perguntas propostas a partir dos dados obtidos, é necessário assumir como verdadeira a premissa de que o julgamento da multidão converge para o valor verdadeiro. Aplicada ao caso específico, espera-se que as estimativas dos estudantes estejam distribuídas em torno do número real de moedas no recipiente (experimento 1) e do valor total das moedas (experimento 2). Nesse caso, a média de todos os palpites refletiria a melhor estimativa para os valores reais desejados 
+
+Além disso, assumindo que a distribuição dos palpites indivuais seja normal, é possível determinar intervalos de confiança para os valores estimados, analisando o desvio padrão da amostra.
+
+Conforme discutido anteriormente, existem outros fatores interessantes a serem considerados nos experimentos. A partir das diferenças entre os experimentos 1 e 2, seria interessante investigar diferenças decorrentes da influência entre indivíduos, presente no segundo experimento e não no primeiro.
+
+No entanto, o fato do valor real ser desconhecido limita o alcance dos experimentos como forma de avaliar fatores que influenciam a estimativa de grupos. Além disso, não há um valor esperado para que as amostras possam ser avaliadas com testes de hipóteses. Para contornar essa limitação, foi realizado um procedimento que permite estabelecer uma quantidade esperada para os experimentos 1 e 2.
+
+O grupo preencheu um copo de 200ml com moedas de valores diversos (5, 10, 25, 50 centavos e 1 real) e realizou a contagem das moedas. Em seguida, foram utilizadas apenas moedas de 5 centavos para encher outro copo de 200ml, e as mesmas foram também contadas. Os valores obtidos foram 130 moedas no primeiro caso e 182 moedas (equivalentes ao valor de R$9.10) no segundo. 
+
+Dessa forma, torna-se possível realizar teste de hipótese para os experimentos realizados, tomando como hipótese nula as estimativas obtidas através dos dos procedimentos descritos. Tem-se então:
 
 $$\left\{\begin{array}{rc}
 H_{0}: \mu=130,\\
-H_{a}: \mu \neq 130.
+H_{1}: \mu \neq 130.
 \end{array}\right.$$
 
-e $$\left\{\begin{array}{rc}
+para o experimento 1 e 
+
+$$\left\{\begin{array}{rc}
 H_{0}: \mu=9.10,\\
-H_{b}: \mu \neq 9.10.
+H_{1}: \mu \neq 9.10.
 \end{array}\right.$$
 
-O que forma um teste de hipóteses bilateral, considerando que os valores de $H_a e H_b$ são "reais", o que já é uma fonte de incertezas. 
+para o experimento 2.
 
-Por conveniência, julgou-se suficiente um nível de significância para o experimento de $5\%$, i.e., $\alpha=0.05$, que implica em um grau de confiança $1-\alpha$ de $95\%$. E a partir do conhecimento do time a respeito do problema em questão, adotou-se o menor efeito de significância prática como sendo $\delta^{\star}_A=10$ moedas (para o caso $A$) e $\delta^{\star}_B=0.50$ centavos (para o caso $B$).  Além disso, o nível de potência estatística para o experimento escolhida foi (inicialmente) de $(1-\beta)=0.8$.
+Nos testes, foi estabelecido o nível de significância desejado em $5\%$ (i.e. $\alpha=0.05$), que resulta em grau de confiança de $95\%$. Como menor efeito de significância prática, foi adotado $\delta^{\star}_1=10$ para o experimento 1 e $\delta^{\star}_2=0.50$ para o experimento 2.
 
-# 3. Teste de Hipóteses
-```{r, include=TRUE, results='hide',warning=FALSE,echo=FALSE}
-teste.t.coins<-t.test(v_coins, mu=130)
-teste.t.value<-t.test(v_value, mu=9.10)
-teste.t.coins
-teste.t.value
-#tzero.coins <- (teste.t.coins$estimate-teste.t.coins$null.value)/(v_coins.sd*sqrt(n))
-#tzero.value <- (teste.t.value$estimate-teste.t.value$null.value)/(v_value.sd*sqrt(n))
+É importante notar que os procedimentos realizados carregam incertezas. Não se sabe a distribuição de moedas utilizadas no primeiro experimento, de forma que a aleatorização foi utilizada para tentar bloquear esse fator. Além disso, há variabilidade na forma como as moedas são posicionadas e não exatidão na definição de "um copo cheio". Como não foi possível controlar esses fatores ou obter essas informações a respeito do experimento original, a confiabilidade das estimativas obtidas com o procedimento é prejudicada. 
+
+# 3. Análise Estatística
+
+## 3.1 Análise Descritiva
+
+```{r,results='hide',warning=FALSE,echo=FALSE}
+# Análise descritiva
+v_coins.mean = mean(v_coins)
+v_coins.sd = sd(v_coins)
+v_coins.rsd = sd(v_coins)/mean(v_coins)
+v_coins.interval = t.test(v_coins)$conf.int
+
+v_value.mean = mean(v_value)
+v_value.sd = sd(v_value)
+v_value.rsd = sd(v_value)/mean(v_value)
+v_value.interval = t.test(v_value)$conf.int
+
 ```
-O teste de hipóteses para os dois casos sugere rejeitar a hipótese nula, com $t_{0.05,28} = -4.51$ e $valor-p = 0.0001052 << \alpha$, no caso $A$, e $t_{0.05,28} = -15.15$ e $valor-p = 5.06e-15 << \alpha$, para o caso $B$.  
 
-Em contrapartida, considerando-se o menor efeito de significância prática, para o qual o time baseadou-se na ordem de grandeza das médias, selecionando para os dois casos ($\delta^{\star}_A=10$ moedas e $\delta^{\star}_B=0.50$ centavos), entendendo ser inexpressivo, estes valores. Realizou-se um teste de potência para determinar a sua sensibilidade em relação à ocorrência de erros do tipo II (falhar em rejeitar $H_0$ quando ela é falsa):
+No experimento 1, foi obtida uma média de aproximadamente $`r round(v_coins.mean, 3)`$, com desvio padrão $`r round(v_coins.sd, 3)`$. A partir daí, *assumindo as premissas discutidas como verdadeiras*, é possível afirmar que o intervalo [`r v_coins.interval`] possui 95% de chance de conter a quantidade real de moedas no experimento 1.
 
-```{r,results='show',warning=FALSE,echo=FALSE}
+Com os dados do experimento 2, a média obtida foi $`r round(v_value.mean, 3)`$ e o desvio padrão $`r round(v_value.sd, 3)`$. Analogamente, afirma-se que o intervalo [`r v_value.interval`] possui 95% de chance de conter o valor real em dinheiro no recipiente do segundo experimento.
+
+
+## 3.2 Teste de Hipóteses
+```{r, include=TRUE, results='hide',warning=FALSE,echo=FALSE}
+v_coins.tTest<-t.test(v_coins, mu=130)
+v_value.tTest<-t.test(v_value, mu=9.10)
+
+v_coins.p <- v_coins.tTest$p.value
+v_value.p <- v_value.tTest$p.value
+
 #teste de potência para o caso A
 v_coins.delta = 10
 v_coins.desiredPower = 0.8
@@ -128,101 +169,88 @@ v_value.desiredPower = 0.8
 v_value.powerReal = power.t.test(n=29, delta=0.5, sd=v_value.sd, sig.level=0.05, type="one.sample", alternative="two.sided")$power
 # fixando-se  potência do teste
 v_value.n = power.t.test(power=v_value.desiredPower, delta=v_value.delta, sd=v_value.sd, sig.level=0.05, type="one.sample", alternative="two.sided")$n
+```
+
+Para o experimento 1 com hipótese nula $H_0 = 130$, o teste de hipótese apresenta $p = `r v_coins.p` << \alpha$, de forma que a hipótese nula é rejeitada.
+No experimento 2, $H_0 = 9.10$ e $p = `r v_value.p` << \alpha$, o que também indica rejeição da hipótese nula. 
+Para ambos os experimentos, portanto, é possível afirmar que as estimativas para hipóteses nula obtidas através dos procedimentos realizados não são confirmadas pelos dados obtidos.
+
+Considerando os valores definidos $\delta^{\star}_1=10$ e $\delta^{\star}_2=0.50$, a potência $(1 - \beta)$ de ambos os testes calculada é `r v_coins.powerReal` e `r v_value.powerReal`, respectivamente. A baixa potência implica em uma probabilidade alta de erros do Tipo II, isto é, falha em rejeitar uma hipótese nula falsa. Embora isso não seja um problema nos testes atuais (uma vez que a hipótese nula já foi rejeitada), seria desejável uma potência maior. Para obter potência de pelo menos 0.8 nos testes para os mesmos valores de $\delta^{\star}_1$ e $\delta^{\star}_2$, seriam necessários tamanhos amostrais de $`r ceiling(v_coins.n)`$ e $`r ceiling(v_value.n)`$, respectivamente (assumindo que os desvios padrão nas amostras permanecessem os mesmos).
+
+## 3.3 Validação das Premissas
+
+Todas as análises feitas até então assumem que as premissas estabelecidas são verdadeiras, isto é:
+
+1) observações são distribuídas em torno do valor real considerado;
+2) observações possuem distribuição normal;
+3) observações são independentes entre si.
+
+Não é possível verificar a premissa 1 sem conhecer os valores reais considerados (moedas no copo do experimento 1 e valor no copo do experimento 2). No entanto, existem testes que permitem avaliar a normalidade e interdependência em amostras
+
+### Normalidade
+
+Os histogramas abaixo mostram a distribuição das observações nos experimentos e oferecem um primeiro indício da sua não normalidade:
+
+```{r, include=TRUE,results='hide',warning=FALSE,echo=FALSE}
+par(mfrow=c(1,2), mai=.4*c(2.5,1,1,1))
+hist(v_coins, main = "Experimento 1", xlab = "Moedas")
+hist(v_value, main = "Experimento 2", xlab="Valor (R$)")
 
 ```
 
-A potência do teste para o caso $A$ obtida foi `r round(v_coins.powerReal,2)` e, para o caso $B$, foi de `r round(v_value.powerReal,2)`, considerando fixas o tamanho da amostra e o nível de significância. O teste demonstrou uma fraca sensibilidade para detectar erros do tipo II. 
 
-Como desejáva-se aumentar a potência do teste para o valor desejado de `r round(v_coins.desiredPower,2)`, observou-se, no caso $A$, que seria necessário um tamanho amostral de `r ceiling(v_coins.n)` e, para o caso $B$, `r ceiling(v_value.n)`, o que não é possível alcançar-se, já que a amostra única possui tamanho fixo. Logo, o aumento do número de observações seria desejável.
-
-# 3. Validação
-
-Como não se tem informações sobre a variância da população, o time escolheu adotar o teste de _t student_, assumindo as premissas: 1) As estimativas dos estudantes se distribuem em torno do valor real. 2) As observações são independentes. 3) A distribuição populacional das médias é normal.
-
-Normalidade e independência são verificáveis por testes, porém, como a premissa de que a média dos _"chutes"_ dos estudantes se aproxima do valor real não é facilmente testável _a priori_, acresenta-se mais  um ponto de viéses para a análise.
-
-A premissa de normalidade foi testada visualmente a partir dos gráficos $QQplots$:
+Os QQplots abaixo comparam a distribuição das amostras em relaçõ à distribuição normal esperada (linha vermelha):
 
 ```{r, include=TRUE,results='hide',warning=FALSE,echo=FALSE}
 par(mfrow=c(1,2), mai=.4*c(2.5,1,1,1))
 qqPlot(v_coins)
-title("case A")
+title("Experimento 1")
 qqPlot(v_value)
-title("caseB")
+title("Experimento 2")
+
+v_coins.shapiroP = shapiro.test(v_coins)$p.value
+v_coins.shapiroW = shapiro.test(v_coins)$statistic
+v_value.shapiroP = shapiro.test(v_value)$p.value
+v_value.shapiroW = shapiro.test(v_value)$statistic
 ```
 
-o que demonstra que a população poderia não ser normal. Entretanto, dado o tamanho da amostra (`r n`), não é possível descartar ainda a hipótese de normalidade, segundo Montgomery [7]. Nestes casos, apenas uma severa disparidade nos dados poderia ser um indicativo de não-normalidade. A recomendação seria a de se usar uma amostra um pouco maior. Assim, os supostos _outliers_ não serão descartados e foi realizado o teste de _Shapiro-Wilk_ para normalidade. 
-Para o caso $A$, do número de moedas:
-```{r, warning=TRUE,echo=FALSE}
-shapiro.test(v_coins)
-```
-E para o caso $B$, para o valor:
-```{r, warning=FALSE,echo=FALSE}
-shapiro.test(v_value)
-```
-Para os dois casos, o valor de $W_{\alpha}$, segundo a tabela verificada em [8] e do valor $p$, , sendo menor de o nível de significância, indicam que a população não segue uma distribuição normal. 
+A análise dos gráficos indica que as distribuição das observações pode não ser normal. No entanto, essa análise ainda é inconclusiva, especialmente para o tamanho amostral considerado ($n = 29$) [@montgomery1984design]. Para confirmar a não normalidade, é realizado o teste Shapiro-Wilk. Os resultados são $p = `r v_coins.shapiroP`$ e $W = `r v_coins.shapiroW`$ para o experimento 1 e $p = `r v_value.shapiroP`$ e $W = `r v_value.shapiroW`$ para o experimento 2. Considerando $\alpha = 0.05$, o tamanho amostral $n = 29$ e a tabela de referência para o teste em [@shapiroWilk], é possível rejeitar a hipótese nula (população tem distribuição normal) em ambos os experimentos, o que invalida uma das premissas assumidas.
 
-Outro teste utilizado foi o de independência de Durbin-Watson:
-```{r,results='hide',warning=FALSE,echo=TRUE}
-dwtest(v_coins~1)
-dwtest(v_value~1)
-```
-
-A premissa de independência das amostras, a qual é necessárias para validar o teste t de Student, foi verificada por meio do teste de Durbin-Watson. A hipótese nula desse teste afirma que a autocorrelação dos resíduos dos dados é zero e sugere que não há indícios para a rejeição da hipótese nula do teste de Durbin-Watson,. Conforme teste no R para o caso A com WD=2.5314 e p-value=0.9296 e para o caso B com WD=1.8042 e p-value=0.2966, as amostras não apresentam independência
-
-Foi o que eu entendi desse teste?????????????????
-
-# Análise descritiva e recomendações
+### Independência
 
 ```{r,results='hide',warning=FALSE,echo=FALSE}
-# Análise descritiva
-v_coins.mean = mean(v_coins)
-v_coins.sd = sd(v_coins)
-v_coins.rsd = sd(v_coins)/mean(v_coins)
-
-v_value.mean = mean(v_value)
-v_value.sd = sd(v_value)
-v_value.rsd = sd(v_value)/mean(v_value)
-
+v_coins.durbinP = dwtest(v_coins~1)$p.value
+v_value.durbinP = dwtest(v_value~1)$p.value
 ```
 
-A média dos valores obtida após a coleta das opiniões dos estudantes resultou em `r v_coins.mean` moedas, com desvio padrão `r v_coins.sd`  no caso $A$ e `r v_value.mean` reais, com desvio padrão de `r v_value.sd` no caso $B$, sendo que os valores "reais" eram, respectivamente, $130$ e $9,10$.
+Embora não haja um teste específico para independência das observações, é possível avaliar a autocorrelação serial através do teste de Durbin-Watson. No teste, foram obtidos valores $p = `r v_coins.durbinP`$ e $p = `r v_value.durbinP`$ para os experimentos 1 e 2, respectivamente.
 
-O primeiro dado que, de certa forma, invalida o experimento é a observação do caráter de não normalidade da população, por meio dos testes. Neste caso, o teste de inferência de _t-student_ não pode ser aplicado, pois não é possível aplicar-se o teorema do limite central. 
+Esses resultados não rejeitam a hipótese de que as observações são independentes. No entanto, os procedimentos utilizados no experimento dois claramente violam o princípio de cegamento entre diferentes observações e permitem que influência entre amostras subsequêntes, o que é um indício de possibilidade de violação da independência. Analisando o desvio padrão relativo nos experimentos, tem-se respectivamente $`r v_coins.rsd`$ e $`r v_value.rsd`$. O menor desvio padrão observado no segundo experimento pode ser consequência da influência entre observações, que tende a diminuir a variância e aumentar o viés [@lorenz2011social].
 
-No entanto, assumindo-se a premissa de normalidade, foi detectada uma baixa potência para o menor efeito de importância e nível de significância desejados e, por isso, uma repetiçao do experimento com um número maior de observações seria desejável.
+Dessa forma, embora não seja possível provar a violação da premissa de independência, ela é enfraquecida para o experimento 2.
 
-A questão do cegamento dos participantes poderia ser repensada, pois acredita-se ter introduzido fontes de viéses na coleta dos dados. Uma sugestão seria a de se realizar uma replicação do experimento, utilizando grupos diferentes, altercando-se a ordem da coleta por grupo. Por exemplo, pergunta-se ao estudante 1 o número de moedas no recipiente $A$ e o valor das moedas no recipiente $B$ para o(a) estudante $2$, e assim sucessivamente.
 
-Outra sugestão seria a de diminuir o tempo de resposta de cada participante, de forma a reduzir diferenças entre simples "chutes" e possíves "cálculos mentais". Tais medidas poderiam, em princípio, sanar alguns do problemas em relação à normalidade da distribuição das médias. 
+# 4. Discussão e Conclusões
 
-Assim, a decisão final do time é a de que não há dados estatísticos suficientes para concluir que os alunos sejam bons estimadores para a quantidade ou valor das moedas depositadas nos recipientes $A$ e $B$, nem garantir que, caso o experimento seja refeito segundo as recomendações, os objetivos serão, por isso, atingidos .
+A análise descritiva dos dados permite estabelecer intervalos de confiança para os valores desejados. Considerando as observações realizadas e assumindo as premissas estabelecidas como verdadeiras, é razoável assumir que os valores desejados estão entre os intervalos obtidos.
 
-# Considerações finais
-Surowiecki, em seu estudo, lembra que a diferença não só contribui trazendo novas perspectivas para o ambiente, mas também ajuda os integrantes a expressarem mais livremente suas opiniões - sejam elas divergentes ou não [2, p. 38-39]. Isto revela o problema da coleta aberta no segundo caso, pois, não importa a magnitude do erro: mesmo que a "intuição" sugira o contrário, as pessoas dificilmente dariam respostas muito discrepantes da maioria. Gregory Berns, em seu _Iconoclast: A Neuroscientist Reveals How to Think Differently_[8] questiona inclusive a influência do grupo sobre a percepção das pessoas. Embora os estudantes garantirem terem dados a melhor resposta de acordo com suas observações, eles provavelmente questionavam suas convicções. Pode ser que alguns duvidassem daquilo que estavam vendo. Aparentemente as percepções permanecem intactas, mas a "fé" das pessoas nos seus sentidos, esta sim, parece ser moldada pela influência externa, alterando as decisões tomadas. E, no final, o que importa mesmo são as decisões.
+Para realizar o teste de hipótese, foram realizados procedimentos experimentais para determinar valores razoáveis para as hipóteses nulas. No entanto, os valores obtidos foram rejeitados pelos dados obtidos. Dessa forma, há uma contradição entre os valores esperados e os valores indicados pelos dados. Daí, duas conclusões são possíveis:
+
+1) Os procedimentos experimentais realizados não são estimativas representativas dos valores reais utilizados nos experimentos realizados em sala e/ou
+2) As premissas estabelecidas são falsas e, portanto, as análises realizadas não permitem determinar corretamente os valores considerados.
+
+Os testes das premissas reforçam a segunda conclusão, uma vez que foi verificada a não normalidade das observações obtidas em sala. A análise dos procedimentos experimentais e dos desvios relativos também enfraquece a premissa de independência das observações no experimento 2, embora ela não seja possível provar sua violação.
+
+Por outro lado, há também diversas fontes de incerteza nos procedimentos realizados para determinação da hipótese nula. A distribuição de moedas do experimento original é desconhecida, o método para determinar a quantidade que representa um copo cheio é incerta e a forma como as moedas são colocadas influencia muito o resultado. Dessa forma, não é possível confiar nos valores estimados também.
+
+Dessa forma, a recomendação mais adequada seria que o experimento fosse refeito, com algumas melhorias procedimentais. Em primeiro lugar, é recomendado realizar cegamento dos indvíduos participantes, de maneira a evitar que uma observação afete as demais. Um maior tamanho amostral também é necessário para obtenção de potência maior nos testes, conforme discutido na seção 3.1. A replicação do experimento seria um fator positivo para identificar e eliminar erros experimentais e obter resultados mais confiáveis. Além disso, grupos mais heterogêneos são recomendados em [@surowiecki2005wisdom]. Finalmente, a aleatorização na ordem dos experimentos poderia ajudar a eliminar possíveis bias entre estimativas subsequentes realizadas pelo mesmo indivíduo.
+
+Em um experimento semelhante é descrito em [@wired], observa-se um outro fator que possivelmente interfere nos resultados. Os participantes que pensaram por mais tempo no problema e utilizaram matemática para estimar os valores erraram por uma margem maior que aqueles que apenas chutaram. Dessa forma, a variação no método utilizado para fazer a estimativa pode ser prejudicial. Para tentar bloquear esse efeito, sugere-se reduzir drasticamente o tempo disponível para dar um palpite para no máximo 10 segundos.
+
+Mesmo com os procedimentos experimentais reformulados, ainda não é possível garantir que grupos de alunos seriam bons estimadores para a quantidade de moedas. Embora resultados da literatura sugiram que sim, podem haver fatores específicos desse problema que impedem a sabedoria das massas de prevalecer. Um pressuposto básico para o sucesso, por exemplo, é o conhecimento básico e habilidade dos indivíduos de chegar em conclusões corretas. Caso o problema seja simplesmente muito difícil, é esperado que o consenso do grupo falhe. Dessa forma, é necessário que o valor real das moedas seja registrado ao longo dos experimentos. Assim seria possível avaliar criticamente o método de estimativa a partir de grupos.
 
 # V. Atividades Desepenhadas
 
-##**Referências**
+Todos os membros do grupo participaram da análise e planejamento do experimento e dos procedimentos para estimativa da hipótese nula. O código em R para testes foi majoritariamente desenvolvido pelo coordenador do grupo. O relatório foi escrito pelo relator, aprimorado pelo verificador e finalizado pelo coordenador.
 
-[1] Steiner, E. B. *Turns Out the Internet Is Bad at Guessing How Many Coins Are in a Jar*. Wired Magazine: USA, 2017. Disponível em <https://www.wired.com/2015/01/coin-jar-crowd-wisdom-experiment-results/>
-
-[2] Surowiecki, J. *The Wisdom of Crowds*. Anchor Books: New York, 2004. 
-
-[3] Galton, F. *Vox Populi*. Nature: England, mar. 1907.
-
-[4] Campelo, F. *Estudo de caso 01*. Arquivo da disciplina Design and Analisys of Experiments. Disponível em <https://goo.gl/b3IeAn>. 
-
-[5] Ramirez, J.G. *Statistical Intervals: Confidence, Prediction, Enclosure*. Disponível em <http://goo.gl/NJz7ot>
-
-[6] D.C. Montgomery, *Design and Analysis of Experiments*, 5th ed., John Wiley & Sons, 2001.
-
-[7] Teste de Shapiro-Wilk. Disponível em: http://www.portalaction.com.br/inferencia/64-teste-de-shapiro-wilk. Acesso em:15/04/2017.
-
-[8] Berns, G. *Iconoclast: A Neuroscientist Reveals How to Think Differently*. USA: Harvard Business press, 2008.
-
-[9] Ramirez, J.G. *Statistical Intervals: Confidence, Prediction, Enclosure*. Disponível em <http://goo.gl/NJz7ot>
-
-[10] D.C. Montgomery, *Design and Analysis of Experiments*, 5th ed., John Wiley & Sons, 2001.   
-
-[10] Felipe Campelo, *Lecture Notes on Design and Analysis of Experiments*, 2015.
+# Referências
