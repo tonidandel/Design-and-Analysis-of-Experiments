@@ -1,0 +1,221 @@
+---
+title: "Estudo de Caso 02: Comparação entre algoritmos de Classificação"
+author: "Equipe 04"
+date: "15 de maio de 2017"
+output:
+  pdf_document:
+    fig_caption: yes
+bibliography: bibliography.bib
+csl: ieee.csl
+header-includes:
+- \usepackage{fancyhdr}
+- \pagestyle{fancy}
+- \fancyfoot[CO,CE]{EEE933 - Planejamento e Análise de Experimentos}
+- \fancyfoot[LE,RO]{\thepage}
+
+---  
+Coordenador: Danny Tonidandel    
+Relator: Alessandro Cardoso
+Verificador:  Gustavo Vieira
+Monitor: Bernardo Marques  
+
+```{r setup,include=FALSE, results='hide',warning=FALSE,echo=FALSE}
+  if (!require(readr, quietly = TRUE)){
+    install.packages("readr")
+  }
+  if (!require(car, quietly = TRUE)){
+    install.packages("car")
+  }
+  if (!require(lmtest, quietly = TRUE)){
+    install.packages("lmtest")
+  }
+  source('calcN.R')
+library(car)
+library(lmtest)
+
+
+# pilot size calc
+v_nPilot = calcN_pilotD(p_alpha = 0.05,
+                        p_beta = 0.2,
+                        p_type = 'one-sided',
+                        p_d = 1
+                        )
+
+
+# sample size calc
+v_data = readr::read_csv('pilot_1992-11-21_17_30.csv')
+
+v_data = aggregate(cbind(Accuracy,Time.s)~Instance:Algorithm,data=v_data, FUN=mean)
+
+v_dataSD = aggregate(cbind(Accuracy,Time.s)~Algorithm,data=v_data, FUN=sd)
+
+v_nTime = calcN_tost2(alpha = 0.05,
+            beta = 0.2,
+            diff_mu = 1,
+            tolmargin = min(v_dataSD$Time.s),
+            s1 = v_dataSD$Time.s[1],
+            s2 = v_dataSD$Time.s[2]
+            )
+
+v_nAcc = calcN_tost2(alpha = 0.05,
+                      beta = 0.2,
+                      diff_mu = 0.01,
+                      tolmargin = 0.05,
+                      s1 = v_dataSD$Accuracy[1],
+                      s2 = v_dataSD$Accuracy[2]
+                     )
+
+v_n = ceiling(max(v_nTime, v_nAcc))
+
+
+# sample data
+v_data = readr::read_csv('1992-11-21_33_30.csv')
+v_data = aggregate(cbind(Accuracy,Time.s)~Instance:Algorithm,data=v_data, FUN=mean)
+
+splitInst = function (p_str){
+  return (as.numeric(unlist(strsplit(p_str, 'Inst'))[2]))
+}
+v_data$Instance = unlist(lapply(v_data$Instance, splitInst))
+v_data = v_data[order(v_data$Instance),]
+
+# hypothesis test Time
+
+v_diffTime = subset(v_data, Algorithm=='Proposed')$Time.s - subset(v_data, Algorithm=='Standard')$Time.s
+v_tTestTime = t.test(v_diffTime,
+                     conf.level = 0.05,
+                     mu=0,
+                     alternative = 'less'
+                     )
+v_pTime = v_tTestTime$p.value
+
+
+# hypothesis test acc
+v_diffAcc = subset(v_data, Algorithm=='Proposed')$Accuracy - subset(v_data, Algorithm=='Standard')$Accuracy
+v_tTestAcc = t.test(v_diffAcc, 
+                    mu = -0.05, 
+                    conf.level = 0.05, 
+                    alternative = 'greater'
+                    )
+v_pAcc = v_tTestAcc$p.value
+
+## Hypothesis validation - Time
+
+# Normality
+qqPlot(v_diffTime)
+v_shapiroTime = shapiro.test(v_diffTime)
+
+# Independence
+v_dwTime = dwtest(v_diffTime~1)
+plot(v_diffTime, type='b')
+
+
+## Hypothesis validation - Acc
+
+# Normality
+qqPlot(v_diffAcc)
+v_shapiroAcc = shapiro.test(v_diffAcc)
+
+# Independence
+v_dwAcc = dwtest(v_diffAcc~1)
+plot(v_diffAcc, type='b')
+```
+
+# O Experimento
+
+Este estudo de caso consiste na comparação de algoritmos de classificação, em que um deles consiste no _padrão atual_ e um novo algoritmo proposto, que utilizada uma técnica de simplificação baseada em inferência estatística.
+
+Segundo os pesquisadores responsáveis pelo algoritmo proposto, este apresenta uma melhora significativa frente ao padrão atual com relação ao tempo requerido para a classificação e que o essa nova abordagem não resulta em grandes perdas de desempenho em termos de acurácia da classificação.
+
+O experimento deste trabalho foi desenvolvido no intuito de verificar as afirmações acima. Este consiste na comparação os dois algoritmos citados baseando-se nos questionamentos abaixo: 
+
+## Questionamentos
+
+1. O método proposto realmente apresenta ganhos em relação ao tempo de execução, quando comparado ao método padrão? 
+
+2. O método proposto realmente não resulta em variações consideráveis de acurácia?
+
+## Características desejadas
+
+Para que sejam investigados os questionamentos acima são desejadas as seguintes características para os testes estatísticos:
+
+```{r,results='show',warning=FALSE,echo=FALSE}
+d_time <- 1.5
+delta_ac <- 0.05
+alpha <- 0.05
+power <- 0.8
+beta <- 1 - power
+```
+
+
+- Probabilidade de rejeitar a hipótese nula (i.e., de incorrer em erro do tipo $I$), também chamado de nível de significância: $\alpha = 0.05$;
+
+- O menor valor de interesse prático para os ganhos em tempo de execução: ${d^{\star}_{tempo}} = 1.5$;
+
+- A faixa de valores para os quais as acurácias estão, relativamente, "próximas" para serem consideradas equivalentes, ou margem de equivalência para a acurária: $\delta_{acuracia}^{*} = 0.05$.
+
+- Potência estatística: $\pi  = 0.8$;
+
+# Planejamento experimental
+
+Os dados experimentais para os testes foram gerados por meio de uma aplicação disponibilizada na web em $http://orcslab.cpdee.ufmg.br/3838/classdata$. Os dados são referentes ao tempo necessário para classificação (_Time.s_) e acurácia (_Accuracy_) por cada um dos algoritmos em cada instância e em cada execução. O grupo de trabalho deve fornecer a data de nascimento do membro mais jovem da equipe e selecionar um número de instâncias e execuções por instâncias.
+
+Estes dados são apresentados conforme seleção de número de instâncias e número de repetições das mesmas. Segundo [@MontgomeryRunger2011] quando cada par de observação é coletado sobre condições homogêneas, ainda assim estas podem variar de um par para outro. Conforme apresentado em [@Campelo2015-01], a variabilidade devida aos diferentes problemas de teste é uma forte fonte de Variação espúria que pode e deve ser controlada e que uma solução elegante para eliminar a influência deste inconveniente é o pareamento das medições por problema.
+
+Conforme a apresentação das amostras, verificou-se a necessidade de efetuar os testes estatísticos com as amostras pareadas. Conforme [@MontgomeryRunger2011] o procedimento experimental mais adequado quando os dados são coletados aos pares é o _t-test pareado_. Para tal, seja ($X_{11}$, $X_{21}$), ($X_{12}$, $X_{22}$),..., ($X_{1n}$, $X_{2n}$) um conjunto de n observações pareadas onde assumimos que a média e a variância da população representada por $X_{1}$ são $\mu_{1}$ e $\sigma^{2}_{1}$, e a média e a variância da população representada por $X_{2}$ são $\mu_{2}$ e $\sigma^{2}_{2}$. Defini-se as diferenças entre cada par de observações como $D_{j}= X_{1j} - X_{2j}$, j= 1, 2, p,...n. Os $D_{j}$'s são assumidos como sendo normalmente distribuídos na média.
+
+Os testes de hipótese elaborados são:
+
+- Referente ao questionamento 1 definiu-se o teste de hipótese convecional como abaixo:
+
+$$\left\{\begin{array}{rc}
+H_{0}: \mu_{p} - \mu_{a} = 0\\
+H_{1}: \mu_{p} - \mu_{a} < 0
+\end{array}\right.$$
+
+- Referente ao questionamento 2 definiu-se o teste de não-inferioridade como abaixo:
+
+$$\left\{\begin{array}{rc}
+H_{0}: \mu_{p} - \mu_{a} = -\delta^{*}_{acurácia}\\
+H_{1}: \mu_{p} - \mu_{a} < 0 
+\end{array}\right.$$
+
+Sendo $\mu_{p}$ e $\mu_{a}$, as médias de tempo de execução dos algoritmos _proposto_ e _padrão atual_ respectivamente.
+
+
+## Tamanho amostral
+
+Afim de se atingir as características desejadas exigidas para o experimento é necessário definir o tamanho amostral a ser utilizado. 
+
+No caso de amostras pareadas, entende-se por amostras o números de instâncias conforme [@Walker2011UnderstandingEA], ou problemas a serem resolvidos pelos algoritmos deste trabalho. Outra consideração é o número de repetições a serem adotadas por instância. Para este estudo adotou-se o valor de 30 repetições por instância seguindo recomendação expressão em [@Campelo2015-01] de que um valor heurístico para esta finalidade deve ser maior ou igual a 30.
+
+Para a determinação do tamanho amostral foi realizado um _Estudo Piloto_, de forma a determinar uma estimativa inicial  para os testes atendendo aos parâmetros desejados:
+
+Como não há informação histórica para a determinação inicial da variância dos dados, e supondo amostras de mesmo tamanho, dado que dispõe-se do menor tamanho de interesse prático para os ganhos de tempo  $$n = 2( \frac{1}{d^{\star}_{tempo}})^{2}(t_{\alpha/2}+t_{\beta})^{2}$$,
+
+- Nascimento: 21/11/1992;
+
+- Número de instâncias de cada problema: 17;
+
+- Número de execuções: 30;
+
+```{r,results='show',warning=FALSE,echo=TRUE}
+#dados <- read.csv("1992-11-21_17_30.csv", header = T)
+#head(dados)
+```
+
+Para o problema proposto, são desejadas as seguintes características (parâmetros dos testes estatísticos):
+
+
+
+
+
+Mostra-se algumas características do conjunto de dados gerado
+
+```{r,results='show',warning=FALSE,echo=TRUE}
+# str(dados)
+```
+
+
+# Referências
+
+
