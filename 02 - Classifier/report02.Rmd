@@ -169,22 +169,24 @@ Conforme a apresentação das amostras, verificou-se a necessidade de efetuar os
 
 Os testes de hipótese elaborados são:
 
-- Referente ao questionamento 1 definiu-se o teste de hipótese convecional, onde a hipótese nula é de que o algoritmo proposto apresenta tempo de execução similar ao algoritmo atual. Já a hipótese alternativa é de que o algoritmo proposto é mais rápido que o padrão atual. Esta formulação é apresentada abaixo.
+- Referente ao questionamento 1 definiu-se o teste de hipótese unilateral convecional, onde a hipótese nula é de que o algoritmo proposto apresenta tempo de execução similar ao algoritmo atual. Já a hipótese alternativa é de que o algoritmo proposto é mais rápido que o padrão atual. Esta formulação é apresentada abaixo.
 
 $$\left\{\begin{array}{rc}
-H_{0}: \mu_{p} - \mu_{a} = 0\\
-H_{1}: \mu_{p} - \mu_{a} < 0
+H_{0}: \mu_{p{t}} - \mu_{a{t}} = 0\\
+H_{1}: \mu_{p{t}} - \mu_{a{t}} < 0
 \end{array}\right.$$
 
-- Referente ao questionamento 2 definiu-se o teste de não-inferioridade one a hipótese nula é que o algoritmo proposto apresenta acurácia inferior ao algoritmo atual. A hipótese alternativa é que o algoritmo proposto não apresenta acurácio inferior ao padrão atual como abaixo:
+Os valores de $\mu_{p{t}}$ e $\mu_{a{t}}$ são as médias de tempo de execução dos algoritmos _proposto_ e _padrão atual_ respectivamente
+
+- Referente ao questionamento 2 definiu-se o teste de não-inferioridade onde a hipótese nula é que o algoritmo proposto apresenta acurácia média inferior ao algoritmo atual. A hipótese alternativa é que o algoritmo proposto não apresenta acurácia média inferior ao padrão atual como abaixo:
 
 $$\left\{\begin{array}{rc}
-H_{0}: \mu_{p} - \mu_{a} = -\delta^{*}_{acurácia}\\
-H_{1}: \mu_{p} - \mu_{a} < 0 
+H_{0}: \mu_{p{a}} - \mu_{a{a}} = -\delta^{*}_{acurácia}\\
+H_{1}: \mu_{p{a}} - \mu_{a{a}} > -\delta^{*}_{acurácia}\\
 \end{array}\right.$$
 
-Os valores de $\mu_{p}$ e $\mu_{a}$ são as médias de tempo de execução dos algoritmos _proposto_ e _padrão atual_ respectivamente.
-
+Os valores de $\mu_{p{a}}$ e $\mu_{a{a}}$ são os valores arbitrários de acurácia dos algoritmos _proposto_ e _padrão atual_ respectivamente e $\delta^{*}_{acurácia}\\$ é a margem de não-inferioridade para a acurácia.
+<!-- Aqui eu mudei mup por mupt e mupa pra diferenciar a média dos tempo e de acurácia e fiz uma correçãozinha na hipótese nula do segundo caso --> 
 
 ## Tamanho amostral
 
@@ -195,15 +197,16 @@ No caso de amostras pareadas, entende-se por amostras, o números de instâncias
 Para a determinação do tamanho amostral foi realizado um _Estudo Piloto_, de forma a determinar uma estimativa inicial  para os testes atendendo aos parâmetros desejados.
 
 Como não há informação histórica da variância dos dados utilizou-se a equação abaixo como uma primeira aproximação para tamanho amostral do _Estudo Piloto_.
-
+<!-- Pessoalmente, eu acho que podemos retirar esta parte, já que não nos levou a lugar algum esta equação, creio que esteja apenas alongando o relatório, uma vez que as 800 amostras calculadas não foram usadas posteriormente -->
 $$n_{pilot}\approx 2\left(\frac{z_{\alpha_n/2}}{e_{n}}\right)^2$$
 A equipe adotou um erro relativo $e_{n}=0.10$, o que resultou em um tamanho amostral de 800. O autor [@Campelo2015-01] sugere cautela no uso da equação acima, sendo que está pode fornecer um número muito maior do que o número de amostras necessárias para um _Estudo Piloto_.
 
-Contudo, o valor acima foi utilizado como estimativa inicial para iterações na equação abaixo. A equipe adotou amostras de mesmo tamanho e que se dispõe do menor tamanho de interesse prático para os ganhos de tempo ${d^{\star}_{tempo}}$.
+<!--Contudo, o valor acima foi utilizado como estimativa inicial para iterações na equação abaixo. A equipe adotou amostras de mesmo tamanho e que se dispõe do menor tamanho de interesse prático para os ganhos de tempo ${d^{\star}_{tempo}}$.-->
+A equipe então decidiu adotar o método iterativo dado pela equação abaixo para determinar o número de amostras para o estudo piloto. Como ${d^{\star}_{tempo}}$ é conhecido, ele foi utilizado para o cálculo. 
 
 $$n = 2( \frac{1}{d^{\star}_{tempo}})^{2}(t_{\alpha/2}+t_{\beta})^{2}$$,
 
-Os valores de $t_{\alpha/2}$ e $t_{\beta}$ foram subtituidos para $z_{\alpha/2}$ e $z_{\beta}$ na equação acima considerando-se a prmeira iteração com 800 amostras. As iterações convergiram rapidamente para um valores de 17 amostras a serem utilizadas no _Estudo Piloto_ e foram geradas conforme abaixo:
+<!-- Os valores de $t_{\alpha/2}$ e $t_{\beta}$ foram subtituidos para $z_{\alpha/2}$ e $z_{\beta}$ na equação acima considerando-se a prmeira iteração com 800 amostras. -->  Os valores de $t_{\alpha/2}$ e $t_{\beta}$ foram subtituidos para $z_{\alpha/2}$ e $z_{\beta}$ na equação acima considerando-se a prmeira iteração, de forma a fazê-los independetes de n. As iterações seguintes convergiram rapidamente para um valor de 17 amostras a serem utilizadas no _Estudo Piloto_ e foram geradas conforme abaixo:
 
 - Nascimento: 21/11/1992;
 
@@ -224,7 +227,7 @@ neg = dados$Time.s < 0\\
 neg2 = dados$Accuracy < 0 & dados$Accuracy > 1\\ 
 dados[neg,]
 
-Os dados negativos de tempos de execução e respectivas acurácias foram retirados para se evitar contaminação do resultados. Para tal, considerou-se que a retida de 2 valores não seria representativa na massa amostral adotada.
+Os dados negativos de tempos de execução e respectivas acurácias foram retirados para se evitar contaminação do resultados. Para tal, considerou-se que a retida de 2 valores não seria representativa na massa amostral adotada, mesmo ambas estando na mesma instância do algoritmo alternativo.
 
 > Inserir código substituindo valores negativos por NA
 
@@ -293,8 +296,9 @@ v_tTestTime = t.test(v_diffTime,
 v_pTime = v_tTestTime$p.value
 ```
 
-O gráfico bloxplot abaixo evidência uma diferença entre as médias dos tempos de execução. Podemos ver que o algoritmo proposto possui a média abaixo em relação ao tempo médio de execução do algoritmo padrão.
-
+O gráfico bloxplot abaixo evidência uma diferença entre as médias dos tempos de execução. Podemos ver que o algoritmo proposto possui média de tempo de execução menor que a média do algoritmo padrão.
+<!--  Aqui vocês querem mostrar os dados para os algoritmos ou em relação ao teste? Se for em relação ao teste, sugiro o seguinte texto:
+O gráfico bloxplot abaixo evidência a diferença entre as médias dos tempos de execução. Podemos ver que a média é menor que zero, sugerindo que o algoritmo proposto possui média de tempo de execução menor que a média do algoritmo padrão.-->
 
 > Inserir chunk
 
@@ -305,7 +309,7 @@ ylab = "Tempo de Execução")
 
 
 
-O teste de hipótese referente ao questionamento 2 foi implementado como abaixo e seu resultado indica que também se deve rejeitar a hipótese nula.
+O teste de hipótese referente ao questionamento 2 foi implementado como abaixo e seu resultado indica que não se pode rejeitar a hipótese nula com o nível de confiança desejado.
 
 
 
@@ -322,7 +326,10 @@ v_pAcc = v_tTestAcc$p.value
 
 > Refazer o texto abaixo
 
-O gráfico bloxplot abaixo evidência uma diferença entre as médias dos tempos de execução. Podemos ver que o algoritmo proposto possui a média abaixo em relação ao tempo médio de execução do algoritmo padrão.
+O gráfico bloxplot abaixo evidência uma diferença entre as médias das acurácias. Podemos ver que a média das acurácias para algoritmo proposto é menor que a do algoritmo padrão.
+
+<!--  Aqui vocês querem mostrar os dados para os algoritmos ou em relação ao teste? Se for em relação ao teste, sugiro o seguinte texto:
+O gráfico bloxplot abaixo evidência a diferença entre as médias das acurácias. Podemos ver que o intervalo de significância não está completamente acima da margem de não-inferioridade da acurácia dada. Por tanto não foi possível estabelecer a não-inferioridade do algoritmo em relação à sua acurácia.-->
 
 
 > Inserir chunk
@@ -392,7 +399,13 @@ plot(v_diffAcc, type='b')
 
 # Conclusão
 
-POR FAZER
+O grupo conseguiu realisar as análises da relação entre tempo de execução e acurácia entre os algoritmos padrão e alternativo com sucesso. Os resultados foram:
+> 1. O método proposto apresenta sim ganhos significativos em termos de tempo de execução em relação ao método padrão.
+> 2. O método proposto resulta em variações consideráveis de acurácia.
+
+Em relação ao primeiro resultado, pela rejeição da hipótese nula conclui-se que o método proposto tem ganhos significativos em termos de tempo de execução. Em relação ao segundo resultado, como não foi possível rejeitar a hipótese nula com o nível de significância desejado, não pode-se concluir que o método novo é não-inferior em relação ao método padrão. 
+Vale ainda notar que o número calculado de amostras necessárias para as características desejadas do teste foram consideravelmente distoantes, 33 para o primeiro teste e 4 para o segundo. Foi então decidido fazer apenas um teste com o número mais alto de amostras, uma vez que isto não implicaria em perdas para nenhum dos casos e não seria necessário fazer duas coletas. Um resultado disto foi que para o segundo teste a potência calculado foi de 1. Isto significa que a chance de ocorrer o erro do tipo _II_, que é a falha em rejeitar a hipótese nula sendo esta falsa, é 0. Por tanto, consideramos que as variações de acurácia são de fato consideráveis.
+
 
 # Referências
 
