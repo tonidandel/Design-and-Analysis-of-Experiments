@@ -152,7 +152,7 @@ beta <- 1 - power
 
 Os dados experimentais para os testes foram gerados por meio de uma aplicação disponibilizada na web em $http://orcslab.cpdee.ufmg.br/3838/classdata$. Os dados são referentes ao tempo necessário para classificação (_Time.s_) e acurácia (_Accuracy_) por cada um dos algoritmos em cada instância e em cada execução. Para geração dos dados o grupo de trabalho deve fornecer a data de nascimento do membro mais jovem da equipe e selecionar um número de instâncias e execuções por instâncias.
 
-Estes dados são apresentados conforme seleção de número de instâncias e número de repetições das mesmas. Segundo [@MontgomeryRunger2011] quando cada par de observação é coletado sobre condições homogêneas, ainda assim estas podem variar de um par para outro. Conforme apresentado em [@Campelo2015-01], a variabilidade devida aos diferentes problemas de teste é uma forte fonte de variação espúria que pode e deve ser controlada e que uma solução elegante para eliminar a influência deste inconveniente é o pareamento das medições por instância.
+Estes dados são apresentados conforme seleção de número de instâncias e número de repetições das mesmas. Segundo [@MontgomeryRunger2011] quando cada par de observação é coletado sobre condições homogêneas, ainda assim estas podem variar de um par para outro. Conforme apresentado em [@Campelo2015-01], a variabilidade devida aos diferentes problemas de teste é uma forte fonte de variação espúria que pode e deve ser controlada e que uma solução elegante para eliminar a influência deste inconveniente é o pareamento das medições por instância. O número de execuções por instância escolhido pelo grupo foi 30, por se tratar de um número comumente utilizado.
 
 Conforme a apresentação das amostras, verificou-se a necessidade de efetuar os testes estatísticos com as amostras pareadas. Para [@MontgomeryRunger2011] o procedimento experimental mais adequado quando os dados são coletados aos pares é o _t-test pareado_. Para tal, seja ($X_{11}$, $X_{21}$), ($X_{12}$, $X_{22}$),..., ($X_{1n}$, $X_{2n}$) um conjunto de n observações pareadas onde assumimos que a média e a variância da população representada por $X_{1}$ são $\mu_{1}$ e $\sigma^{2}_{1}$, e a média e a variância da população representada por $X_{2}$ são $\mu_{2}$ e $\sigma^{2}_{2}$. Defini-se as diferenças entre cada par de observações como $D_{j}= X_{1j} - X_{2j}$, j= 1, 2, p,...n. Os $D_{j}$'s são assumidos como sendo normalmente distribuídos na média.
 
@@ -177,19 +177,12 @@ H_{1}: \mu_{p{a}} - \mu_{a{a}} > -\delta^{*}_{acurácia}\\
 \end{array}\right.$$
 
 Os valores de $\mu_{p{a}}$ e $\mu_{a{a}}$ são os valores arbitrários de acurácia dos algoritmos _proposto_ e _padrão atual_ respectivamente e $\delta^{*}_{acurácia}\\$ é a margem de não-inferioridade para a acurácia.
-<!-- Aqui eu mudei mup por mupt e mupa pra diferenciar a média dos tempo e de acurácia e fiz uma correçãozinha na hipótese nula do segundo caso --> 
 
 ## Tamanho amostral
 
 No caso de amostras pareadas, entende-se por amostras, o números de instâncias conforme exposto por [@Walker2011UnderstandingEA], ou problemas a serem resolvidos pelos algoritmos. Outra consideração é o número de repetições a serem adotadas por instância. Para este estudo adotou-se empiricamente o valor de $30$ repetições por instância, seguindo recomendação expressas em [@Campelo2015-01].
 
-Para a determinação do tamanho amostral foi realizado um _Estudo Piloto_, de forma a determinar uma estimativa inicial  para os testes atendendo aos parâmetros desejados, obtendo uma cardinalidade de $800$, para um erro relativo de $e_{n}=0.10$, em $n_{pilot}\approx 2\left(\frac{z_{\alpha_n/2}}{e_{n}}\right)^2$.
-<!-- Pessoalmente, eu acho que podemos retirar esta parte, já que não nos levou a lugar algum esta equação, creio que esteja apenas alongando o relatório, uma vez que as 800 amostras calculadas não foram usadas posteriormente 
-$$n_{pilot}\approx 2\left(\frac{z_{\alpha_n/2}}{e_{n}}\right)^2$$ -->
-
-Por forne um número muito maior do que o número de amostras necessárias para um _Estudo Piloto_, a equipe decidiu por adotar um método iterativo. Como ${d^{\star}_{tempo}}$ é conhecido, ele foi utilizado para o cálculo, segundo a equação: 
-
-$$n = 2 \left( \frac{1}{d^{\star}_{tempo}}\right)^{2}(t_{\alpha/2}+t_{\beta})^{2} \,.$$
+Para a determinação do tamanho amostral foi realizado um _Estudo Piloto_, de forma a determinar uma estimativa inicial  para os testes atendendo aos parâmetros desejados, obtendo uma cardinalidade de $800$, para um erro relativo de $e_{n}=0.10$, em $n_{pilot}\approx 2\left(\frac{z_{\alpha_n/2}}{e_{n}}\right)^2$. Por fornecer um número muito maior do que o número de amostras necessárias para um _Estudo Piloto_, a equipe decidiu por adotar um método iterativo. Como ${d^{\star}_{tempo}}$ é conhecido, ele foi utilizado para o cálculo, segundo a equação: $$n = 2 \left( \frac{1}{d^{\star}_{tempo}}\right)^{2}(t_{\alpha/2}+t_{\beta})^{2} \,.$$
 
 Os valores de $t_{\alpha/2}$ e $t_{\beta}$ foram subtituidos para $z_{\alpha/2}$ e $z_{\beta}$ na equação anterior, considerando-se a prmeira iteração, de forma a fazê-los independetes de $n$. As iterações seguintes convergiram rapidamente para um valor de $17$ amostras, utilizadas no _Estudo Piloto_ conforme as entradas:
 
@@ -202,6 +195,7 @@ Os valores de $t_{\alpha/2}$ e $t_{\beta}$ foram subtituidos para $z_{\alpha/2}$
 ```{r,results='hide',warning=FALSE,echo=FALSE}
 head(v_data)
 ```
+
 Por meio dos dados do _Estudo Piloto_ obteve-se o desvio padrão das amostras dos algoritmos, que foram, por sua vez, utilizados na obtenção do tamanho amostral mais adequado aos testes finais, Utilizando a função _calcN_tost2_ fornecida por [@Campelo2015-01].
 
 ```{r,results='hide',warning=FALSE,echo=FALSE}
@@ -220,10 +214,13 @@ v_nAcc = calcN_tost2(alpha = 0.05,
                       s1 = v_dataSD$Accuracy[1],
                       s2 = v_dataSD$Accuracy[2]
                      )
+v_n = ceiling(max(v_nTime, v_nAcc))
 ```
 
 Os testes definitivos serão feitos utilizando-se  $33$ instâncias de problemas, que permitirá, por sua vez, a geração de um novo conjunto de dados _1992-11-21_33_30.csv_, em que:
   
+Para a geração e coleta dos dados foi adotado o maior tamanho amostral verificado para o tempo de execução e acurácia. Neste caso, quem apresentou o maior valor foi o tempo de execução. Este valor atende às características exigidas para ambos os testes sem necessidade de uma nova coleta de dados para o caso da acurácia. Os dados foram gerados conforme abaixo:
+
 - Nascimento: 21/11/1992;
 
 - Número de instâncias de cada problema: $33$;
@@ -233,6 +230,7 @@ Os testes definitivos serão feitos utilizando-se  $33$ instâncias de problemas
 #Teste de Hipóteses
 ## Problema 1
 Com o resultado do teste de hipóteses observa-se que não há evidências suficientes para se aceitar a hipótese nula (teste unilateral emparelhado), considerando-se a estatística gerada e o valor $p$ para o nível de significância e graus de liberdade definidos. Assim, conclui-se que o algoritmo proposto apresenta um desempenho melhor, em relação às médias dos tempos de execução, se comparado ao algoritmo padrão.
+
 ```{r,results='hide',warning=FALSE,echo=FALSE}
 # hypothesis test Time
 v_diffTime = subset(v_data, Algorithm=='Proposed')$Time.s - subset(v_data, Algorithm=='Standard')$Time.s
@@ -276,12 +274,12 @@ xlab = "Algoritmo",
 ylab = "Acurácias")
 ```
 
-# Validação dos testes
+# Validação
+
 ## Problema 1
 A premissa de normalidade para o teste do questionamento 1 foi testada inicialmente de forma visual a partir do gráfico QQplot e pelo teste de Shapiro-Wilk. Ambos sugerem a normalidade dos dados.
 ```{r,results='hide',warning=FALSE,echo=TRUE}
 ## Hypothesis validation - Time
-# Normality
 qqPlot(v_diffTime)
 v_shapiroTime = shapiro.test(v_diffTime)
 v_dwTime = dwtest(v_diffTime~1)
@@ -291,18 +289,13 @@ v_dwTime = dwtest(v_diffTime~1)
 A premissas de normalidade e independência também sugerem que a amostra provêm de uma distribuição normal, com autocorrelação zero (independentes):
 
 ```{r,results='hide',warning=FALSE,echo=TRUE}
+## Hypothesis validation - Acuracy
 qqPlot(v_diffAcc)
 v_shapiroAcc = shapiro.test(v_diffAcc)
 v_dwAcc = dwtest(v_diffAcc~1)
 ```
 
 # Conclusão
-
-O grupo conseguiu realizar as análises da relação entre tempo de execução e acurácia entre os algoritmos padrão e alternativo com sucesso. Os resultados foram:
-
-> 1. O método proposto apresenta ganhos significativos em termos de tempo de execução em relação ao método padrão.
-
-> 2. O método proposto resulta em variações consideráveis de acurácia.
 
 Pode-se afirmar que o método proposto tem ganhos significativos em termos dos tempos de execução. Em relação ao segundo resultado, como não foi possível rejeitar a hipótese nula com o nível de significância desejado, não é possível afirmar concluir que o método proposto é não-inferior ao método padrão.
 
