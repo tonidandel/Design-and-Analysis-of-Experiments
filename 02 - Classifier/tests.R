@@ -1,4 +1,4 @@
-source('calcN.R')
+vsource('calcN.R')
 library(car)
 library(lmtest)
 
