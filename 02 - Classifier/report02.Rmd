@@ -1,13 +1,14 @@
 ---
 title: 'Estudo de Caso 02: Comparação entre Algoritmos de Classificação'
 author: "Equipe 04"
-date: "15 de maio de 2017"
+date: "15 de Maio de 2017"
 output:
   pdf_document:
     fig_caption: yes
   word_document: default
 header-includes:
 - \usepackage{fancyhdr}
+- \usepackage[utf8]{inputenc}
 - \pagestyle{fancy}
 - \fancyfoot[CO,CE]{EEE933 - Planejamento e Análise de Experimentos}
 - \fancyfoot[LE,RO]{\thepage}
@@ -16,7 +17,7 @@ bibliography: bibliography.bib
 ---  
 Coordenador: Danny Tonidandel   
 Relator: Alessandro Cardoso   
-Verificador:  Gustavo Vieira   
+Verificador: Gustavo Vieira   
 Monitor: Bernardo Marques   
 
 ```{r setup,include=FALSE, results='hide',warning=FALSE,echo=FALSE}
@@ -120,14 +121,13 @@ v_dwAcc = dwtest(v_diffAcc~1)
 plot(v_diffAcc, type='b')
 ```
 
-# O Experimento
+# 1. Descrição do Problema
 
-Este estudo de caso consiste na comparação de algoritmos de classificação em que um deles consiste no _padrão atual_ e o outro em um novo algoritmo proposto, que utilizada uma técnica de simplificação baseada em inferência estatística.
+O objetivo do experimento proposto é avaliar uma nova técnica proposta para simplificação de modelos em algoritmos de classificação, baseada em inferência estatística. Dessa forma, será realizada a comparação do algoritmo de classificação original e do método simplificado proposto. Para realizar o estudo, ambos serão executados em bases de dados da literatura.
 
-Segundo os pesquisadores responsáveis pelo algoritmo proposto, este apresenta uma melhora significativa frente ao padrão atual com relação ao tempo requerido para a classificação e que o essa nova abordagem não resulta em grandes perdas de desempenho em termos de acurácia da classificação. Assim, busca-se responder:
+Segundo os pesquisadores responsáveis pelo novo algoritmo proposto, este apresenta melhoria significativa em relação ao algoritmo original no tempo de execucão e não resultar em grandes perdas de desempenho em termos de acurácia da classificação. Assim, busca-se responder:
 
-1. O método proposto realmente apresenta ganhos em relação ao tempo de execução, quando comparado ao método padrão? 
-
+1. O método proposto realmente apresenta ganhos em relação ao tempo de execução, quando comparado ao método padrão?
 2. O método proposto não resulta em variações consideráveis de acurácia?
 
 Para que sejam investigados os questionamentos acima são desejadas as seguintes características para os testes estatísticos:
@@ -140,17 +140,14 @@ power <- 0.8
 beta <- 1 - power
 ```
 
-> Nível de significância: $\alpha = 0.05$;
+* Nível de significância: $\alpha = 0.05$;
+* Tamanho de efeito de interesse prático para os ganhos de tempo: ${d^{\star}_{tempo}} = 1.0$;
+* Margem de não-inferioridade para acurácia: $\delta_{acuracia}^{*} = 0.05$.
+* Potência desejada: $\pi  = 0.8$;
 
-> Tamanho de efeito de interesse prático para os ganhos de tempo: ${d^{\star}_{tempo}} = 1.0$;
+# 2. Planejamento Experimental
 
-> Margem de não-inferioridade para acurácia: $\delta_{acuracia}^{*} = 0.05$.
-
-> Potência desejada: $\pi  = 0.8$;
-
-# Planejamento experimental
-
-Os dados experimentais para os testes foram gerados por meio de uma aplicação disponibilizada na web em $http://orcslab.cpdee.ufmg.br/3838/classdata$. Os dados são referentes ao tempo necessário para classificação (_Time.s_) e acurácia (_Accuracy_) por cada um dos algoritmos em cada instância e em cada execução. Para geração dos dados o grupo de trabalho deve fornecer a data de nascimento do membro mais jovem da equipe e selecionar um número de instâncias e execuções por instâncias.
+Os dados experimentais utilizados foram obtidos através de simulação, por meio de um [aplicativo web](http://orcslab.cpdee.ufmg.br/3838/classdata). Os dados gerados informam o tempo necessário para a classificação (_Time.s_) e acurácia (_Accuracy_) de cada um dos algoritmos em cada instância e em cada execução. A data de nascimento do membro mais jovem da equipe é parâmetro utilizado como semente do gerador de números da simulação. O número de instâncias utilizadas e de execuções por instâncias deve ser selecionado no aplicativo.
 
 Estes dados são apresentados conforme seleção de número de instâncias e número de repetições das mesmas. Segundo [@MontgomeryRunger2011] quando cada par de observação é coletado sobre condições homogêneas, ainda assim estas podem variar de um par para outro. Conforme apresentado em [@Campelo2015-01], a variabilidade devida aos diferentes problemas de teste é uma forte fonte de variação espúria que pode e deve ser controlada e que uma solução elegante para eliminar a influência deste inconveniente é o pareamento das medições por instância. O número de execuções por instância escolhido pelo grupo foi 30, por se tratar de um número comumente utilizado.
 
