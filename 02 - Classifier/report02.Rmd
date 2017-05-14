@@ -161,7 +161,7 @@ beta <- 1 - power
 
 Os dados experimentais para os testes foram gerados por meio de uma aplicação disponibilizada na web em $http://orcslab.cpdee.ufmg.br/3838/classdata$. Os dados são referentes ao tempo necessário para classificação (_Time.s_) e acurácia (_Accuracy_) por cada um dos algoritmos em cada instância e em cada execução. Para geração dos dados o grupo de trabalho deve fornecer a data de nascimento do membro mais jovem da equipe e selecionar um número de instâncias e execuções por instâncias.
 
-Estes dados são apresentados conforme seleção de número de instâncias e número de repetições das mesmas. Segundo [@MontgomeryRunger2011] quando cada par de observação é coletado sobre condições homogêneas, ainda assim estas podem variar de um par para outro. Conforme apresentado em [@Campelo2015-01], a variabilidade devida aos diferentes problemas de teste é uma forte fonte de variação espúria que pode e deve ser controlada e que uma solução elegante para eliminar a influência deste inconveniente é o pareamento das medições por instância.
+Estes dados são apresentados conforme seleção de número de instâncias e número de repetições das mesmas. Segundo [@MontgomeryRunger2011] quando cada par de observação é coletado sobre condições homogêneas, ainda assim estas podem variar de um par para outro. Conforme apresentado em [@Campelo2015-01], a variabilidade devida aos diferentes problemas de teste é uma forte fonte de variação espúria que pode e deve ser controlada e que uma solução elegante para eliminar a influência deste inconveniente é o pareamento das medições por instância. O número de execuções por instância escolhido pelo grupo foi 30, por se tratar de um número comumente utilizado.
 
 Conforme a apresentação das amostras, verificou-se a necessidade de efetuar os testes estatísticos com as amostras pareadas. Para [@MontgomeryRunger2011] o procedimento experimental mais adequado quando os dados são coletados aos pares é o _t-test pareado_. Para tal, seja ($X_{11}$, $X_{21}$), ($X_{12}$, $X_{22}$),..., ($X_{1n}$, $X_{2n}$) um conjunto de n observações pareadas onde assumimos que a média e a variância da população representada por $X_{1}$ são $\mu_{1}$ e $\sigma^{2}_{1}$, e a média e a variância da população representada por $X_{2}$ são $\mu_{2}$ e $\sigma^{2}_{2}$. Defini-se as diferenças entre cada par de observações como $D_{j}= X_{1j} - X_{2j}$, j= 1, 2, p,...n. Os $D_{j}$'s são assumidos como sendo normalmente distribuídos na média.
 
@@ -176,7 +176,8 @@ H_{0}: \mu_{p{t}} - \mu_{a{t}} = 0\\
 H_{1}: \mu_{p{t}} - \mu_{a{t}} < 0
 \end{array}\right.$$
 
-Os valores de $\mu_{p{t}}$ e $\mu_{a{t}}$ são as médias de tempo de execução dos algoritmos _proposto_ e _padrão atual_ respectivamente
+Os valores de $\mu_{p{t}}$ e $\mu_{a{t}}$ são as médias de tempo de execução dos algoritmos _proposto_ e _padrão atual_ respectivamente.
+
 
 - Referente ao questionamento 2 definiu-se o teste de não-inferioridade onde a hipótese nula é que o algoritmo proposto apresenta acurácia média inferior ao algoritmo atual. A hipótese alternativa é que o algoritmo proposto não apresenta acurácia média inferior ao padrão atual como abaixo:
 
@@ -186,7 +187,7 @@ H_{1}: \mu_{p{a}} - \mu_{a{a}} > -\delta^{*}_{acurácia}\\
 \end{array}\right.$$
 
 Os valores de $\mu_{p{a}}$ e $\mu_{a{a}}$ são os valores arbitrários de acurácia dos algoritmos _proposto_ e _padrão atual_ respectivamente e $\delta^{*}_{acurácia}\\$ é a margem de não-inferioridade para a acurácia.
-<!-- Aqui eu mudei mup por mupt e mupa pra diferenciar a média dos tempo e de acurácia e fiz uma correçãozinha na hipótese nula do segundo caso --> 
+
 
 ## Tamanho amostral
 
@@ -196,17 +197,17 @@ No caso de amostras pareadas, entende-se por amostras, o números de instâncias
 
 Para a determinação do tamanho amostral foi realizado um _Estudo Piloto_, de forma a determinar uma estimativa inicial  para os testes atendendo aos parâmetros desejados.
 
-Como não há informação histórica da variância dos dados utilizou-se a equação abaixo como uma primeira aproximação para tamanho amostral do _Estudo Piloto_.
-<!-- Pessoalmente, eu acho que podemos retirar esta parte, já que não nos levou a lugar algum esta equação, creio que esteja apenas alongando o relatório, uma vez que as 800 amostras calculadas não foram usadas posteriormente -->
+<!--Como não há informação histórica da variância dos dados utilizou-se a equação abaixo como uma primeira aproximação para tamanho amostral do _Estudo Piloto_.
+
 $$n_{pilot}\approx 2\left(\frac{z_{\alpha_n/2}}{e_{n}}\right)^2$$
 A equipe adotou um erro relativo $e_{n}=0.10$, o que resultou em um tamanho amostral de 800. O autor [@Campelo2015-01] sugere cautela no uso da equação acima, sendo que está pode fornecer um número muito maior do que o número de amostras necessárias para um _Estudo Piloto_.
 
-<!--Contudo, o valor acima foi utilizado como estimativa inicial para iterações na equação abaixo. A equipe adotou amostras de mesmo tamanho e que se dispõe do menor tamanho de interesse prático para os ganhos de tempo ${d^{\star}_{tempo}}$.-->
-A equipe então decidiu adotar o método iterativo dado pela equação abaixo para determinar o número de amostras para o estudo piloto. Como ${d^{\star}_{tempo}}$ é conhecido, ele foi utilizado para o cálculo. 
+Contudo, o valor acima foi utilizado como estimativa inicial para iterações na equação abaixo. A equipe adotou amostras de mesmo tamanho e que se dispõe do menor tamanho de interesse prático para os ganhos de tempo ${d^{\star}_{tempo}}$. **Acho que esta parte convém tirar, já que ela não dá nenhuma informação relevante-->
+Como não há informação histórica da variância dos dados, a equipe decidiu adotar o método iterativo dado pela equação abaixo para determinar o número de amostras para o estudo piloto. Como ${d^{\star}_{tempo}}$ é conhecido, este foi utilizado para o cálculo. 
 
 $$n = 2( \frac{1}{d^{\star}_{tempo}})^{2}(t_{\alpha/2}+t_{\beta})^{2}$$,
 
-<!-- Os valores de $t_{\alpha/2}$ e $t_{\beta}$ foram subtituidos para $z_{\alpha/2}$ e $z_{\beta}$ na equação acima considerando-se a prmeira iteração com 800 amostras. -->  Os valores de $t_{\alpha/2}$ e $t_{\beta}$ foram subtituidos para $z_{\alpha/2}$ e $z_{\beta}$ na equação acima considerando-se a prmeira iteração, de forma a fazê-los independetes de n. As iterações seguintes convergiram rapidamente para um valor de 17 amostras a serem utilizadas no _Estudo Piloto_ e foram geradas conforme abaixo:
+Os valores de $t_{\alpha/2}$ e $t_{\beta}$ foram subtituidos para $z_{\alpha/2}$ e $z_{\beta}$ na equação acima considerando-se a prmeira iteração, de forma a fazê-los independetes de n. As iterações seguintes convergiram rapidamente para um valor de 17 amostras a serem utilizadas no _Estudo Piloto_ e foram geradas conforme abaixo:
 
 - Nascimento: 21/11/1992;
 
@@ -222,12 +223,17 @@ $$n = 2( \frac{1}{d^{\star}_{tempo}})^{2}(t_{\alpha/2}+t_{\beta})^{2}$$,
 Observou-se que os dados gerados continham inconsistências por apresentarem valores negativos para o tempo de execução do algoritmos como se pode observar abaixo.
 
 > Inserir código para verificar dado negativo
+```{r,results='show',warning=FALSE,echo=TRUE}
+err = which (v_data < 0)
+if (length(err)) v_data <- v_data[-err]
+#Não sei bem se isto está certo, mas baseei no que o professor fez para checar inconsistências no estudo de caso 1
+```
 
 neg = dados$Time.s < 0\\ 
 neg2 = dados$Accuracy < 0 & dados$Accuracy > 1\\ 
 dados[neg,]
 
-Os dados negativos de tempos de execução e respectivas acurácias foram retirados para se evitar contaminação do resultados. Para tal, considerou-se que a retida de 2 valores não seria representativa na massa amostral adotada, mesmo ambas estando na mesma instância do algoritmo alternativo.
+Os dados negativos de tempos de execução e respectivas acurácias foram retirados para se evitar contaminação do resultados. Para tal, considerou-se que a retida de 2 valores não seria representativa na massa amostral adotada.
 
 > Inserir código substituindo valores negativos por NA
 
@@ -254,9 +260,11 @@ v_nAcc = calcN_tost2(alpha = 0.05,
                       s2 = v_dataSD$Accuracy[2]
                      )
 
+v_n = ceiling(max(v_nTime, v_nAcc))
+
 ```
 
-Para a geração e coleta dos dados dos foram adotados os valores de tamanho amostral verificado para o tempo de execução, sendo este o valor que atende às características exigidas para os testes com relação ao tempo de execução e acurácia. Os dados foram gerados conforme abaixo:
+Para a geração e coleta dos dados foi adotado o maior tamanho amostral verificado para o tempo de execução e acurácia. Neste caso, quem apresentou o maior valor foi o tempo de execução. Este valor atende às características exigidas para ambos os testes sem necessidade de uma nova coleta de dados para o caso da acurácia. Os dados foram gerados conforme abaixo:
 
 - Nascimento: 21/11/1992;
 
@@ -282,7 +290,7 @@ dados[neg,]
 
 ## Resultados
 
-O teste de hipótese referente ao questionamento 1 foi implementado como abaixo e seu resultado indica que se deve rejeitar a hipótese nula.
+O teste de hipótese referente ao questionamento 1 foi implementado como abaixo e seu resultado indica a rejeição a hipótese nula.
 
 ```{r}
 # hypothesis test Time
@@ -340,7 +348,7 @@ xlab = "Algoritmo",
 ylab = "Tempo de Execução")
 
 
-## Validação dos testes
+## Validação das Premissas
 
 Como não se tem informações sobre a variância da população, o grupo adotou o teste de t student, assumindo a premissa de normalidade e independência.
 
@@ -369,7 +377,6 @@ Outro teste utilizado foi o de verificação de independência de Durbin-Watson:
 v_dwTime = dwtest(v_diffTime~1)
 plot(v_diffTime, type='b')
 ```
-
 
 A premissa de normalidade para o teste do questionamento 2 foi testada inicialmente de forma visual a partir do gráfico QQplot.
 
@@ -400,10 +407,11 @@ plot(v_diffAcc, type='b')
 # Conclusão
 
 O grupo conseguiu realisar as análises da relação entre tempo de execução e acurácia entre os algoritmos padrão e alternativo com sucesso. Os resultados foram:
-> 1. O método proposto apresenta sim ganhos significativos em termos de tempo de execução em relação ao método padrão.
-> 2. O método proposto resulta em variações consideráveis de acurácia.
+   1. O método proposto apresenta sim ganhos significativos em termos de tempo de execução em relação ao método padrão.
+   2. O método proposto resulta em variações consideráveis de acurácia.
 
-Em relação ao primeiro resultado, pela rejeição da hipótese nula conclui-se que o método proposto tem ganhos significativos em termos de tempo de execução. Em relação ao segundo resultado, como não foi possível rejeitar a hipótese nula com o nível de significância desejado, não pode-se concluir que o método novo é não-inferior em relação ao método padrão. 
+Em relação ao primeiro resultado, pela rejeição da hipótese nula conclui-se que o método proposto tem ganhos significativos em termos de tempo de execução. Em relação ao segundo resultado, como não foi possível rejeitar a hipótese nula com o nível de significância desejado, não pode-se concluir que o método novo é não-inferior em relação ao método padrão.
+
 Vale ainda notar que o número calculado de amostras necessárias para as características desejadas do teste foram consideravelmente distoantes, 33 para o primeiro teste e 4 para o segundo. Foi então decidido fazer apenas um teste com o número mais alto de amostras, uma vez que isto não implicaria em perdas para nenhum dos casos e não seria necessário fazer duas coletas. Um resultado disto foi que para o segundo teste a potência calculado foi de 1. Isto significa que a chance de ocorrer o erro do tipo _II_, que é a falha em rejeitar a hipótese nula sendo esta falsa, é 0. Por tanto, consideramos que as variações de acurácia são de fato consideráveis.
 
 
