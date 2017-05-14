@@ -149,7 +149,7 @@ beta <- 1 - power
 
 Os dados experimentais utilizados foram obtidos através de simulação, por meio de um [aplicativo web](http://orcslab.cpdee.ufmg.br/3838/classdata). Os dados gerados informam o tempo necessário para a classificação (_Time.s_) e acurácia (_Accuracy_) de cada um dos algoritmos em cada instância e em cada execução. A data de nascimento do membro mais jovem da equipe é parâmetro utilizado como semente do gerador de números da simulação. O número de instâncias utilizadas e de execuções por instâncias deve ser selecionado no aplicativo.
 
-Estes dados são apresentados conforme seleção de número de instâncias e número de repetições das mesmas. Segundo [@MontgomeryRunger2011] quando cada par de observação é coletado sobre condições homogêneas, ainda assim estas podem variar de um par para outro. Conforme apresentado em [@Campelo2015-01], a variabilidade devida aos diferentes problemas de teste é uma forte fonte de variação espúria que pode e deve ser controlada e que uma solução elegante para eliminar a influência deste inconveniente é o pareamento das medições por instância. O número de execuções por instância escolhido pelo grupo foi 30, por se tratar de um número comumente utilizado.
+Estes dados são apresentados conforme seleção de número de instâncias e número de repetições das mesmas. Segundo [@MontgomeryRunger2011] quando cada par de observação é coletado sobre condições homogêneas, ainda assim estas podem variar de um par para outro. Conforme apresentado em [@Campelo2015-01], a variabilidade devida aos diferentes problemas de teste é uma forte fonte de variação espúria que pode e deve ser controlada e que uma solução elegante para eliminar a influência deste inconveniente é o pareamento das medições por instância.
 
 Conforme a apresentação das amostras, verificou-se a necessidade de efetuar os testes estatísticos com as amostras pareadas. Para [@MontgomeryRunger2011] o procedimento experimental mais adequado quando os dados são coletados aos pares é o _t-test pareado_. Para tal, seja ($X_{11}$, $X_{21}$), ($X_{12}$, $X_{22}$),..., ($X_{1n}$, $X_{2n}$) um conjunto de n observações pareadas onde assumimos que a média e a variância da população representada por $X_{1}$ são $\mu_{1}$ e $\sigma^{2}_{1}$, e a média e a variância da população representada por $X_{2}$ são $\mu_{2}$ e $\sigma^{2}_{2}$. Defini-se as diferenças entre cada par de observações como $D_{j}= X_{1j} - X_{2j}$, j= 1, 2, p,...n. Os $D_{j}$'s são assumidos como sendo normalmente distribuídos na média.
 
@@ -179,7 +179,7 @@ Os valores de $\mu_{p{a}}$ e $\mu_{a{a}}$ são os valores arbitrários de acurá
 
 No caso de amostras pareadas, entende-se por amostras, o números de instâncias conforme exposto por [@Walker2011UnderstandingEA], ou problemas a serem resolvidos pelos algoritmos. Outra consideração é o número de repetições a serem adotadas por instância. Para este estudo adotou-se empiricamente o valor de $30$ repetições por instância, seguindo recomendação expressas em [@Campelo2015-01].
 
-Para a determinação do tamanho amostral foi realizado um _Estudo Piloto_, de forma a determinar uma estimativa inicial  para os testes atendendo aos parâmetros desejados, obtendo uma cardinalidade de $800$, para um erro relativo de $e_{n}=0.10$, em $n_{pilot}\approx 2\left(\frac{z_{\alpha_n/2}}{e_{n}}\right)^2$. Por fornecer um número muito maior do que o número de amostras necessárias para um _Estudo Piloto_, a equipe decidiu por adotar um método iterativo. Como ${d^{\star}_{tempo}}$ é conhecido, ele foi utilizado para o cálculo, segundo a equação: $$n = 2 \left( \frac{1}{d^{\star}_{tempo}}\right)^{2}(t_{\alpha/2}+t_{\beta})^{2} \,.$$
+Para a determinação do tamanho amostral foi realizado um _Estudo Piloto_, de forma a determinar uma estimativa inicial  para os testes atendendo aos parâmetros desejados, obtendo uma cardinalidade de $800$, para um erro relativo de $e_{n}=0.10$, em $n_{pilot}\approx 2\left(\frac{z_{\alpha_n/2}}{e_{n}}\right)^2$.(Nós não podermos afirmar que esse valor é alto. Não sei como. Mas podems citar a recomendação do professor). O autor [2] sugere cautela no uso da equação acima, sendo que está pode fornecer um número muito maior do que o número de amostras necessárias para um _Estudo Piloto_. Desta forma, a equipe decidiu por adotar um método iterativo. Como ${d^{\star}_{tempo}}$ é conhecido, ele foi utilizado para o cálculo, segundo a equação: $$n = 2 \left( \frac{1}{d^{\star}_{tempo}}\right)^{2}(t_{\alpha/2}+t_{\beta})^{2} \,.$$
 
 Os valores de $t_{\alpha/2}$ e $t_{\beta}$ foram subtituidos para $z_{\alpha/2}$ e $z_{\beta}$ na equação anterior, considerando-se a prmeira iteração, de forma a fazê-los independetes de $n$. As iterações seguintes convergiram rapidamente para um valor de $17$ amostras, utilizadas no _Estudo Piloto_ conforme as entradas:
 
@@ -193,7 +193,19 @@ Os valores de $t_{\alpha/2}$ e $t_{\beta}$ foram subtituidos para $z_{\alpha/2}$
 head(v_data)
 ```
 
-Por meio dos dados do _Estudo Piloto_ obteve-se o desvio padrão das amostras dos algoritmos, que foram, por sua vez, utilizados na obtenção do tamanho amostral mais adequado aos testes finais, Utilizando a função _calcN_tost2_ fornecida por [@Campelo2015-01].
+Observou-se que os dados gerados pela aplicação citada continham inconsistências por apresentarem valores negativos para o tempo de execução dos algoritmos como se pode observar abaixo.
+
+Ob.:(Apesar dos códigos no rmd irem para o professor,acredito que o texto deve conter as informações mínimas para um leitor que não possui os códigos. Acretido que seria útil apresentar os valores e onde eles ocorrerão)
+
+Apresentar valores negativos conforme código para verificar dado negativo
+
+neg = dadosTime.s < 0
+neg2 = dadosAccuracy < 0 & dados$Accuracy > 1\ dados[neg,]
+
+Os dados negativos de tempos de execução e respectivas acurácias foram retirados para se evitar contaminação do resultados. Para tal, considerou-se que a retida de 2 valores não seria representativa na massa amostral adotada.
+
+
+Por meio dos dados do _Estudo Piloto_ obteve-se o desvio padrão das amostras dos algoritmos, que foram, por sua vez, utilizados na obtenção do tamanho amostral mais adequado (adequado tem que ter parâmetro de comparação)às caracterísitcas exigidas para os testes, Utilizando a função _calcN_tost2_ fornecida por [@Campelo2015-01].
 
 ```{r,results='hide',warning=FALSE,echo=FALSE}
 v_nTime = calcN_tost2(alpha = 0.05,
@@ -224,9 +236,22 @@ Para a geração e coleta dos dados foi adotado o maior tamanho amostral verific
 
 - Número de execuções: $30$;
 
+As amostras geradas para os testes também apresentaram tempo de execução negativo e estas foram tratadas conforme as amostras do _Estudo de Piloto_.
+
+Mostrar valores com o código para verificar dado negativo
+
+neg = dadosTime.s < 0
+neg2 = dadosAccuracy < 0 & dados$Accuracy > 1\ dados[neg,]
+
 #Teste de Hipóteses
+
 ## Problema 1
+
 Com o resultado do teste de hipóteses observa-se que não há evidências suficientes para se aceitar a hipótese nula (teste unilateral emparelhado), considerando-se a estatística gerada e o valor $p$ para o nível de significância e graus de liberdade definidos. Assim, conclui-se que o algoritmo proposto apresenta um desempenho melhor, em relação às médias dos tempos de execução, se comparado ao algoritmo padrão.
+
+Apresentar valores de resultados do teste
+
+Ob.:(Apesar dos códigos no rmd irem para o professor,acredito que o texto deve conter as informações mínimas para um leitor que não possui os códigos. Acretido que seria útil apresentar os valores de resultados)
 
 ```{r,results='hide',warning=FALSE,echo=FALSE}
 # hypothesis test Time
@@ -239,7 +264,7 @@ v_tTestTime = t.test(v_diffTime,
 v_pTime = v_tTestTime$p.value
 ```
 
-O gráfico bloxplot abaixo evidencia a diferença entre as médias dos tempos de execução. Podemos ver que a média é menor que zero, sugerindo que o algoritmo proposto possui média de tempo de execução menor que a média do algoritmo padrão.
+O gráfico bloxplot abaixo evidencia a diferença entre as médias dos tempos de execução. Podemos ver que a média é menor que zero, sugerindo que o algoritmo proposto possui média de tempo de execução menor que a média do algoritmo padrão. O boxplot com valores negativos representa a subtração das médias de tempo de cada algoritmo e evidência médias de tempo de execução inferiores para o algoritmo proposto.
 
 ```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3, fig.width=3}
 boxplot(subset(v_data, Algorithm=='Proposed')$Time.s, subset(v_data, Algorithm=='Standard')$Time.s, col = (c("blue", "red")),
@@ -253,9 +278,14 @@ main = "Tempo - Diferença", names = "P-A",
 xlab = "Algoritmo",
 ylab = "Tempo de Execução")
 ```
+
 ## Problema 2
-O teste de hipóteses referente ao questionamento $2$ foi implementado e seu resultado indica que
-que não existem evidências suficientes que levem à rejeição da hipótese nula, para os requisitos estabelecidos.
+
+O teste de hipóteses referente ao questionamento $2$ foi implementado e seu resultado indica que que não existem evidências suficientes que levem à rejeição da hipótese nula, para os requisitos estabelecidos.
+
+Apresentar valores de resultados do teste
+
+Ob.:(Apesar dos códigos no rmd irem para o professor,acredito que o texto deve conter as informações mínimas para um leitor que não possui os códigos. Acretido que seria útil apresentar os valores de resultados)
 
 ```{r,results='hide',warning=FALSE,echo=FALSE}
 # hypothesis test acc
@@ -287,7 +317,9 @@ abline(h = -0.05)
 # Validação
 
 ## Problema 1
-A premissa de normalidade para o teste do questionamento 1 foi testada inicialmente de forma visual a partir do gráfico QQplot e pelo teste de Shapiro-Wilk. Ambos sugerem a normalidade dos dados.
+
+A premissa de normalidade para o teste do questionamento 1 foi testada inicialmente de forma visual a partir do gráfico QQplot e pelo teste de Shapiro-Wilk. Ambos sugerem a normalidade dos dados. A premissa de normalidade e independência também sugerem que as amostras apresentam autocorrelação zero (independentes):
+
 ```{r,results='hide',warning=FALSE,echo=TRUE, fig.height=3.5}
 ## Hypothesis validation - Time
 qqPlot(v_diffTime)
@@ -296,7 +328,8 @@ v_dwTime = dwtest(v_diffTime~1)
 ```
 
 ## Problema 2
-A premissas de normalidade e independência também sugerem que a amostra provêm de uma distribuição normal, com autocorrelação zero (independentes):
+
+A premissa de normalidade para o teste do questionamento 1 foi testada inicialmente de forma visual a partir do gráfico QQplot e pelo teste de Shapiro-Wilk. A premissa de normalidade e independência também sugerem que as amostras apresentam autocorrelação zero (independentes):
 
 ```{r,results='hide',warning=FALSE,echo=TRUE,fig.height=3.5}
 ## Hypothesis validation - Acuracy
@@ -307,8 +340,8 @@ v_dwAcc = dwtest(v_diffAcc~1)
 
 # Conclusão
 
-Pode-se afirmar que o método proposto tem ganhos significativos em termos dos tempos de execução. Em relação ao segundo resultado, como não foi possível rejeitar a hipótese nula com o nível de significância desejado, não é possível afirmar concluir que o método proposto é não-inferior ao método padrão.
+Segundo os testes, pode-se afirmar que o método proposto tem ganhos significativos em termos dos tempos de execução. Em relação ao segundo resultado, como não foi possível rejeitar a hipótese nula com o nível de significância desejado, não é possível afirmar que o método proposto é não-inferior ao método padrão.
 
-Vale ainda ressaltar que o tamanho amostral necessário para as características desejadas do teste foram consideravelmente distoantes, a saber, $33$ para o primeiro teste e $4$ para o segundo. Foi então decidido fazer apenas um teste com o número mais alto de amostras, uma vez que isto não implicaria em perdas para nenhum dos casos, e não seria necessário fazer mais de uma "coleta". Um resultado disto foi que para o segundo teste a potência calculada para o teste foi $1$. Isto significa que a chance de ocorrer o erro do tipo _II_, que é a falha em rejeitar a hipótese nula sendo esta falsa, é $0$. Portanto, neste caso, as variações de acurácia são importantes.
+Vale ainda ressaltar que o tamanho amostral necessário para as características desejadas do teste foram consideravelmente diferentes, sendo, $33$ para o primeiro teste e $4$ para o segundo. Foi então decidido desenvolver os  testes com o número mais alto de amostras, uma vez que isto não implicaria em perdas para nenhum dos casos, e não seria necessário fazer mais de uma coleta de dados. Um resultado disto foi que para o segundo teste a potência obtida foi $1$. Isto significa que a chance de ocorrer o erro do tipo _II_, que é a falha em rejeitar a hipótese nula sendo esta falsa, é $0$ (Não sei precisar, mas é uma afirmação forte. Quem puder conferir, pois acredito que 100%, somente com a população completa). Desta forma, as variações de acurácia apontada no teste do problema 2 são reforçadas.
 
 # Referências
