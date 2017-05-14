@@ -159,7 +159,11 @@ hist(v_value, main = "Experimento 2", xlab="Valor (R$)")
 ```
 
 
+<<<<<<< HEAD
+# 4. Análise descritiva e recomendações
+=======
 Os QQplots abaixo comparam a distribuição das amostras em relaçõ à distribuição normal esperada (linha vermelha):
+>>>>>>> 5c2057f7a333833b500c573931000cec78e3233a
 
 ```{r, include=TRUE,results='hide',warning=FALSE,echo=FALSE}
 par(mfrow=c(1,2), mai=.4*c(2.5,1,1,1))
@@ -189,12 +193,20 @@ Esses resultados não rejeitam a hipótese de que as observações são independ
 
 Dessa forma, embora não seja possível provar a violação da premissa de independência, ela é enfraquecida para o experimento 2.
 
+<<<<<<< HEAD
+# 5. Considerações finais
+Surowiecki, em seu estudo, lembra que a diferença não só contribui trazendo novas perspectivas para o ambiente, mas também ajuda os integrantes a expressarem mais livremente suas opiniões - sejam elas divergentes ou não [2, p. 38-39]. Isto revela o problema da coleta aberta no segundo caso, pois, não importa a magnitude do erro: mesmo que a "intuição" sugira o contrário, as pessoas dificilmente dariam respostas muito discrepantes da maioria. Gregory Berns, em seu _Iconoclast: A Neuroscientist Reveals How to Think Differently_[7] questiona inclusive a influência do grupo sobre a percepção das pessoas. Embora os estudantes garantirem terem dado a melhor resposta de acordo com suas observações, eles provavelmente questionavam suas convicções. Pode ser que alguns duvidassem daquilo que estavam vendo. Aparentemente as percepções permanecem intactas, mas a "fé" das pessoas nos seus sentidos, esta sim, parece ser moldada pela influência externa, alterando as decisões tomadas. E, no final, o que importa mesmo são as decisões.  Vale ressaltar que o grupo experienciou um certo "alívio" ao saber que a experiência era por isso, de certo modo, uma pequena farsa.
+
+# Referências
+[1] Steiner, E. B. *Turns Out the Internet Is Bad at Guessing How Many Coins Are in a Jar*. Wired Magazine: USA, 2017. Disponível em <https://www.wired.com/2015/01/coin-jar-crowd-wisdom-experiment-results/>
+=======
 
 # 4. Discussão e Conclusões
 
 A análise descritiva dos dados permite estabelecer intervalos de confiança para os valores desejados. Considerando as observações realizadas e assumindo as premissas estabelecidas como verdadeiras, é razoável assumir que os valores desejados estão entre os intervalos obtidos.
 
 Para realizar o teste de hipótese, foram realizados procedimentos experimentais para determinar valores razoáveis para as hipóteses nulas. No entanto, os valores obtidos foram rejeitados pelos dados obtidos. Dessa forma, há uma contradição entre os valores esperados e os valores indicados pelos dados. Daí, duas conclusões são possíveis:
+>>>>>>> 5c2057f7a333833b500c573931000cec78e3233a
 
 1) Os procedimentos experimentais realizados não são estimativas representativas dos valores reais utilizados nos experimentos realizados em sala e/ou
 2) As premissas estabelecidas são falsas e, portanto, as análises realizadas não permitem determinar corretamente os valores considerados.
