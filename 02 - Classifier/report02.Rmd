@@ -14,10 +14,10 @@ header-includes:
 csl: ieee.csl
 bibliography: bibliography.bib
 ---  
-Coordenador: Danny Tonidandel    
-Relator: Alessandro Cardoso
-Verificador:  Gustavo Vieira
-Monitor: Bernardo Marques  
+Coordenador: Danny Tonidandel   
+Relator: Alessandro Cardoso   
+Verificador:  Gustavo Vieira   
+Monitor: Bernardo Marques   
 
 ```{r setup,include=FALSE, results='hide',warning=FALSE,echo=FALSE}
   if (!require(readr, quietly = TRUE)){
@@ -133,7 +133,7 @@ Segundo os pesquisadores responsáveis pelo algoritmo proposto, este apresenta u
 Para que sejam investigados os questionamentos acima são desejadas as seguintes características para os testes estatísticos:
 
 ```{r,results='show',warning=FALSE,echo=FALSE}
-d_time <- 1.5
+d_time <- 1.0
 delta_ac <- 0.05
 alpha <- 0.05
 power <- 0.8
@@ -142,7 +142,7 @@ beta <- 1 - power
 
 > Nível de significância: $\alpha = 0.05$;
 
-> Tamanho de efeito de interesse prático para os ganhos de tempo: ${d^{\star}_{tempo}} = 1.5$;
+> Tamanho de efeito de interesse prático para os ganhos de tempo: ${d^{\star}_{tempo}} = 1.0$;
 
 > Margem de não-inferioridade para acurácia: $\delta_{acuracia}^{*} = 0.05$.
 
@@ -176,7 +176,7 @@ H_{0}: \mu_{p{a}} - \mu_{a{a}} = -\delta^{*}_{acurácia}\\
 H_{1}: \mu_{p{a}} - \mu_{a{a}} > -\delta^{*}_{acurácia}\\
 \end{array}\right.$$
 
-Os valores de $\mu_{p{a}}$ e $\mu_{a{a}}$ são os valores arbitrários de acurácia dos algoritmos _proposto_ e _padrão atual_ respectivamente e $\delta^{*}_{acurácia}\\$ é a margem de não-inferioridade para a acurácia.
+Os valores de $\mu_{p{a}}$ e $\mu_{a{a}}$ são os valores arbitrários de acurácia dos algoritmos _proposto_ e _padrão atual_ respectivamente e $\delta^{*}_{acurácia}$ é a margem de não-inferioridade para a acurácia.
 
 ## Tamanho amostral
 
@@ -244,9 +244,15 @@ v_pTime = v_tTestTime$p.value
 
 O gráfico bloxplot abaixo evidencia a diferença entre as médias dos tempos de execução. Podemos ver que a média é menor que zero, sugerindo que o algoritmo proposto possui média de tempo de execução menor que a média do algoritmo padrão.
 
-```{r,results='hide',warning=FALSE,echo=FALSE}
+```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3, fig.width=3}
 boxplot(subset(v_data, Algorithm=='Proposed')$Time.s, subset(v_data, Algorithm=='Standard')$Time.s, col = (c("blue", "red")),
-main = "Tempo - Médias", names = c("Proposed", "Standard"),
+main = "Tempo - Médias", names = c("Proposto", "Atual"),
+xlab = "Algoritmo",
+ylab = "Tempo de Execução")
+```
+```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3, fig.width=3}
+boxplot(subset(v_data, Algorithm=='Proposed')$Time.s - subset(v_data, Algorithm=='Standard')$Time.s, col = (c("green")),
+main = "Tempo - Diferença", names = "P-A",
 xlab = "Algoritmo",
 ylab = "Tempo de Execução")
 ```
@@ -267,18 +273,25 @@ v_pAcc = v_tTestAcc$p.value
 
 O gráfico bloxplot referente ao experimento 2 evidencia a diferença entre as médias das acurácias. Podemos ver que o intervalo de significância não está completamente acima da margem de não-inferioridade da acurácia dada. Por tanto não foi possível estabelecer a não-inferioridade do algoritmo em relação à sua acurácia.
 
-```{r,results='hide',warning=FALSE,echo=FALSE}
+```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3, fig.width=3}
 boxplot(subset(v_data, Algorithm=='Proposed')$Accuracy, subset(v_data, Algorithm=='Standard')$Accuracy, col = (c("blue", "red")),
-main = "Média das Acurácias", names = c("Proposed", "Standard"),
+main = "Acurácias - Médias", names = c("Proposto", "Atual"),
 xlab = "Algoritmo",
 ylab = "Acurácias")
+```
+```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3, fig.width=3}
+boxplot(subset(v_data, Algorithm=='Proposed')$Accuracy - subset(v_data, Algorithm=='Standard')$Accuracy, col = (c("green")),
+main = "Acurácias - Diferença", names = c("Prp.-Std."),
+xlab = "Algoritmo",
+ylab = "Acurácias")
+abline(h = -0.05) 
 ```
 
 # Validação
 
 ## Problema 1
 A premissa de normalidade para o teste do questionamento 1 foi testada inicialmente de forma visual a partir do gráfico QQplot e pelo teste de Shapiro-Wilk. Ambos sugerem a normalidade dos dados.
-```{r,results='hide',warning=FALSE,echo=TRUE}
+```{r,results='hide',warning=FALSE,echo=TRUE, fig.height=3.5}
 ## Hypothesis validation - Time
 qqPlot(v_diffTime)
 v_shapiroTime = shapiro.test(v_diffTime)
@@ -288,7 +301,7 @@ v_dwTime = dwtest(v_diffTime~1)
 ## Problema 2
 A premissas de normalidade e independência também sugerem que a amostra provêm de uma distribuição normal, com autocorrelação zero (independentes):
 
-```{r,results='hide',warning=FALSE,echo=TRUE}
+```{r,results='hide',warning=FALSE,echo=TRUE,fig.height=3.5}
 ## Hypothesis validation - Acuracy
 qqPlot(v_diffAcc)
 v_shapiroAcc = shapiro.test(v_diffAcc)
