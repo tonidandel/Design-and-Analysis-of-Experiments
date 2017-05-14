@@ -34,46 +34,6 @@ Monitor: Bernardo Marques
   v_value = v_data$value
   
   v_sampleSize = length(v_coins)
-  
-  
-  v_coins.mean = mean(v_coins)
-v_coins.sd = sd(v_coins)
-v_coins.rsd = sd(v_coins)/mean(v_coins)
-v_coins.interval = t.test(v_coins)$conf.int
-
-v_value.mean = mean(v_value)
-v_value.sd = sd(v_value)
-v_value.rsd = sd(v_value)/mean(v_value)
-v_value.interval = t.test(v_value)$conf.int
-  
-  ## normality assumption
-  qqPlot(v_coins)
-  qqPlot(v_value)
-  title("fdisdfi")
-  
-  hist(v_coins)
-  hist(v_value)
-  
-shapiro.test(v_coins)
-shapiro.test(v_value)
-
-#nivel de significancia
-alpha<-0.05
-
-## independence assumption
-dwtest(v_coins~1)
-dwtest(v_value~1)
-
-## inference estatística - teste de t student
-t.test(v_coins, mu=130)
-t.test(v_value, mu=2.60*3.5) # mu = 9.10
-
-## Potência estatística do teste
-power.t.test(n=29, delta=10, sd=v_coins.sd, sig.level=0.05, type="one.sample", alternative="two.sided")
-power.t.test(power=0.8, delta=5, sd=v_coins.sd, sig.level=0.05, type="one.sample", alternative="two.sided")
-
-power.t.test(n=29, delta=0.05, sd=v_value.sd, sig.level=0.05, type="one.sample", alternative="two.sided")
-power.t.test(power=0.8, delta=0.5, sd=v_value.sd, sig.level=0.05, type="one.sample", alternative="two.sided")
 ```
 
 # 1- Descrição do Problema
