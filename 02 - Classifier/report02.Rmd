@@ -304,7 +304,7 @@ ylab = "Acurácias")
 boxplot(subset(v_data, Algorithm=='Proposed')$Accuracy - subset(v_data, Algorithm=='Standard')$Accuracy, col = (c("green")),
 main = "Acurácias - Diferença", names = c("Prp.-Std."),
 xlab = "Algoritmo",
-ylab = "Diferência de Acurácias")
+ylab = "Diferença de Acurácias")
 abline(h = -0.05) 
 ```
 
