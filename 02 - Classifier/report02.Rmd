@@ -141,117 +141,113 @@ beta <- 1 - power
 ```
 
 * Nível de significância: $\alpha = 0.05$;
-* Tamanho de efeito de interesse prático para os ganhos de tempo: ${d^{\star}_{tempo}} = 1.0$;
-* Margem de não-inferioridade para acurácia: $\delta_{acuracia}^{*} = 0.05$.
-* Potência desejada: $\pi  = 0.8$;
+* Tamanho de efeito de interesse prático para os ganhos de tempo: ${d^{\star}_{t}} = 1.0$;
+* Margem de não-inferioridade para acurácia: $\delta_{acc}^{*} = 0.05$;
+* Potência desejada: $\pi  = 0.8$.
 
 # 2. Planejamento Experimental
 
-Os dados experimentais utilizados foram obtidos através de simulação, por meio de um [aplicativo web](http://orcslab.cpdee.ufmg.br/3838/classdata). Os dados gerados informam o tempo necessário para a classificação (_Time.s_) e acurácia (_Accuracy_) de cada um dos algoritmos em cada instância e em cada execução. A data de nascimento do membro mais jovem da equipe é parâmetro utilizado como semente do gerador de números da simulação. O número de instâncias utilizadas e de execuções por instâncias deve ser selecionado no aplicativo.
+Os dados experimentais utilizados foram obtidos através de simulação, por meio de um [aplicativo web](http://orcslab.cpdee.ufmg.br/3838/classdata). Os dados gerados informam o tempo necessário para a classificação (_Time.s_) e acurácia (_Accuracy_) de cada um dos algoritmos em cada instância e em cada execução. A data de nascimento do membro mais jovem da equipe (21/11/1992) é parâmetro utilizado como semente do gerador de números da simulação. O número de instâncias utilizadas e de execuções por instâncias deve ser selecionado no aplicativo.
 
-Estes dados são apresentados conforme seleção de número de instâncias e número de repetições das mesmas. Segundo [@MontgomeryRunger2011] quando cada par de observação é coletado sobre condições homogêneas, ainda assim estas podem variar de um par para outro. Conforme apresentado em [@Campelo2015-01], a variabilidade devida aos diferentes problemas de teste é uma forte fonte de variação espúria que pode e deve ser controlada e que uma solução elegante para eliminar a influência deste inconveniente é o pareamento das medições por instância.
+O experimento envolve comparações entre métodos aplicados em diferentes instâncias de problemas de classificação. Conforme apresentado em [@Campelo2015-01], a variabilidade decorrente das características de cada problema de teste é uma forte fonte de variação espúria quando não considerada na análise dos resultados. Para eliminar a influência dessas variações, deve-se realizar o pareamento das medições por instância de teste.
 
-Conforme a apresentação das amostras, verificou-se a necessidade de efetuar os testes estatísticos com as amostras pareadas. Para [@MontgomeryRunger2011] o procedimento experimental mais adequado quando os dados são coletados aos pares é o _t-test pareado_. Para tal, seja ($X_{11}$, $X_{21}$), ($X_{12}$, $X_{22}$),..., ($X_{1n}$, $X_{2n}$) um conjunto de n observações pareadas onde assumimos que a média e a variância da população representada por $X_{1}$ são $\mu_{1}$ e $\sigma^{2}_{1}$, e a média e a variância da população representada por $X_{2}$ são $\mu_{2}$ e $\sigma^{2}_{2}$. Defini-se as diferenças entre cada par de observações como $D_{j}= X_{1j} - X_{2j}$, j= 1, 2, p,...n. Os $D_{j}$'s são assumidos como sendo normalmente distribuídos na média.
+Para isso, pode ser aplicado o teste de hipótese t pareado [@MontgomeryRunger2011], comparando as médias de ambos os algoritmos. No entanto, uma segunda alternativa é realizar o teste sobre as diferenças das médias dos algoritmos, de maneira que o efeito das instâncias se cancela. Dessa forma, define-se para cada par j das n observações de médias $(\mu_{1j}, \mu_{2j})$ a diferença $d_j = \mu_{2j} - \mu_{1j}, \forall j \in (1,...,n)$.
 
-## Definicão de hipóteses
 
-Os testes de hipótese elaborados são:
+## 2.1 Definição de Hipóteses
 
-- Referente ao questionamento 1, definiu-se o teste de hipótese unilateral convencional, em que a hipótese nula é de que o algoritmo proposto apresenta tempo de execução similar ao algoritmo atual. Já a hipótese alternativa é a de que o algoritmo proposto é mais rápido que o padrão atual. Esta formulação é apresentada abaixo.
+Para cada uma das questões levantadas no experimento, foi estabelecido um par de hipóteses.
 
-$$\left\{\begin{array}{rc}
-H_{0}: \mu_{p{t}} - \mu_{a{t}} = 0\\
-H_{1}: \mu_{p{t}} - \mu_{a{t}} < 0
-\end{array}\right.$$
 
-Os valores de $\mu_{p{t}}$ e $\mu_{a{t}}$ são as médias de tempo de execução dos algoritmos _proposto_ e _padrão atual_, respectivamente.
+## 2.1.1 Ganhos de Tempo
 
-- Referente ao questionamento 2, definiu-se o teste de não-inferioridade, em que a hipótese nula afirma que o algoritmo proposto apresenta acurácia média inferior ao algoritmo atual. A hipótese alternativa afirma que o algoritmo proposto não apresenta acurácia média inferior ao padrão atual:
+Definiu-se o teste de hipótese unilateral convencional. A hipótese nula é de que a diferença do tempo de execução médio do algoritmo proposto e do algoritmo original é nula, enquanto a hipótese alternativa estabelece que o algoritmo proposto é mais rápido que o original (diferença menor que zero). Esta formulação é apresentada abaixo, na qual $\mu_p^t$ representa a média de tempo do método proposto e $\mu_o^t$ a média de tempo do algoritmo original.
 
-$$\left\{\begin{array}{rc}
-H_{0}: \mu_{p{a}} - \mu_{a{a}} = -\delta^{*}_{acurácia}\\
-H_{1}: \mu_{p{a}} - \mu_{a{a}} > -\delta^{*}_{acurácia}\\
-\end{array}\right.$$
+$$
+\left\{\begin{array}{rc}
+H_{0}: \mu_p^t - \mu_o^t = 0\\
+H_{1}: \mu_p^t - \mu_o^t < 0
+\end{array}\right.
+$$
 
-Os valores de $\mu_{p{a}}$ e $\mu_{a{a}}$ são os valores arbitrários de acurácia dos algoritmos _proposto_ e _padrão atual_ respectivamente e $\delta^{*}_{acurácia}$ é a margem de não-inferioridade para a acurácia.
+## 2.1.2 Não-inferioridade da Acurácia
 
-## Tamanho amostral
+Foi definido um teste de não-inferioridade do algoritmo proposto em relação ao atual. A  hipótese nula estabelece que a diferença da acurácia média do algoritmo proposto e do algoritmo orignal é maior que a m argem de não-inferioridade estabelecida ($\delta_{acc}^{*}$), enquanto a enquanto a hipótese alternativa propõe que a diferença das acurácias é menor que essa margem. Sendo $\mu_p^{a}$ a média da acurácia do algoritmo proposto e $\mu_o^{a}$ a média da acurácia do algoritmo original, tem-se:
 
-No caso de amostras pareadas, entende-se por amostras, o números de instâncias conforme exposto por [@Walker2011UnderstandingEA], ou problemas a serem resolvidos pelos algoritmos. Outra consideração é o número de repetições a serem adotadas por instância. Para este estudo adotou-se empiricamente o valor de $30$ repetições por instância, seguindo recomendação expressas em [@Campelo2015-01].
+$$
+\left\{\begin{array}{rc}
+H_{0}: \mu_p^{a} - \mu_o^{a} = -\delta^{*}_{acc}\\
+H_{1}: \mu_p^{a} - \mu_o^{a} > -\delta^{*}_{acc}\\
+\end{array}\right.
+$$
 
-Para a determinação do tamanho amostral foi realizado um _Estudo Piloto_, de forma a determinar uma estimativa inicial  para os testes atendendo aos parâmetros desejados, obtendo uma cardinalidade de $800$, para um erro relativo de $e_{n}=0.10$, em $n_{pilot}\approx 2\left(\frac{z_{\alpha_n/2}}{e_{n}}\right)^2$.(Nós não podermos afirmar que esse valor é alto. Não sei como. Mas podems citar a recomendação do professor). O autor [2] sugere cautela no uso da equação acima, sendo que está pode fornecer um número muito maior do que o número de amostras necessárias para um _Estudo Piloto_. Desta forma, a equipe decidiu por adotar um método iterativo. Como ${d^{\star}_{tempo}}$ é conhecido, ele foi utilizado para o cálculo, segundo a equação: $$n = 2 \left( \frac{1}{d^{\star}_{tempo}}\right)^{2}(t_{\alpha/2}+t_{\beta})^{2} \,.$$
+## 2.2 Número de Execuções por Instância
 
-Os valores de $t_{\alpha/2}$ e $t_{\beta}$ foram subtituidos para $z_{\alpha/2}$ e $z_{\beta}$ na equação anterior, considerando-se a prmeira iteração, de forma a fazê-los independetes de $n$. As iterações seguintes convergiram rapidamente para um valor de $17$ amostras, utilizadas no _Estudo Piloto_ conforme as entradas:
+Para problemas com variáveis pareadas, cada par de médias avaliadas em diferentes instâncias constitui uma amostra independente [@Walker2011UnderstandingEA]. No entanto, é possível que, mesmo para observações coletadas sob condições homogêneas nas mesmas instâncias, exista o efeito de perturbações aleatórias [@MontgomeryRunger2011]. Uma forma de reduzir esse efeito é realizar repetidas execuções para cada instância e adotar como valor para a instância a média das diferentes execuções. 
 
-> Nascimento: 21/11/1992; 
+Já foi demonstrado que aumentar o número de instâncias testadas apresenta uma melhoria maior sobre a potência dos testes do que aumentar o número de execuções em cada instância. Apesar disso, se o custo de execução não é impeditivo, é recomendável realizar pelo menos 30 execuções em cada instância [@Campelo2015-01]. Esse valor foi adotado nesse trabalho, uma vez que o custo da simulação não é significativo.
 
-> Número de instâncias de cada problema: $17$;
 
-> Número de execuções: $30$;
+## 2.3 Definição do Tamanho Amostral
 
-```{r,results='hide',warning=FALSE,echo=FALSE}
-head(v_data)
+Para a realizar o cálculo do tamanho amostral necessário para a potência estabelecida, é necessário conhecer o desvio padrão de cada variável observada. Uma vez que não há disponível nenhum conhecimento histórico sobre os processos em questão, deve ser realizado um estudo piloto para determinar os desvios.
+
+Surge aí a necessidade de calcular o número de amostras para o estudo piloto. Inicialmente, utilizou-se a equação $n_{pilot}\approx 2\left(\frac{z_{\alpha_n/2}}{e_{n}}\right)^2$, onde $e_{n}$ representa o máximo erro relativo permitido para o tamanho da amostra. Estabelecendo $e_{n} = 0.1$, obtém-se $n_{pilot} = 800$. No entanto, essa equação pode resultar em tamanhos de estudo piloto maiores que o tamanho amostral necessário para o experimento [@Campelo2015-01]. 
+
+Para contornar esse problema, um caminho alternativo foi tomado. O tamanho da amostra pode ser calculado pela equação abaixo:
+
+$$n = 2 \left( \frac{\hat{\sigma}}{\delta^{\star}}\right)^{2}(t_{\alpha/2}+t_{\beta})^{2} \,$$
+
+Uma vez que, para o experimento do tempo o valor de ${d^{\star}_{t}} = \frac{\delta^{\star}}{\hat{\sigma}}$ é conhecido, é possível calcular o tamanho amostral mínimo necessário com a equação: 
+
+$$n = 2 \left( \frac{1}{d^{\star}_t}\right)^{2}(t_{\alpha/2}+t_{\beta})^{2}$$
+
+Nessa fórmula, os valores $t_{\alpha/2}$ e $t_{\beta}$ são dependentes de $n$. Para solucionar esse problema, eles são substituídos por $z_{\alpha/2}$ e $z_{\beta}$ e a equação é testada iterativamente até convergência (implementação em anexo no arquivo  _calcN.R_). Dessa forma, foi encontrado o valor $n = 17$. Esse valor é significativamente menor que o valor $n_{pilot} = 800$ obtido anteriormente, o que é indicativo de que esse valor era superestimado.
+
+Com base nos resultados alcançados, foi realizado um estudo piloto com 17 amostras. A partir desse estudo, foram determinados os desvios padrão de tempo e acurácia para o algoritmo proposto e original:
+
+```{r,include=FALSE,results='hide',warning=FALSE,echo=FALSE}
+v_dataPilot = readr::read_csv('pilot_1992-11-21_17_30.csv')
+
+v_dataPilot = aggregate(cbind(Accuracy,Time.s)~Instance:Algorithm,data=v_data, FUN=mean)
+
+v_dataPilotSD = aggregate(cbind(Accuracy,Time.s)~Algorithm,data=v_data, FUN=sd)
+
+v_sdTimeProposed = v_dataPilotSD$Time.s[1]
+v_sdTimeOriginal = v_dataPilotSD$Time.s[2]
+v_sdAccProposed = v_dataPilotSD$Accuracy[1]
+v_sdAccOriginal = v_dataPilotSD$Accuracy[2]
 ```
 
-Observou-se que os dados gerados pela aplicação citada continham inconsistências por apresentarem valores negativos para o tempo de execução dos algoritmos como se pode observar abaixo.
+- $sd_p^t = `r v_sdTimeProposed`$
+- $sd_o^t = `r v_sdTimeOriginal`$
+- $sd_p^a = `r v_sdAccProposed`$
+- $sd_o^a = `r v_sdAccOriginal`$
 
-Ob.:(Apesar dos códigos no rmd irem para o professor,acredito que o texto deve conter as informações mínimas para um leitor que não possui os códigos. Acretido que seria útil apresentar os valores e onde eles ocorrerão)
+A partir desses valores, utilizou-se a fórmula abaixo (implementada no arquivo  _calcN_tost2.R_ [@Campelo2015-01]) para calcular o tamanho amostral mínimo para os experimentos de tempo e acurácia:
 
-Apresentar valores negativos conforme código para verificar dado negativo
+$$
+n >= (t_{\alpha;\nu} + t_{(1-c)\beta;\nu})^2 
+\left( \frac{\hat{\sigma}_1^2 + \hat{\sigma}_2^2}{\delta^{\star} - \Delta\mu^\star}\right)^2
+$$
 
-neg = dadosTime.s < 0
-neg2 = dadosAccuracy < 0 & dados$Accuracy > 1\ dados[neg,]
+Utilizando essa equação, determinou-se um tamanho amostral mínimo de $n = 33$ amostras para o teste de tempo e $n = 5$ amostras para o experimento com acurácia. O valor definitivo de amostras utilizado na coleta de dados foi então determinado como o máximo dos dois, 33.
 
-Os dados negativos de tempos de execução e respectivas acurácias foram retirados para se evitar contaminação do resultados. Para tal, considerou-se que a retida de 2 valores não seria representativa na massa amostral adotada.
+## 2.4 Tratamento e Validação dos Dados
+
+Considerando o experimento realizado, foi criada uma rotina para validação dos dados obtidos e identificação de erros. Para cada execução do algoritmo de classificação, as seguintes condições devem se aplicar:
+
+1. Tempo de execução $> 0$
+2. Acurácia $\in [0,1]$
+
+Caso os valores de uma execução não atendam essas condições, ela é descartada.
 
 
-Por meio dos dados do _Estudo Piloto_ obteve-se o desvio padrão das amostras dos algoritmos, que foram, por sua vez, utilizados na obtenção do tamanho amostral mais adequado (adequado tem que ter parâmetro de comparação)às caracterísitcas exigidas para os testes, Utilizando a função _calcN_tost2_ fornecida por [@Campelo2015-01].
+# 3. Análise Estatística
 
-```{r,results='hide',warning=FALSE,echo=FALSE}
-v_nTime = calcN_tost2(alpha = 0.05,
-            beta = 0.2,
-            diff_mu = 1,
-            tolmargin = min(v_dataSD$Time.s),
-            s1 = v_dataSD$Time.s[1],
-            s2 = v_dataSD$Time.s[2]
-            )
+## 3.1 Teste de Hipóteses
 
-v_nAcc = calcN_tost2(alpha = 0.05,
-                      beta = 0.2,
-                      diff_mu = 0.01,
-                      tolmargin = 0.05,
-                      s1 = v_dataSD$Accuracy[1],
-                      s2 = v_dataSD$Accuracy[2]
-                     )
-v_n = ceiling(max(v_nTime, v_nAcc))
-```
-
-Os testes definitivos serão feitos utilizando-se  $33$ instâncias de problemas, que permitirá, por sua vez, a geração de um novo conjunto de dados _1992-11-21_33_30.csv_, em que:
-  
-Para a geração e coleta dos dados foi adotado o maior tamanho amostral verificado para o tempo de execução e acurácia. Neste caso, quem apresentou o maior valor foi o tempo de execução. Este valor atende às características exigidas para ambos os testes sem necessidade de uma nova coleta de dados para o caso da acurácia. Os dados foram gerados conforme abaixo:
-
-- Nascimento: 21/11/1992;
-
-- Número de instâncias de cada problema: $33$;
-
-- Número de execuções: $30$;
-
-As amostras geradas para os testes também apresentaram tempo de execução negativo e estas foram tratadas conforme as amostras do _Estudo de Piloto_.
-
-Mostrar valores com o código para verificar dado negativo
-
-neg = dadosTime.s < 0
-neg2 = dadosAccuracy < 0 & dados$Accuracy > 1\ dados[neg,]
-
-#Teste de Hipóteses
-
-## Problema 1
-
-Com o resultado do teste de hipóteses observa-se que não há evidências suficientes para se aceitar a hipótese nula (teste unilateral emparelhado), considerando-se a estatística gerada e o valor $p$ para o nível de significância e graus de liberdade definidos. Assim, conclui-se que o algoritmo proposto apresenta um desempenho melhor, em relação às médias dos tempos de execução, se comparado ao algoritmo padrão.
-
-Apresentar valores de resultados do teste
-
-Ob.:(Apesar dos códigos no rmd irem para o professor,acredito que o texto deve conter as informações mínimas para um leitor que não possui os códigos. Acretido que seria útil apresentar os valores de resultados)
+### 3.1.1 Ganho de Tempo
 
 ```{r,results='hide',warning=FALSE,echo=FALSE}
 # hypothesis test Time
@@ -264,7 +260,9 @@ v_tTestTime = t.test(v_diffTime,
 v_pTime = v_tTestTime$p.value
 ```
 
-O gráfico bloxplot abaixo evidencia a diferença entre as médias dos tempos de execução. Podemos ver que a média é menor que zero, sugerindo que o algoritmo proposto possui média de tempo de execução menor que a média do algoritmo padrão. O boxplot com valores negativos representa a subtração das médias de tempo de cada algoritmo e evidência médias de tempo de execução inferiores para o algoritmo proposto.
+Realizando o teste de hipóteses apresentado na Seção 2.1.1, obtém-se $p = `r v_pTime`$. Dessa forma, é possível rejeitar a hipótese nula com um nível de confiança de $95\%$ e aceitar a hipótese a hipótese alternativa que estabelece que o novo método proposto tem ganhos de tempo em relação ao método original, considerando um tamanho de efeito $d^\star = 1$.
+
+Os bloxplots abaixo evidenciam a diferença entre as médias dos tempos de execução. Nota-se valores muito menores para o tempo de execução do algoritmo proposto. No boxplot da diferença, pode-se observar que a média é menor que zero, o que indica que o algoritmo proposto possui média de tempo de execução menor que a média do algoritmo original.
 
 ```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3, fig.width=3}
 boxplot(subset(v_data, Algorithm=='Proposed')$Time.s, subset(v_data, Algorithm=='Standard')$Time.s, col = (c("blue", "red")),
@@ -276,16 +274,10 @@ ylab = "Tempo de Execução")
 boxplot(subset(v_data, Algorithm=='Proposed')$Time.s - subset(v_data, Algorithm=='Standard')$Time.s, col = (c("green")),
 main = "Tempo - Diferença", names = "P-A",
 xlab = "Algoritmo",
-ylab = "Tempo de Execução")
+ylab = "Diferença no Tempo de Execução")
 ```
 
-## Problema 2
-
-O teste de hipóteses referente ao questionamento $2$ foi implementado e seu resultado indica que que não existem evidências suficientes que levem à rejeição da hipótese nula, para os requisitos estabelecidos.
-
-Apresentar valores de resultados do teste
-
-Ob.:(Apesar dos códigos no rmd irem para o professor,acredito que o texto deve conter as informações mínimas para um leitor que não possui os códigos. Acretido que seria útil apresentar os valores de resultados)
+### 3.1.2  Não-inferioridade da Acurácia
 
 ```{r,results='hide',warning=FALSE,echo=FALSE}
 # hypothesis test acc
@@ -298,7 +290,9 @@ v_tTestAcc = t.test(v_diffAcc,
 v_pAcc = v_tTestAcc$p.value
 ```
 
-O gráfico bloxplot referente ao experimento 2 evidencia a diferença entre as médias das acurácias. Podemos ver que o intervalo de significância não está completamente acima da margem de não-inferioridade da acurácia dada. Por tanto não foi possível estabelecer a não-inferioridade do algoritmo em relação à sua acurácia.
+O teste de hipóteses proposto na Seção 2.1.2 apresenta $p = `r v_pAcc`$. Esse resultado não permite rejeitar a hipótese nula com um nível de confiança de $95\%$, considerando a margem de não-inferioridade $\delta_{acc}^{*} = 0.05$ estabelecida. Dessa forma, não é possível afirmar que o algoritmo proposto não apresenta acurácia inferior ao original.
+
+O gráfico bloxplot referente ao experimento evidencia a diferença entre as médias das acurácias. Podemos ver que o intervalo de significância não está completamente acima da margem de não-inferioridade da acurácia dada. Portanto não foi possível estabelecer a não-inferioridade do algoritmo em relação à sua acurácia.
 
 ```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3, fig.width=3}
 boxplot(subset(v_data, Algorithm=='Proposed')$Accuracy, subset(v_data, Algorithm=='Standard')$Accuracy, col = (c("blue", "red")),
@@ -310,38 +304,66 @@ ylab = "Acurácias")
 boxplot(subset(v_data, Algorithm=='Proposed')$Accuracy - subset(v_data, Algorithm=='Standard')$Accuracy, col = (c("green")),
 main = "Acurácias - Diferença", names = c("Prp.-Std."),
 xlab = "Algoritmo",
-ylab = "Acurácias")
+ylab = "Diferência de Acurácias")
 abline(h = -0.05) 
 ```
 
-# Validação
 
-## Problema 1
+## 3.2 Validação das Premissas
 
-A premissa de normalidade para o teste do questionamento 1 foi testada inicialmente de forma visual a partir do gráfico QQplot e pelo teste de Shapiro-Wilk. Ambos sugerem a normalidade dos dados. A premissa de normalidade e independência também sugerem que as amostras apresentam autocorrelação zero (independentes):
+### 3.2.1 Tempo
 
-```{r,results='hide',warning=FALSE,echo=TRUE, fig.height=3.5}
-## Hypothesis validation - Time
-qqPlot(v_diffTime)
+#### Normalidade
+
+```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3.5}
 v_shapiroTime = shapiro.test(v_diffTime)
 v_dwTime = dwtest(v_diffTime~1)
+v_shapiroTimeP = v_shapiroTime$p.value
+v_dwTimeP = v_dwTime$p.value
 ```
 
-## Problema 2
+O QQPlot das diferenças de tempo entre os algoritmos é indicativo da normalidade de sua distribuição. Para confirmar esse resultado, é realizado o teste de Shapiro-Wilk. O teste apresenta $p = `r v_shapiroTimeP`$, de maneira que não é possível refutar a hipótese nula de que os dados apresentam distribuição normal.
 
-A premissa de normalidade para o teste do questionamento 1 foi testada inicialmente de forma visual a partir do gráfico QQplot e pelo teste de Shapiro-Wilk. A premissa de normalidade e independência também sugerem que as amostras apresentam autocorrelação zero (independentes):
+```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3.5}
+qqPlot(v_diffTime)
+```
 
-```{r,results='hide',warning=FALSE,echo=TRUE,fig.height=3.5}
-## Hypothesis validation - Acuracy
-qqPlot(v_diffAcc)
+#### Independência
+
+O plot dos valores ordenados de diferenças de tempo entre os algoritmos não apresenta nenhum indício de dependência temporal dos valores. O teste de autocorrelação serial Durbin-Wastson apresenta $p = `r v_dwTimeP`$, o que reforça a hipótese de que não há autocorrelação serial entre as amostras.
+
+```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3.5}
+plot(v_diffTime, type='b')
+```
+
+### Acurácia
+
+```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3.5}
 v_shapiroAcc = shapiro.test(v_diffAcc)
 v_dwAcc = dwtest(v_diffAcc~1)
+v_shapiroAccP = v_shapiroAcc$p.value
+v_dwAccP = v_dwAcc$p.value
 ```
 
-# Conclusão
+Os mesmos procedimentos são realizados para a acurácia. O teste de normalidade Shapiro-Wilk apresenta $p = `r v_shapiroAccP`$, enquanto o teste de autocorrelação serial Durbin-Watson apresenta $p = `r v_dwAccP`$. Nenhum dos resultados permite refutar as premissas de normalidade e independência. 
 
-Segundo os testes, pode-se afirmar que o método proposto tem ganhos significativos em termos dos tempos de execução. Em relação ao segundo resultado, como não foi possível rejeitar a hipótese nula com o nível de significância desejado, não é possível afirmar que o método proposto é não-inferior ao método padrão.
 
-Vale ainda ressaltar que o tamanho amostral necessário para as características desejadas do teste foram consideravelmente diferentes, sendo, $33$ para o primeiro teste e $4$ para o segundo. Foi então decidido desenvolver os  testes com o número mais alto de amostras, uma vez que isto não implicaria em perdas para nenhum dos casos, e não seria necessário fazer mais de uma coleta de dados. Um resultado disto foi que para o segundo teste a potência obtida foi $1$. Isto significa que a chance de ocorrer o erro do tipo _II_, que é a falha em rejeitar a hipótese nula sendo esta falsa, é $0$ (Não sei precisar, mas é uma afirmação forte. Quem puder conferir, pois acredito que 100%, somente com a população completa). Desta forma, as variações de acurácia apontada no teste do problema 2 são reforçadas.
+```{r,results='hide',warning=FALSE,echo=FALSE,fig.height=3.5}
+qqPlot(v_diffAcc)
+plot(v_diffAcc, type='b')
+```
+
+
+# 4. Discussão e Conclusões
+
+Os testes de hipótese realizados levam as seguintes conclusões:
+
+1. É possível rejeitar a hipótese de que os algoritmos possuem tempos de execução equivalentes com grau de confiança de 95% para um tamanho de efeito $d^* = 1$. Esse resultado indica que o novo algoritmo apresenta tempos de execução melhores.
+2. Não é possível refutar a hipótese de que a diferença de acurácia entre os algoritmos é maior que o tamanho de efeito $\delta^* = 0.05$ de 95%. Esse resultado não permite afirmar não inferioridade da acurácia do algoritmo proposto.
+
+Vale notar que o teste de acurácia apresenta potência 1. Dessa forma, é seguro afirmar que não é possível estabelecer sua não inferioridade.
+
+Os resultados indicam, portato, um trade-off entre os métodos avaliados. Enquanto o método proposto apresenta ganhos de tempo de execução de pelo menos um desvio padrão em relação ao anterior, não é possível garantir sua não inferioridade em relação a acurácia. A análise descritiva sugere que o método original possui maior acurácia. Assim, a utilização de cada método depende dos requisitos da aplicação. Se o tempo de execução for prioridade e uma ligeira perda na acurácia for aceitável, recomenda-se o método proposto. Se a acurácia da classificação é prioridade e tempos maiores são aceitáveis, recomenda-se o método original. 
+
 
 # Referências
