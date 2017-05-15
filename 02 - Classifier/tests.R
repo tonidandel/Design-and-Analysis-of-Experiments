@@ -6,7 +6,8 @@ library(lmtest)
 # pilot size calc
 v_nPilot = calcN_pilotD(p_alpha = 0.05,
                         p_beta = 0.2,
-                        p_type = 'one-sided',
+                        p_type = 'paired',
+                        p_alternative = 'one-sided',
                         p_d = 1
                         )
 
