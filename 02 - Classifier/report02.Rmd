@@ -304,7 +304,9 @@ ylab = "Diferença de Acurácias")
 abline(h = -0.05) 
 ```
 ## 3.2 Validação das Premissas
-### 3.2.1 Tempo
+
+### 3.2.1 Tempo de Execução
+
 #### Normalidade
 
 ```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3.5}
@@ -319,6 +321,7 @@ O QQPlot das diferenças de tempo entre os algoritmos é indicativo da normalida
 ```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3.5}
 qqPlot(v_diffTime)
 ```
+
 #### Independência
 
 O plot dos valores ordenados de diferenças de tempo entre os algoritmos não apresenta nenhum indício de dependência temporal dos valores. O teste de autocorrelação serial Durbin-Wastson apresenta $p = `r v_dwTimeP`$, o que reforça a hipótese de que não há autocorrelação serial entre as amostras.
@@ -326,7 +329,8 @@ O plot dos valores ordenados de diferenças de tempo entre os algoritmos não ap
 ```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3.5}
 plot(v_diffTime, type='b')
 ```
-### Acurácia
+
+### 3.2.2. Acurácia
 
 ```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3.5}
 v_shapiroAcc = shapiro.test(v_diffAcc)
@@ -342,11 +346,12 @@ Os mesmos procedimentos são realizados para a acurácia. O teste de normalidade
 qqPlot(v_diffAcc)
 plot(v_diffAcc, type='b')
 ```
+
 # 4. Discussão e Conclusões
 Os testes de hipóteses realizados levam às seguintes conclusões:
 
 1. É possível rejeitar a hipótese de que os algoritmos possuem tempos de execução equivalentes com grau de confiança de 95% para um tamanho de efeito $d^* = 1$. Esse resultado indica que o novo algoritmo apresenta tempos de execução melhores.
-2. Não é possível refutar a hipótese de que a diferença de acurácia entre os algoritmos é maior que o tamanho de efeito $\delta^* = 0.05$ de 95%. Esse resultado não permite afirmar não inferioridade da acurácia do algoritmo proposto.
+2. Não é possível refutar a hipótese de que a diferença de acurácia entre os algoritmos é maior que o tamanho de efeito $\delta^* = 0.05$ com confiança de 95%. Esse resultado não permite afirmar não inferioridade da acurácia do algoritmo proposto.
 
 Vale notar que o teste de acurácia apresenta potência 1. Dessa forma, é seguro afirmar que não é possível estabelecer sua não inferioridade.
 
