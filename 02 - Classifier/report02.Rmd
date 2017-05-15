@@ -123,9 +123,9 @@ plot(v_diffAcc, type='b')
 
 # 1. Descrição do Problema
 
-O objetivo do experimento proposto é avaliar uma nova técnica proposta para simplificação de modelos em algoritmos de classificação, baseada em inferência estatística. Dessa forma, será realizada a comparação do algoritmo de classificação original e do método simplificado proposto. Para realizar o estudo, ambos serão executados em bases de dados da literatura.
+O objetivo do experimento proposto é avaliar uma nova técnica proposta para simplificação de modelos em algoritmos de classificação, baseada em inferência estatística. Dessa forma, será realizada a comparação do algoritmo de classificação original e do método proposto. Para realizar o estudo, ambos serão executados em bases de dados da literatura.
 
-Segundo os pesquisadores responsáveis pelo novo algoritmo proposto, este apresenta melhoria significativa em relação ao algoritmo original no tempo de execucão e não resultar em grandes perdas de desempenho em termos de acurácia da classificação. Assim, busca-se responder:
+Segundo os pesquisadores responsáveis pelo algoritmo proposto, este apresenta melhoria significativa em relação ao algoritmo original no tempo de execucão e não resulta em grandes perdas de desempenho, em termos de acurácia da classificação. Assim, busca-se responder:
 
 1. O método proposto realmente apresenta ganhos em relação ao tempo de execução, quando comparado ao método padrão?
 2. O método proposto não resulta em variações consideráveis de acurácia?
@@ -151,7 +151,7 @@ Os dados experimentais utilizados foram obtidos através de simulação, por mei
 
 O experimento envolve comparações entre métodos aplicados em diferentes instâncias de problemas de classificação. Conforme apresentado em [@Campelo2015-01], a variabilidade decorrente das características de cada problema de teste é uma forte fonte de variação espúria quando não considerada na análise dos resultados. Para eliminar a influência dessas variações, deve-se realizar o pareamento das medições por instância de teste.
 
-Para isso, pode ser aplicado o teste de hipótese t pareado [@MontgomeryRunger2011], comparando as médias de ambos os algoritmos. No entanto, uma segunda alternativa é realizar o teste sobre as diferenças das médias dos algoritmos, de maneira que o efeito das instâncias se cancela. Dessa forma, define-se para cada par j das n observações de médias $(\mu_{1j}, \mu_{2j})$ a diferença $d_j = \mu_{2j} - \mu_{1j}, \forall j \in (1,...,n)$.
+Para isso, pode ser aplicado o teste de hipótese t pareado [@MontgomeryRunger2011], comparando as médias de ambos os algoritmos. No entanto, uma segunda alternativa é realizar o teste sobre as diferenças das médias dos algoritmos, de maneira que o efeito das instâncias se cancela. Dessa forma, define-se, para cada par j das n observações de médias $(\mu_{1j}, \mu_{2j})$, a diferença $d_j = \mu_{2j} - \mu_{1j}, \forall j \in (1,...,n)$.
 
 
 ## 2.1 Definição de Hipóteses
@@ -172,7 +172,7 @@ $$
 
 ## 2.1.2 Não-inferioridade da Acurácia
 
-Foi definido um teste de não-inferioridade do algoritmo proposto em relação ao atual. A  hipótese nula estabelece que a diferença da acurácia média do algoritmo proposto e do algoritmo orignal é maior que a m argem de não-inferioridade estabelecida ($\delta_{acc}^{*}$), enquanto a enquanto a hipótese alternativa propõe que a diferença das acurácias é menor que essa margem. Sendo $\mu_p^{a}$ a média da acurácia do algoritmo proposto e $\mu_o^{a}$ a média da acurácia do algoritmo original, tem-se:
+Foi definido um teste de não-inferioridade do algoritmo proposto em relação ao atual. A  hipótese nula estabelece que a diferença entre a acurácia média do algoritmo proposto e do algoritmo orignal é maior que a margem de não-inferioridade estabelecida ($\delta_{acc}^{*}$), enquanto a enquanto a hipótese alternativa propõe que a diferença das acurácias é menor que essa margem. Sendo $\mu_p^{a}$ a média da acurácia do algoritmo proposto e $\mu_o^{a}$ a média da acurácia do algoritmo original, tem-se:
 
 $$
 \left\{\begin{array}{rc}
@@ -190,21 +190,18 @@ Já foi demonstrado que aumentar o número de instâncias testadas apresenta uma
 
 ## 2.3 Definição do Tamanho Amostral
 
-Para a realizar o cálculo do tamanho amostral necessário para a potência estabelecida, é necessário conhecer o desvio padrão de cada variável observada. Uma vez que não há disponível nenhum conhecimento histórico sobre os processos em questão, deve ser realizado um estudo piloto para determinar os desvios.
+Para a realizar o cálculo do tamanho amostral necessário para a potência estabelecida, é necessário conhecer o desvio padrão de cada variável observada. Uma vez que não há disponível nenhum conhecimento histórico sobre os processos em questão, deve ser realizado um estudo piloto para determinar os desvios. 
 
-Surge aí a necessidade de calcular o número de amostras para o estudo piloto. Inicialmente, utilizou-se a equação $n_{pilot}\approx 2\left(\frac{z_{\alpha_n/2}}{e_{n}}\right)^2$, onde $e_{n}$ representa o máximo erro relativo permitido para o tamanho da amostra. Estabelecendo $e_{n} = 0.1$, obtém-se $n_{pilot} = 800$. No entanto, essa equação pode resultar em tamanhos de estudo piloto maiores que o tamanho amostral necessário para o experimento [@Campelo2015-01]. 
+Surge aí a necessidade de calcular o número de amostras para o estudo piloto. Inicialmente, utilizou-se a equação $n_{pilot}\approx 2\left(\frac{z_{\alpha_n/2}}{e_{n}}\right)^2$, em que $e_{n}$ representa o máximo erro relativo permitido para o tamanho da amostra. Estabelecendo $e_{n} = 0.1$, obtém-se $n_{pilot} = 800$. No entanto, essa equação pode resultar em tamanhos de estudo piloto maiores que o tamanho amostral necessário para o experimento [@Campelo2015-01]. 
 
-Para contornar esse problema, um caminho alternativo foi tomado. O tamanho da amostra pode ser calculado pela equação abaixo:
+Para contornar esse problema, um caminho alternativo foi tomado. O tamanho da amostra pode ser calculado pela equação:
 
-$$n = 2 \left( \frac{\hat{\sigma}}{\delta^{\star}}\right)^{2}(t_{\alpha/2}+t_{\beta})^{2} \,$$
+$$n = 2 \left( \frac{\hat{\sigma}}{\delta^{\star}}\right)^{2}(t_{\alpha/2}+t_{\beta})^{2} \,, $$
+e uma vez que, para o experimento do tempo o valor de ${d^{\star}_{t}} = \frac{\delta^{\star}}{\hat{\sigma}}$ é conhecido, é possível calcular o tamanho amostral mínimo necessário com a relação: 
+$$n = 2 \left( \frac{1}{d^{\star}_t}\right)^{2}(t_{\alpha/2}+t_{\beta})^{2} \,,$$
+em que $t_{\alpha/2}$ e $t_{\beta}$ são dependentes de $n$. Para solucionar esse problema, eles são substituídos por $z_{\alpha/2}$ e $z_{\beta}$ e a equação é testada iterativamente até convergência (implementação em anexo no arquivo  _calcN.R_). Dessa forma, foi encontrado o valor $n = 17$. Esse valor é significativamente menor que o valor $n_{pilot} = 800$ obtido anteriormente, o que é indicativo de tal era superestimado.
 
-Uma vez que, para o experimento do tempo o valor de ${d^{\star}_{t}} = \frac{\delta^{\star}}{\hat{\sigma}}$ é conhecido, é possível calcular o tamanho amostral mínimo necessário com a equação: 
-
-$$n = 2 \left( \frac{1}{d^{\star}_t}\right)^{2}(t_{\alpha/2}+t_{\beta})^{2}$$
-
-Nessa fórmula, os valores $t_{\alpha/2}$ e $t_{\beta}$ são dependentes de $n$. Para solucionar esse problema, eles são substituídos por $z_{\alpha/2}$ e $z_{\beta}$ e a equação é testada iterativamente até convergência (implementação em anexo no arquivo  _calcN.R_). Dessa forma, foi encontrado o valor $n = 17$. Esse valor é significativamente menor que o valor $n_{pilot} = 800$ obtido anteriormente, o que é indicativo de que esse valor era superestimado.
-
-Com base nos resultados alcançados, foi realizado um estudo piloto com 17 amostras. A partir desse estudo, foram determinados os desvios padrão de tempo e acurácia para o algoritmo proposto e original:
+Com base nos resultados alcançados, foi realizado um estudo piloto com $17$ amostras. A partir desse estudo, foram determinados os desvios padrão de tempo e acurácia para o algoritmo proposto e original:
 
 ```{r,include=FALSE,results='hide',warning=FALSE,echo=FALSE}
 v_dataPilot = readr::read_csv('pilot_1992-11-21_17_30.csv')
@@ -224,14 +221,14 @@ v_sdAccOriginal = v_dataPilotSD$Accuracy[2]
 - $sd_p^a = `r v_sdAccProposed`$
 - $sd_o^a = `r v_sdAccOriginal`$
 
-A partir desses valores, utilizou-se a fórmula abaixo (implementada no arquivo  _calcN_tost2.R_ [@Campelo2015-01]) para calcular o tamanho amostral mínimo para os experimentos de tempo e acurácia:
+A partir desses valores, utilizou-se a fórmula em seguida (implementada no arquivo  _calcN_tost2.R_ [@Campelo2015-01]) para calcular o tamanho amostral mínimo para os experimentos de tempo e acurácia:
 
 $$
 n >= (t_{\alpha;\nu} + t_{(1-c)\beta;\nu})^2 
-\left( \frac{\hat{\sigma}_1^2 + \hat{\sigma}_2^2}{\delta^{\star} - \Delta\mu^\star}\right)^2
+\left( \frac{\hat{\sigma}_1^2 + \hat{\sigma}_2^2}{\delta^{\star} - \Delta\mu^\star}\right)^2 \,.
 $$
 
-Utilizando essa equação, determinou-se um tamanho amostral mínimo de $n = 33$ amostras para o teste de tempo e $n = 5$ amostras para o experimento com acurácia. O valor definitivo de amostras utilizado na coleta de dados foi então determinado como o máximo dos dois, 33.
+Utilizando esta equação determinou-se um tamanho amostral mínimo de $n = 33$ amostras para o teste de tempo e $n = 5$ amostras para o experimento com acurácia. O valor definitivo de amostras utilizado na coleta de dados foi então determinado como o máximo dos dois, 33.
 
 ## 2.4 Tratamento e Validação dos Dados
 
@@ -241,7 +238,6 @@ Considerando o experimento realizado, foi criada uma rotina para validação dos
 2. Acurácia $\in [0,1]$
 
 Caso os valores de uma execução não atendam essas condições, ela é descartada.
-
 
 # 3. Análise Estatística
 
@@ -260,7 +256,7 @@ v_tTestTime = t.test(v_diffTime,
 v_pTime = v_tTestTime$p.value
 ```
 
-Realizando o teste de hipóteses apresentado na Seção 2.1.1, obtém-se $p = `r v_pTime`$. Dessa forma, é possível rejeitar a hipótese nula com um nível de confiança de $95\%$ e aceitar a hipótese a hipótese alternativa que estabelece que o novo método proposto tem ganhos de tempo em relação ao método original, considerando um tamanho de efeito $d^\star = 1$.
+Realizando o teste de hipóteses apresentado na Seção 2.1.1, obtém-se $p = `r v_pTime`$. Dessa forma, é possível rejeitar a hipótese nula com um nível de confiança de $95\%$ e aceitar a hipótese a hipótese alternativa, que estabelece que o novo método proposto tem ganhos de tempo em relação ao método original, considerando um tamanho de efeito $d^\star = 1$.
 
 Os bloxplots abaixo evidenciam a diferença entre as médias dos tempos de execução. Nota-se valores muito menores para o tempo de execução do algoritmo proposto. No boxplot da diferença, pode-se observar que a média é menor que zero, o que indica que o algoritmo proposto possui média de tempo de execução menor que a média do algoritmo original.
 
@@ -307,12 +303,8 @@ xlab = "Algoritmo",
 ylab = "Diferença de Acurácias")
 abline(h = -0.05) 
 ```
-
-
 ## 3.2 Validação das Premissas
-
 ### 3.2.1 Tempo
-
 #### Normalidade
 
 ```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3.5}
@@ -327,7 +319,6 @@ O QQPlot das diferenças de tempo entre os algoritmos é indicativo da normalida
 ```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3.5}
 qqPlot(v_diffTime)
 ```
-
 #### Independência
 
 O plot dos valores ordenados de diferenças de tempo entre os algoritmos não apresenta nenhum indício de dependência temporal dos valores. O teste de autocorrelação serial Durbin-Wastson apresenta $p = `r v_dwTimeP`$, o que reforça a hipótese de que não há autocorrelação serial entre as amostras.
@@ -335,7 +326,6 @@ O plot dos valores ordenados de diferenças de tempo entre os algoritmos não ap
 ```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3.5}
 plot(v_diffTime, type='b')
 ```
-
 ### Acurácia
 
 ```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3.5}
@@ -352,18 +342,15 @@ Os mesmos procedimentos são realizados para a acurácia. O teste de normalidade
 qqPlot(v_diffAcc)
 plot(v_diffAcc, type='b')
 ```
-
-
 # 4. Discussão e Conclusões
-
-Os testes de hipótese realizados levam as seguintes conclusões:
+Os testes de hipóteses realizados levam às seguintes conclusões:
 
 1. É possível rejeitar a hipótese de que os algoritmos possuem tempos de execução equivalentes com grau de confiança de 95% para um tamanho de efeito $d^* = 1$. Esse resultado indica que o novo algoritmo apresenta tempos de execução melhores.
 2. Não é possível refutar a hipótese de que a diferença de acurácia entre os algoritmos é maior que o tamanho de efeito $\delta^* = 0.05$ de 95%. Esse resultado não permite afirmar não inferioridade da acurácia do algoritmo proposto.
 
 Vale notar que o teste de acurácia apresenta potência 1. Dessa forma, é seguro afirmar que não é possível estabelecer sua não inferioridade.
 
-Os resultados indicam, portato, um trade-off entre os métodos avaliados. Enquanto o método proposto apresenta ganhos de tempo de execução de pelo menos um desvio padrão em relação ao anterior, não é possível garantir sua não inferioridade em relação a acurácia. A análise descritiva sugere que o método original possui maior acurácia. Assim, a utilização de cada método depende dos requisitos da aplicação. Se o tempo de execução for prioridade e uma ligeira perda na acurácia for aceitável, recomenda-se o método proposto. Se a acurácia da classificação é prioridade e tempos maiores são aceitáveis, recomenda-se o método original. 
+Os resultados indicam, portato, um trade-off entre os métodos avaliados. Enquanto o método proposto apresenta ganhos de tempo de execução de, pelo menos, um desvio padrão em relação ao anterior, não é possível garantir sua não inferioridade em relação a acurácia. A análise descritiva sugere que o método original possui maior acurácia. Assim, a utilização de cada método depende dos requisitos da aplicação. Se o tempo de execução for prioridade e uma ligeira perda na acurácia for aceitável, recomenda-se o método proposto. Se a acurácia da classificação é prioridade e tempos maiores são aceitáveis, recomenda-se o método original. 
 
 
 # Referências
