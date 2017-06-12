@@ -1,0 +1,436 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Estudo de Caso 02: Comparação entre Algoritmos de Classificação},
+            pdfauthor={Equipe 04},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{Estudo de Caso 02: Comparação entre Algoritmos de Classificação}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{Equipe 04}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \predate{\centering\large\emph}
+  \postdate{\par}
+  \date{15 de Maio de 2017}
+
+\usepackage{fancyhdr}
+\usepackage[utf8]{inputenc}
+\pagestyle{fancy}
+\fancyfoot[CO,CE]{EEE933 - Planejamento e Análise de Experimentos}
+\fancyfoot[LE,RO]{\thepage}
+
+\begin{document}
+\maketitle
+
+Coordenador: Danny Tonidandel\\
+Relator: Alessandro Cardoso\\
+Verificador: Gustavo Vieira\\
+Monitor: Bernardo Marques
+
+\section{1. Descrição do Problema}\label{descricao-do-problema}
+
+O objetivo do experimento proposto é avaliar uma nova técnica proposta
+para simplificação de modelos em algoritmos de classificação, baseada em
+inferência estatística. Dessa forma, será realizada a comparação do
+algoritmo de classificação original e do método proposto. Para realizar
+o estudo, ambos serão executados em bases de dados da literatura.
+
+Segundo os pesquisadores responsáveis pelo algoritmo proposto, este
+apresenta melhoria significativa em relação ao algoritmo original no
+tempo de execucão e não resulta em grandes perdas de desempenho, em
+termos de acurácia da classificação. Assim, busca-se responder:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  O método proposto realmente apresenta ganhos em relação ao tempo de
+  execução, quando comparado ao método padrão?
+\item
+  O método proposto não resulta em variações consideráveis de acurácia?
+\end{enumerate}
+
+Para que sejam investigados os questionamentos acima são desejadas as
+seguintes características para os testes estatísticos:
+
+\begin{itemize}
+\tightlist
+\item
+  Nível de significância: \(\alpha = 0.05\);
+\item
+  Tamanho de efeito de interesse prático para os ganhos de tempo:
+  \({d^{\star}_{t}} = 1.0\);
+\item
+  Margem de não-inferioridade para acurácia:
+  \(\delta_{acc}^{*} = 0.05\);
+\item
+  Potência desejada: \(\pi = 0.8\).
+\end{itemize}
+
+\section{2. Planejamento Experimental}\label{planejamento-experimental}
+
+Os dados experimentais utilizados foram obtidos através de simulação,
+por meio de um
+\href{http://orcslab.cpdee.ufmg.br/3838/classdata}{aplicativo web}. Os
+dados gerados informam o tempo necessário para a classificação
+(\emph{Time.s}) e acurácia (\emph{Accuracy}) de cada um dos algoritmos
+em cada instância e em cada execução. A data de nascimento do membro
+mais jovem da equipe (21/11/1992) é parâmetro utilizado como semente do
+gerador de números da simulação. O número de instâncias utilizadas e de
+execuções por instâncias deve ser selecionado no aplicativo.
+
+O experimento envolve comparações entre métodos aplicados em diferentes
+instâncias de problemas de classificação. Conforme apresentado em
+{[}1{]}, a variabilidade decorrente das características de cada problema
+de teste é uma forte fonte de variação espúria quando não considerada na
+análise dos resultados. Para eliminar a influência dessas variações,
+deve-se realizar o pareamento das medições por instância de teste.
+
+Para isso, pode ser aplicado o teste de hipótese t pareado {[}2{]},
+comparando as médias de ambos os algoritmos. No entanto, uma segunda
+alternativa é realizar o teste sobre as diferenças das médias dos
+algoritmos, de maneira que o efeito das instâncias se cancela. Dessa
+forma, define-se, para cada par j das n observações de médias
+\((\mu_{1j}, \mu_{2j})\), a diferença
+\(d_j = \mu_{2j} - \mu_{1j}, \forall j \in (1,...,n)\).
+
+\subsection{2.1 Definição de Hipóteses}\label{definicao-de-hipoteses}
+
+Para cada uma das questões levantadas no experimento, foi estabelecido
+um par de hipóteses.
+
+\subsection{2.1.1 Ganhos de Tempo}\label{ganhos-de-tempo}
+
+Definiu-se o teste de hipótese unilateral convencional. A hipótese nula
+é de que a diferença do tempo de execução médio do algoritmo proposto e
+do algoritmo original é nula, enquanto a hipótese alternativa estabelece
+que o algoritmo proposto é mais rápido que o original (diferença menor
+que zero). Esta formulação é apresentada abaixo, na qual \(\mu_p^t\)
+representa a média de tempo do método proposto e \(\mu_o^t\) a média de
+tempo do algoritmo original.
+
+\[
+\left\{\begin{array}{rc}
+H_{0}: \mu_p^t - \mu_o^t = 0\\
+H_{1}: \mu_p^t - \mu_o^t < 0
+\end{array}\right.
+\]
+
+\subsection{2.1.2 Não-inferioridade da
+Acurácia}\label{nao-inferioridade-da-acuracia}
+
+Foi definido um teste de não-inferioridade do algoritmo proposto em
+relação ao atual. A hipótese nula estabelece que a diferença entre a
+acurácia média do algoritmo proposto e do algoritmo orignal é maior que
+a margem de não-inferioridade estabelecida (\(\delta_{acc}^{*}\)),
+enquanto a enquanto a hipótese alternativa propõe que a diferença das
+acurácias é menor que essa margem. Sendo \(\mu_p^{a}\) a média da
+acurácia do algoritmo proposto e \(\mu_o^{a}\) a média da acurácia do
+algoritmo original, tem-se:
+
+\[
+\left\{\begin{array}{rc}
+H_{0}: \mu_p^{a} - \mu_o^{a} = -\delta^{*}_{acc}\\
+H_{1}: \mu_p^{a} - \mu_o^{a} > -\delta^{*}_{acc}\\
+\end{array}\right.
+\]
+
+\subsection{2.2 Número de Execuções por
+Instância}\label{numero-de-execucoes-por-instancia}
+
+Para problemas com variáveis pareadas, cada par de médias avaliadas em
+diferentes instâncias constitui uma amostra independente {[}3{]}. No
+entanto, é possível que, mesmo para observações coletadas sob condições
+homogêneas nas mesmas instâncias, exista o efeito de perturbações
+aleatórias {[}2{]}. Uma forma de reduzir esse efeito é realizar
+repetidas execuções para cada instância e adotar como valor para a
+instância a média das diferentes execuções.
+
+Já foi demonstrado que aumentar o número de instâncias testadas
+apresenta uma melhoria maior sobre a potência dos testes do que aumentar
+o número de execuções em cada instância. Apesar disso, se o custo de
+execução não é impeditivo, é recomendável realizar pelo menos 30
+execuções em cada instância {[}1{]}. Esse valor foi adotado nesse
+trabalho, uma vez que o custo da simulação não é significativo.
+
+\subsection{2.3 Definição do Tamanho
+Amostral}\label{definicao-do-tamanho-amostral}
+
+Para a realizar o cálculo do tamanho amostral necessário para a potência
+estabelecida, é necessário conhecer o desvio padrão de cada variável
+observada. Uma vez que não há disponível nenhum conhecimento histórico
+sobre os processos em questão, deve ser realizado um estudo piloto para
+determinar os desvios.
+
+Surge aí a necessidade de calcular o número de amostras para o estudo
+piloto. Inicialmente, utilizou-se a equação
+\(n_{pilot}\approx 2\left(\frac{z_{\alpha_n/2}}{e_{n}}\right)^2\), em
+que \(e_{n}\) representa o máximo erro relativo permitido para o tamanho
+da amostra. Estabelecendo \(e_{n} = 0.1\), obtém-se \(n_{pilot} = 800\).
+No entanto, essa equação pode resultar em tamanhos de estudo piloto
+maiores que o tamanho amostral necessário para o experimento {[}1{]}.
+
+Para contornar esse problema, um caminho alternativo foi tomado. O
+tamanho da amostra pode ser calculado pela equação:
+
+\[n = 2 \left( \frac{\hat{\sigma}}{\delta^{\star}}\right)^{2}(t_{\alpha/2}+t_{\beta})^{2} \,, \]
+e uma vez que, para o experimento do tempo o valor de
+\({d^{\star}_{t}} = \frac{\delta^{\star}}{\hat{\sigma}}\) é conhecido, é
+possível calcular o tamanho amostral mínimo necessário com a relação:
+\[n = 2 \left( \frac{1}{d^{\star}_t}\right)^{2}(t_{\alpha/2}+t_{\beta})^{2} \,,\]
+em que \(t_{\alpha/2}\) e \(t_{\beta}\) são dependentes de \(n\). Para
+solucionar esse problema, eles são substituídos por \(z_{\alpha/2}\) e
+\(z_{\beta}\) e a equação é testada iterativamente até convergência
+(implementação em anexo no arquivo \emph{calcN.R}). Dessa forma, foi
+encontrado o valor \(n = 17\). Esse valor é significativamente menor que
+o valor \(n_{pilot} = 800\) obtido anteriormente, o que é indicativo de
+tal era superestimado.
+
+Com base nos resultados alcançados, foi realizado um estudo piloto com
+\(17\) amostras. A partir desse estudo, foram determinados os desvios
+padrão de tempo e acurácia para o algoritmo proposto e original:
+
+\begin{itemize}
+\tightlist
+\item
+  \(sd_p^t = 17.5964261\)
+\item
+  \(sd_o^t = 19.6324136\)
+\item
+  \(sd_p^a = 0.0198\)
+\item
+  \(sd_o^a = 0.0237973\)
+\end{itemize}
+
+A partir desses valores, utilizou-se a fórmula em seguida (implementada
+no arquivo \emph{calcN\_tost2.R} {[}1{]}) para calcular o tamanho
+amostral mínimo para os experimentos de tempo e acurácia:
+
+\[
+n >= (t_{\alpha;\nu} + t_{(1-c)\beta;\nu})^2 
+\left( \frac{\hat{\sigma}_1^2 + \hat{\sigma}_2^2}{\delta^{\star} - \Delta\mu^\star}\right)^2 \,.
+\]
+
+Utilizando esta equação determinou-se um tamanho amostral mínimo de
+\(n = 33\) amostras para o teste de tempo e \(n = 5\) amostras para o
+experimento com acurácia. O valor definitivo de amostras utilizado na
+coleta de dados foi então determinado como o máximo dos dois, 33.
+
+\subsection{2.4 Tratamento e Validação dos
+Dados}\label{tratamento-e-validacao-dos-dados}
+
+Considerando o experimento realizado, foi criada uma rotina para
+validação dos dados obtidos e identificação de erros. Para cada execução
+do algoritmo de classificação, as seguintes condições devem se aplicar:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Tempo de execução \(> 0\)
+\item
+  Acurácia \(\in [0,1]\)
+\end{enumerate}
+
+Caso os valores de uma execução não atendam essas condições, ela é
+descartada.
+
+\section{3. Análise Estatística}\label{analise-estatistica}
+
+\subsection{3.1 Teste de Hipóteses}\label{teste-de-hipoteses}
+
+\subsubsection{3.1.1 Ganho de Tempo}\label{ganho-de-tempo}
+
+Realizando o teste de hipóteses apresentado na Seção 2.1.1, obtém-se
+\(p = 2.6192257\times 10^{-18}\). Dessa forma, é possível rejeitar a
+hipótese nula com um nível de confiança de \(95\%\) e aceitar a hipótese
+a hipótese alternativa, que estabelece que o novo método proposto tem
+ganhos de tempo em relação ao método original, considerando um tamanho
+de efeito \(d^\star = 1\).
+
+Os bloxplots abaixo evidenciam a diferença entre as médias dos tempos de
+execução. Nota-se valores muito menores para o tempo de execução do
+algoritmo proposto. No boxplot da diferença, pode-se observar que a
+média é menor que zero, o que indica que o algoritmo proposto possui
+média de tempo de execução menor que a média do algoritmo original.
+
+\includegraphics{report02_files/figure-latex/unnamed-chunk-4-1.pdf}
+\includegraphics{report02_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\subsubsection{3.1.2 Não-inferioridade da
+Acurácia}\label{nao-inferioridade-da-acuracia-1}
+
+O teste de hipóteses proposto na Seção 2.1.2 apresenta
+\(p = 0.0611063\). Esse resultado não permite rejeitar a hipótese nula
+com um nível de confiança de \(95\%\), considerando a margem de
+não-inferioridade \(\delta_{acc}^{*} = 0.05\) estabelecida. Dessa forma,
+não é possível afirmar que o algoritmo proposto não apresenta acurácia
+inferior ao original.
+
+O gráfico bloxplot referente ao experimento evidencia a diferença entre
+as médias das acurácias. Podemos ver que o intervalo de significância
+não está completamente acima da margem de não-inferioridade da acurácia
+dada. Portanto não foi possível estabelecer a não-inferioridade do
+algoritmo em relação à sua acurácia.
+
+\includegraphics{report02_files/figure-latex/unnamed-chunk-7-1.pdf}
+\includegraphics{report02_files/figure-latex/unnamed-chunk-8-1.pdf} \#\#
+3.2 Validação das Premissas
+
+\subsubsection{3.2.1 Tempo de Execução}\label{tempo-de-execucao}
+
+\paragraph{Normalidade}\label{normalidade}
+
+O QQPlot das diferenças de tempo entre os algoritmos é indicativo da
+normalidade de sua distribuição. Para confirmar esse resultado, é
+realizado o teste de Shapiro-Wilk. O teste apresenta \(p = 0.5151005\),
+de maneira que não é possível refutar a hipótese nula de que os dados
+apresentam distribuição normal.
+
+\includegraphics{report02_files/figure-latex/unnamed-chunk-10-1.pdf}
+
+\paragraph{Independência}\label{independencia}
+
+O plot dos valores ordenados de diferenças de tempo entre os algoritmos
+não apresenta nenhum indício de dependência temporal dos valores. O
+teste de autocorrelação serial Durbin-Wastson apresenta
+\(p = 0.4003581\), o que reforça a hipótese de que não há autocorrelação
+serial entre as amostras.
+
+\includegraphics{report02_files/figure-latex/unnamed-chunk-11-1.pdf}
+
+\subsubsection{3.2.2. Acurácia}\label{acuracia}
+
+Os mesmos procedimentos são realizados para a acurácia. O teste de
+normalidade Shapiro-Wilk apresenta \(p = 0.121192\), enquanto o teste de
+autocorrelação serial Durbin-Watson apresenta \(p = 0.3452157\). Nenhum
+dos resultados permite refutar as premissas de normalidade e
+independência.
+
+\includegraphics{report02_files/figure-latex/unnamed-chunk-13-1.pdf}
+\includegraphics{report02_files/figure-latex/unnamed-chunk-13-2.pdf}
+
+\section{4. Discussão e Conclusões}\label{discussao-e-conclusoes}
+
+Os testes de hipóteses realizados levam às seguintes conclusões:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  É possível rejeitar a hipótese de que os algoritmos possuem tempos de
+  execução equivalentes com grau de confiança de 95\% para um tamanho de
+  efeito \(d^* = 1\). Esse resultado indica que o novo algoritmo
+  apresenta tempos de execução melhores.
+\item
+  Não é possível refutar a hipótese de que a diferença de acurácia entre
+  os algoritmos é maior que o tamanho de efeito \(\delta^* = 0.05\) com
+  confiança de 95\%. Esse resultado não permite afirmar não
+  inferioridade da acurácia do algoritmo proposto.
+\end{enumerate}
+
+Vale notar que o teste de acurácia apresenta potência 1. Dessa forma, é
+seguro afirmar que não é possível estabelecer sua não inferioridade.
+
+Os resultados indicam, portato, um trade-off entre os métodos avaliados.
+Enquanto o método proposto apresenta ganhos de tempo de execução de,
+pelo menos, um desvio padrão em relação ao anterior, não é possível
+garantir sua não inferioridade em relação a acurácia. A análise
+descritiva sugere que o método original possui maior acurácia. Assim, a
+utilização de cada método depende dos requisitos da aplicação. Se o
+tempo de execução for prioridade e uma ligeira perda na acurácia for
+aceitável, recomenda-se o método proposto. Se a acurácia da
+classificação é prioridade e tempos maiores são aceitáveis, recomenda-se
+o método original.
+
+\section*{Referências}\label{referencias}
+\addcontentsline{toc}{section}{Referências}
+
+\hypertarget{refs}{}
+\hypertarget{ref-Campelo2015-01}{}
+{[}1{]} F. Campelo, ``Lecture notes on design and analysis of
+experiments.''
+\url{https://github.com/fcampelo/Design-and-Analysis-of-Experiments},
+2015.
+
+\hypertarget{ref-MontgomeryRunger2011}{}
+{[}2{]} D. C. Montgomery and G. C. Runger, \emph{Applied statistics and
+probability for engineers}, vol. 5. John Wiley; Sons, 2011.
+
+\hypertarget{ref-Walker2011UnderstandingEA}{}
+{[}3{]} E. Walker and A. S. Nowacki, ``Understanding equivalence and
+noninferiority testing.'' \emph{Journal of general internal medicine},
+vol. 26 2, pp. 192--6, 2011.
+
+
+\end{document}
