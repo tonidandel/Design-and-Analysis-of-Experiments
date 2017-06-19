@@ -1,0 +1,227 @@
+---
+title: 'Estudo de Caso 03: Comparison of Rising Drilling Configurations'
+author: "Equipe 04"
+date: "24 de Junho de 2017"
+output:
+  pdf_document:
+    fig_caption: yes
+  word_document: default
+header-includes:
+- \usepackage{fancyhdr}
+- \usepackage[utf8]{inputenc}
+- \pagestyle{fancy}
+- \fancyfoot[CO,CE]{EEE933 - Planejamento e Análise de Experimentos}
+- \fancyfoot[LE,RO]{\thepage}
+csl: ieee.csl
+bibliography: bibliography.bib
+---  
+Coordenador:  
+Relator:   
+Verificador:    
+Monitor:   
+
+```{r setup,include=FALSE, results='hide',warning=FALSE,echo=FALSE}
+if (!require(readr, quietly = TRUE)){
+  install.packages("readr")
+}
+if (!require(car, quietly = TRUE)){
+  install.packages("car")
+}
+if (!require(lmtest, quietly = TRUE)){
+  install.packages("lmtest")
+}
+source('calcN.R')
+library(car)
+library(lmtest)
+
+```
+
+# 1. Descrição do Problema
+
+```{r,results='show',warning=FALSE,echo=FALSE}
+## EXPERIMENTAL DEFINITIONS
+v_alpha = 0.05
+v_a = 4
+v_k = v_a-1
+v_alphaAdj = v_alpha/v_k
+v_beta = 0.15
+v_power = 1-v_beta
+v_delta = 0.25
+```
+
+Descrever problema, parâmetros, etc.
+
+* Nível de significância: $\alpha = 0.05$;
+* Tamanho de efeito de interesse prático para os ganhos de tempo: ${d^{\star}_{t}} = 1.0$;
+* Margem de não-inferioridade para acurácia: $\delta_{acc}^{*} = 0.05$;
+* Potência desejada: $\pi  = 0.8$.
+
+
+# 2. Planejamento Experimental
+
+Os dados experimentais utilizados foram obtidos através de simulação, por meio de um [aplicativo web](http://orcslab.cpdee.ufmg.br:3838/riserdata/). Os dados gerados informam o  BLA BLA BLA. A data de nascimento do segundo membro mais jovem da equipe (15/10/1992) é parâmetro utilizado como semente do gerador de números da simulação. O número de instâncias utilizadas e de execuções por instâncias deve ser selecionado no aplicativo.
+
+## 2.1 Análise de Variância
+
+Discutir ANOVA
+
+
+## 2.2 Comparações Múltiplas
+
+Discutir análise one-vs-all necessária depois do anova, se diferença for verificada.
+
+Comentar alpha ajustado
+
+## 2.3 Definição do Tamanho Amostral
+
+```{r,results='show',warning=FALSE,echo=FALSE}
+## SAMPLE SIZE CALC
+v_dataHist = readr::read_csv('riser1.csv')
+v_sdHist = sd(v_dataHist$LogTTF)
+
+v_n = calcN_oneVsAll(p_alpha = v_alphaAdj,
+            p_beta = v_beta,
+            p_alternative = 'one-sided',
+            p_k = v_k,
+            p_sd = v_sdHist,
+            p_delta = v_delta
+)
+
+v_nControl = ceiling(v_n*sqrt(v_k))
+
+v_tau = c(-v_delta*(v_a-1)/v_a, rep(v_delta/v_a, v_k))
+vartau = var(v_tau)
+v_nAnova = power.anova.test(groups = v_a, 
+                            between.var = vartau, 
+                            within.var = v_sdHist^2, 
+                            sig.level = v_alpha, 
+                            power = v_power)$n
+```
+
+Tamanho amostral anova:
+
+Discutir ideia bla bla
+$$\tau = \left( -\frac{(a-1)\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a} \right) $$
+
+Tamanho amostral one-vs-all unilateral:
+
+Calculado com alpha ajustado.
+
+$$n_i = \left(1 + \frac{1}{K}\right) \left( \frac{\hat{\sigma}}{\delta^{\star}}\right)^{2}(t_{\alpha_{adj}}+t_{\beta})^{2} $$
+$$n_0 = n_i\sqrt{K}$$
+
+em que $t_{\alpha_{adj}}$ e $t_{\beta}$ são dependentes de $n$. Para solucionar esse problema, eles são substituídos por $z_{\alpha_{adj}}$ e $z_{\beta}$ e a equação é testada iterativamente até convergência (implementação em anexo no arquivo  _calcN.R_). Dessa forma, foi encontrado o valor $n_1 = 60$.
+
+Número necessário pra anova: 60*3 + 50
+
+Número necessário pra análises subsequentes: 58*3 + (101 - 10)
+
+Mais barato fazer ANOVA antes e pegar mais amostras do grupo 1 apenas se necessário.
+N das comparações multiplas não é tão grande por ser unilateral.
+
+CUSTO TOTAL!
+
+## 2.4 Tratamento e Validação dos Dados
+
+Considerando o experimento realizado, foi criada uma rotina para validação dos dados obtidos e identificação de erros. bla bla
+
+1. LogTTF $> 0$
+
+Caso os valores de uma execução não atendam essas condições, ela seria descartada. No entanto, nenhuma das amostras apresenta problema.
+
+
+# 3. Análise Estatística
+
+## 3.1 Análise de Variância
+
+```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=4, fig.width=6}
+v_data = readr::read_csv('1992-10-15_60_60_60_60.csv')
+v_data$Riser = as.factor(v_data$Riser)
+boxplot(LogTTF~Riser, 
+        data = v_data, 
+        xlab = "Riser",
+        ylab = "LogTTF", 
+        main = "Riser data",
+        pch  = 16,
+        col  = "gray")
+v_model <- aov(LogTTF~Riser, 
+             data = v_data)
+summary.aov(v_model)
+```
+
+Gráfico não indica visualmente diferença significativa. 
+P valor grande -> não rejeita hipótese de que não há diferença
+
+Não é necessário fazer comparação múltipla.
+
+## 3.2 Validação das Premissas
+
+### Normalidade
+
+```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=5}
+shapiro.test(v_model$residuals)
+
+qqPlot(v_model$residuals, 
+       pch = 16, 
+       lwd = 3, 
+       cex = 2, 
+       las = 1)
+```
+
+p valor rejeita normalidade
+No entanto, qq plot mostra que as violações de normalidade são muito pequenas. Anova é robusto a pequenas variações, então tudo ok. =)
+
+### Homocedasticidade
+
+```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3.5}
+fligner.test(LogTTF~Riser, 
+             data = v_data)
+
+plot(x    = v_model$fitted.values,
+     y    = v_model$residuals,
+     cex  = 2,
+     las  = 1,
+     pch  = 16,
+     xlab = "Fitted values",
+     ylab = "Residuals")
+grid(NULL,NULL, lwd=2, col = "#44444422")
+```
+
+Comentar plot e p valor. Variância praticamente a mesma 
+
+
+### Independência
+
+```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3.5}
+v_dwTest = durbinWatsonTest(v_model)
+v_dwTestp = v_dwTest$p
+
+plot(x    = seq_along(v_model$residuals),
+     y    = v_model$residuals,
+     type = "l",
+     las  = 1,
+     lwd  = 2,
+     lty  = 1,
+     xlab = "Residual order",
+     ylab = "Residual value")
+#points(x    = seq_along(v_model$residuals),
+#       y    = v_model$residuals,
+#       type = "p",
+#       cex  = 2,
+#       pch  = 5,
+#       col  = as.numeric(v_data[, 2]))
+grid(NA,NULL, lwd=2, col = "#44444422")
+```
+
+O plot dos valores ordenados de diferenças de tempo entre os algoritmos não apresenta nenhum indício de dependência temporal dos valores. O teste de autocorrelação serial Durbin-Wastson apresenta $p = `r v_dwTestp`$, o que reforça a hipótese de que não há autocorrelação serial entre as amostras.
+
+
+# 4. Discussão e Conclusões
+
+Os testes realizados levam às seguintes conclusões:
+
+Variância entre grupos é explicada pela variância intra grupo. Não há indício de diferença significativa entre eles.
+
+Recomenda-se manter riser 1. Custo do experimento é significativo, mas previniu um custo potencialmente maior de trocar o Riser.
+
+# Referências
