@@ -3,9 +3,7 @@ library(car)
 library(lmtest)
 
 
-v_dataHist = readr::read_csv('riser1.csv')
-v_sdHist = sd(v_dataHist$LogTTF)
-
+## EXPERIMENTAL DEFINITIONS
 v_alpha = 0.05
 v_a = 4
 v_k = v_a-1
@@ -14,9 +12,15 @@ v_beta = 0.15
 v_power = 1-v_beta
 v_delta = 0.25
 
+
+## SAMPLE SIZE CALC
+
+v_dataHist = readr::read_csv('riser1.csv')
+v_sdHist = sd(v_dataHist$LogTTF)
+
 v_n = calcN_oneVsAll(p_alpha = v_alphaAdj,
             p_beta = v_beta,
-            p_alternative = 'two-sided',
+            p_alternative = 'one-sided',
             p_k = v_k,
             p_sd = v_sdHist,
             p_delta = v_delta
@@ -25,60 +29,77 @@ v_n = calcN_oneVsAll(p_alpha = v_alphaAdj,
 
 v_nControl = ceiling(v_n*sqrt(v_k))
 
-
 v_tau = c(-v_delta*(v_a-1)/v_a, rep(v_delta/v_a, v_k))
+#v_tau = c(-v_delta/2, v_delta/2, rep(0, v_k-1))
 vartau = var(v_tau)
-v_nAnova = power.anova.test(groups = v_a, between.var = vartau, within.var = v_sdHist^2, sig.level = v_alpha, power = v_power)$n
+v_nAnova = power.anova.test(groups = v_a, 
+                            between.var = vartau, 
+                            within.var = v_sdHist^2, 
+                            sig.level = v_alpha, 
+                            power = v_power)$n
 
+
+### EXPERIMENT
+
+## ANOVA
 
 # sample data
-v_data = readr::read_csv('1992-11-21_33_30.csv')
-v_data = aggregate(cbind(Accuracy,Time.s)~Instance:Algorithm,data=v_data, FUN=mean)
-
-splitInst = function (p_str){
-  return (as.numeric(unlist(strsplit(p_str, 'Inst'))[2]))
-}
-v_data$Instance = unlist(lapply(v_data$Instance, splitInst))
-v_data = v_data[order(v_data$Instance),]
-
-# hypothesis test Time
-
-v_diffTime = subset(v_data, Algorithm=='Proposed')$Time.s - subset(v_data, Algorithm=='Standard')$Time.s
-v_tTestTime = t.test(v_diffTime,
-                     conf.level = 0.05,
-                     mu=0,
-                     alternative = 'less'
-)
-v_pTime = v_tTestTime$p.value
+#v_data = readr::read_csv('1995-01-01_121_68_68_68.csv')
+#v_data = readr::read_csv('1995-01-01_20_20_20_20.csv')
+v_data = readr::read_csv('1992-10-15_60_60_60_60.csv')
+v_data$Riser = as.factor(v_data$Riser)
+boxplot(LogTTF~Riser, 
+        data = v_data, 
+        xlab = "Riser",
+        ylab = "LogTTF", 
+        main = "Riser data",
+        pch  = 16,
+        col  = "gray")
+v_model <- aov(LogTTF~Riser, 
+             data = v_data)
+summary.aov(v_model)
 
 
-# hypothesis test acc
-v_diffAcc = subset(v_data, Algorithm=='Proposed')$Accuracy - subset(v_data, Algorithm=='Standard')$Accuracy
-v_tTestAcc = t.test(v_diffAcc, 
-                    mu = -0.05, 
-                    conf.level = 0.05, 
-                    alternative = 'greater'
-)
-v_pAcc = v_tTestAcc$p.value
+## HYPOTHESIS VALIDATION
 
-## Hypothesis validation - Time
+# Homocedasticity
+fligner.test(LogTTF~Riser, 
+             data = v_data)
 
-# Normality
-qqPlot(v_diffTime)
-v_shapiroTime = shapiro.test(v_diffTime)
-
-# Independence
-v_dwTime = dwtest(v_diffTime~1)
-plot(v_diffTime, type='b')
-
-
-## Hypothesis validation - Acc
+plot(x    = v_model$fitted.values,
+     y    = v_model$residuals,
+     cex  = 2,
+     las  = 1,
+     pch  = 16,
+     xlab = "Fitted values",
+     ylab = "Residuals")
+grid(NULL,NULL, lwd=2, col = "#44444422")
 
 # Normality
-qqPlot(v_diffAcc)
-v_shapiroAcc = shapiro.test(v_diffAcc)
+shapiro.test(v_model$residuals)
+
+qqPlot(v_model$residuals, 
+       pch = 16, 
+       lwd = 3, 
+       cex = 2, 
+       las = 1)
 
 # Independence
-v_dwAcc = dwtest(v_diffAcc~1)
-plot(v_diffAcc, type='b')
+durbinWatsonTest(v_model)
+
+plot(x    = seq_along(v_model$residuals),
+     y    = v_model$residuals,
+     type = "l",
+     las  = 1,
+     lwd  = 2,
+     lty  = 1,
+     xlab = "Residual order",
+     ylab = "Residual value")
+points(x    = seq_along(v_model$residuals),
+       y    = v_model$residuals,
+       type = "p",
+       cex  = 2,
+       pch  = 5,
+       col  = as.numeric(v_data[, 2]))
+grid(NA,NULL, lwd=2, col = "#44444422")
 
