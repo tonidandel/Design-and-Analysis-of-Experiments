@@ -123,7 +123,7 @@ v_nAnova = power.anova.test(groups = v_a,
 
 
 Já temos então, neste ponto, subsídios para o cálculo do tamanho amostral do ANOVA: 
-(Discutir essa ideia ainda...)
+(Discutir essa ideia ainda... bla bla)
 
 $$\tau = \left( -\frac{(a-1)\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a} \right) $$
 
