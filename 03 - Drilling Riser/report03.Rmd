@@ -37,9 +37,12 @@ library(lmtest)
 ```
 
 # 1. Descrição do Problema
-O objetivo do problema é realizar uma comparação entre quatro tipos de tubos de perfuração _drilling risers_, que consiste em uma espécie de conduíte ou tubo utilizado para servir como passagem temporária para o petróleo extraído em plataformas oceânicas. Mais especificamente, pretende-se investigar o tempo médio até a falha ( _mean time to failure ou MTTF_ ) de quatro configurações diferentes (níveis $A$, $B$,$C$,$D$) de equipamentos, de forma a escolher a que forneça a menor probabilidade de falha, considerando-se um período de $20$ anos, isto é, comparar a configuração padrão _(Riser 1)_ com as outras três, buscando encontrar qual delas proverá o maior _MTTF_.
+O objetivo do problema é realizar uma comparação entre quatro tipos de tubos de perfuração _drilling risers_, que consiste em uma espécie de conduíte ou tubo utilizado para servir como passagem temporária para o petróleo extraído em plataformas oceânicas. Mais especificamente, pretende-se comparar o tempo médio até a falha ( _mean time to failure ou MTTF_ ) de quatro configurações diferentes (níveis $A$, $B$, $C$, $D$) de equipamentos, de forma a escolher a que forneça a menor probabilidade de falha, considerando-se um período de $20$ anos. Para isto serão comparadas a configuração padrão _(Riser 1)_ com as outras três, buscando encontrar qual delas proverá o maior _MTTF_. Ou seja, a questão a se responder é:
 
-A plataforma de testes escolhhida pela equipe de engenharia consiste na utilização de um modelo em escala para os _rirers_ com um protocolo de tempo acelerado, em que há uma relação direta entre (cada observação do) o tempo medido (em minutos) e a configuração do sistema real. Todavia, o custo de cada observação é altíssimo, cerca de  $US\$10000 $  (dez mil dólares). Uma alternativa consiste em utilizar dados históricos existentes para a primeira configuração _(Riser1)_, que não impactará em custos adicionais para o experimento. 
+Algum dos risers alternativos é melhor que o padrão?
+
+A plataforma de testes escolhida pela equipe de engenharia consiste na utilização de um modelo em escala para os _risers_ com um protocolo de tempo acelerado, em que há uma relação direta entre o tempo medido de cada observação (em minutos) e a configuração do sistema real. Todavia, o custo de cada observação é significativamente custoso, sendo cerca de $US\$10000$ (dez mil dólares). Afim de minimizar os custos com amostras coletadas é possível utilizar os dados históricos existentes para a primeira configuração _(Riser1)_.
+
 ```{r,results='show',warning=FALSE,echo=FALSE}
 ## EXPERIMENTAL DEFINITIONS
 v_alpha = 0.05
@@ -50,7 +53,7 @@ v_beta = 0.15
 v_power = 1-v_beta
 v_delta = 0.25
 ```
-O  parâmetros experimentais de interesse são:
+Os  parâmetros experimentais desejados são:
 
 * Nível de significância: $\alpha = 0.05$;
 
@@ -60,23 +63,45 @@ O  parâmetros experimentais de interesse são:
 
 # 2. Planejamento Experimental
 
-Esta etapa do presente estudo de caso consiste em investigar o comportamento dos níveis de fator a partir de uma análise exploratória, e posteriormente, aplicar um teste de comparações múltiplas para as médias. A variância do processo é desconhecida, no entanto será considerada como sendo uniforme para todas as configurações.
+Esta etapa do presente estudo de caso consiste em investigar o comportamento dos níveis de fator a partir de uma análise exploratória, e posteriormente, aplicar um teste de comparações múltiplas para as médias. A variância do processo é desconhecida e será estimada utilizando-se os dados históricos de operação fornecidos em <https://git.io/vHDG3. A variância será considerada como sendo uniforme para todas as configurações neste estudo.
 
 Os dados experimentais utilizados foram obtidos através de simulação, por meio de um [aplicativo web] <http://orcslab.cpdee.ufmg.br:3838/riserdata/. A data de nascimento do segundo membro mais jovem da equipe (15/10/1992) foi o parâmetro utilizado como semente para o gerador de números da simulação. Os dados gerados informam uma tabela com os níveis de cada fator de interesse em uma coluna e os tempos (tomados em escala logarítmica) em coluna respectiva. 
 
 ## 2.1 Análise de Variância
+ 
+Para a avaliar o questionamento acima, será utilizada a ferramenta estatística para análise de variância denominada ANOVA.
 
-Discutir ANOVA
+A técnica ANOVA compara médias de diferentes amostras para verificar se estas possuem médias iguais ou não. Assim, essa técnica permite que vários grupos sejam comparados [@Campelo2015-01], [@MontgomeryRunger2011].
 
+Em outras palavras, a análise de variância é utilizada quando se quer decidir se os níveis apresentam médias diferentes em relação à uma média global $\mu$. As diferenças entre as médias dos níveis e a média global é $\tau_i$ $\forall \  i$ . Desta forma a ANOVA se basea no teste de a hipóteses abaixo, onde quando refutado a hipótese nula, evidencia-se indícios de diferenças entre os níveis.
+
+Esta técnica é restrita apenas à indicação da existência ou não de diferenças entre os níveis avaliados sem indicar quais níveis seriam diferentes.
+
+
+
+
+$$
+\left\{\begin{array}{rc}
+H_{0}:& \tau_i = 0, \ \ \ \forall i\\
+H_{1}:& \exists \ \ \tau_i \neq 0
+\end{array}\right.
+$$
+Esta etapa foi considerada como uma primeira verificação ao questionamento deste estudo por apresentar um custo de coleta de amostras menor do que o teste de comparações múltiplas discutido abaixo. Portanto, caso não seja detectada alguma diferenças entre os níveis o estudo será concluído por meio do teste ANOVA.
 
 ## 2.2 Comparações Múltiplas
 
-Discutir análise one-vs-all necessária depois do anova, se diferença for verificada.
+Caso a análise ANOVA identifique a existência de diferenças entre os níveis, deve-se proceder com testes de comparação múltipla, no intuito de identificar qual ou quais níveis apresentam tal diferença.
 
-Comentar alpha ajustado
+Desta forma, somente, caso a análise de variância indique a existência de diferenças entre os níveis, será aplicado o teste de comparações múltiplas um-contra-todos (_one-vs-all_) de _Dunnett_, onde os _Risers_ propostos serão confrontados com a configuração padrão _Riser1_ para verificar se alguma proposta traria ganho de _MTTF_ frente à configuração já estabelecida.
 
-Sempre que possível, deve-se trabalhar com o menor número possível de comparações e, no presente caso, em virtude do alto custo. Como a intenção é comparar $-$ caso a diferença entre as configurações seja detectada $-$ em um primeiro momento, os valores médios do grupo 1 em relação aos outros, mantendo-se certo controle sobre os erros do tipo-$I$ em cada teste, é preciso corrigir os valores de $\alpha$ para cada teste. A escolha para este caso é o méttodo de correção de Bonferroni:
-$$\alpha_{adj} = \frac{\alpha_{família}}{K} \,,$$ no qual $K=3$ representa o número de comparações ($K = a-1$, em que $a$ é o número de níveis) e $\alpha_{family} = 0.05$.
+Para que se proceda com o teste de comparações múltiplas, deve-se manter o controle sobre os erros do tipo-$I$ em cada comparação. É preciso corrigir os valores de $\alpha$ para cada teste. A escolha para este caso é o método de correção de Bonferroni:
+$$\alpha_{adj} = \frac{\alpha_{família}}{K} \,,$$ 
+
+no qual $K=3$ é o número de comparações a serem feitas que no caso do teste um-contra-todos de _Dunnett_ é confome abaixo:
+
+$$K=a-1 \,,$$
+onde $a$ é o número de níveis que neste do estudo é 4 e o $\alpha_{família} = 0.05$.
+
 
 ## 2.3 Definição do Tamanho Amostral
 Para calcular o tamanho amostral neste caso, utilizaremos, portanto, as mesmas relações utilizadas na comparação de duas amostras independentes emparelhadas "todos contra um", alterando-se apenas os valores de $\alpha$ para os valores corrigidos $\alpha_{adj}$ para as múltiplas hipóteses e $a-1$ comparações:
