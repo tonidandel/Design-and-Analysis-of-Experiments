@@ -15,10 +15,10 @@ header-includes:
 csl: ieee.csl
 bibliography: bibliography.bib
 ---  
-Coordenador:  
-Relator:   
-Verificador:    
-Monitor:   
+Coordenador: Bernardo Marques   
+Relator: Danny Tonidandel   
+Verificador: Gustavo Vieira   
+Monitor: Alessandro Cardoso
 
 ```{r setup,include=FALSE, results='hide',warning=FALSE,echo=FALSE}
 if (!require(readr, quietly = TRUE)){
@@ -37,7 +37,9 @@ library(lmtest)
 ```
 
 # 1. Descrição do Problema
+O objetivo do problema é realizar uma comparação entre quatro tipos de tubos de perfuração _drilling risers_, que consiste em uma espécie de conduíte ou tubo utilizado para servir como passagem temporária para o petróleo extraído em plataformas oceânicas. Mais especificamente, pretende-se investigar o tempo médio até a falha ( _mean time to failure ou MTTF_ ) de quatro configurações diferentes (níveis $A$, $B$,$C$,$D$) de equipamentos, de forma a escolher a que forneça a menor probabilidade de falha, considerando-se um período de $20$ anos, isto é, comparar a configuração padrão _(Riser 1)_ com as outras três, buscando encontrar qual delas proverá o maior _MTTF_.
 
+A plataforma de testes escolhhida pela equipe de engenharia consiste na utilização de um modelo em escala para os _rirers_ com um protocolo de tempo acelerado, em que há uma relação direta entre (cada observação do) o tempo medido (em minutos) e a configuração do sistema real. Todavia, o custo de cada observação é altíssimo, cerca de  $US\$10000 $  (dez mil dólares). Uma alternativa consiste em utilizar dados históricos existentes para a primeira configuração _(Riser1)_, que não impactará em custos adicionais para o experimento. 
 ```{r,results='show',warning=FALSE,echo=FALSE}
 ## EXPERIMENTAL DEFINITIONS
 v_alpha = 0.05
@@ -48,18 +50,16 @@ v_beta = 0.15
 v_power = 1-v_beta
 v_delta = 0.25
 ```
-
-Descrever problema, parâmetros, etc.
-
+O  parâmetros experimentais de interesse são:
 * Nível de significância: $\alpha = 0.05$;
-* Tamanho de efeito de interesse prático para os ganhos de tempo: ${d^{\star}_{t}} = 1.0$;
-* Margem de não-inferioridade para acurácia: $\delta_{acc}^{*} = 0.05$;
-* Potência desejada: $\pi  = 0.8$.
-
+* Tamanho de efeito de interesse prático: ${d^{\star}_{t}} = 0.25$;
+* Potência desejada: $(1- \beta) = \pi  \geq 0.85$.
 
 # 2. Planejamento Experimental
 
-Os dados experimentais utilizados foram obtidos através de simulação, por meio de um [aplicativo web](http://orcslab.cpdee.ufmg.br:3838/riserdata/). Os dados gerados informam o  BLA BLA BLA. A data de nascimento do segundo membro mais jovem da equipe (15/10/1992) é parâmetro utilizado como semente do gerador de números da simulação. O número de instâncias utilizadas e de execuções por instâncias deve ser selecionado no aplicativo.
+Esta etapa do presente estudo de caso consiste em investigar o comportamento dos níveis de fator a partir de uma análise exploratória, e posteriormente, aplicar um teste de comparações múltiplas para as médias. A variância do processo é desconhecida, no entanto será considerada como sendo uniforme para todas as configurações.
+
+Os dados experimentais utilizados foram obtidos através de simulação, por meio de um [aplicativo web] <http://orcslab.cpdee.ufmg.br:3838/riserdata/. A data de nascimento do segundo membro mais jovem da equipe (15/10/1992) foi o parâmetro utilizado como semente para o gerador de números da simulação. Os dados gerados informam uma tabela com os níveis de cada fator de interesse em uma coluna e os tempos (tomados em escala logarítmica) em coluna respectiva. 
 
 ## 2.1 Análise de Variância
 
