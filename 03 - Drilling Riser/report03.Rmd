@@ -10,7 +10,7 @@ header-includes:
 - \usepackage{fancyhdr}
 - \usepackage[utf8]{inputenc}
 - \pagestyle{fancy}
-- \fancyfoot[CO,CE]{EEE933 - Planejamento e An√°lise de Experimentos}
+- \fancyfoot[CO,CE]{EEE933 - Planejamento e An·lise de Experimentos}
 - \fancyfoot[LE,RO]{\thepage}
 csl: ieee.csl
 bibliography: bibliography.bib
@@ -36,12 +36,12 @@ library(lmtest)
 
 ```
 
-# 1. Descri√ß√£o do Problema
-O objetivo do problema √© realizar uma compara√ß√£o entre quatro tipos de tubos de perfura√ß√£o _drilling risers_, que consiste em uma esp√©cie de condu√≠te ou tubo utilizado para servir como passagem tempor√°ria para o petr√≥leo extra√≠do em plataformas oce√¢nicas. Mais especificamente, pretende-se comparar o tempo m√©dio at√© a falha ( _mean time to failure ou MTTF_ ) de quatro configura√ß√µes diferentes (n√≠veis $A$, $B$, $C$, $D$) de equipamentos, de forma a escolher a que forne√ßa a menor probabilidade de falha, considerando-se um per√≠odo de $20$ anos. Para isto ser√£o comparadas a configura√ß√£o padr√£o _(Riser 1)_ com as outras tr√™s, buscando encontrar qual delas prover√° o maior _MTTF_. Ou seja, a quest√£o a se responder √©:
+# 1. DescriÁ„o do Problema
+O objetivo do problema È realizar uma comparaÁ„o entre quatro tipos de tubos de perfuraÁ„o _drilling risers_, que consiste em uma espÈcie de conduÌte ou tubo utilizado para servir como passagem tempor·ria para o petrÛleo extraÌdo em plataformas oce‚nicas. Mais especificamente, pretende-se comparar o tempo mÈdio atÈ a falha _(mean time to failure ou MTTF)_ de quatro configuraÁıes diferentes (nÌveis $A$, $B$, $C$, $D$) de equipamentos, de forma a escolher a que forneÁa a menor probabilidade de falha, considerando-se um perÌodo de $20$ anos. Para isto ser„o comparadas a configuraÁ„o padr„o _(Riser 1)_ com as outras trÍs, buscando encontrar qual delas prover· o maior _MTTF_. Ou seja, a quest„o a se responder È:
 
-Algum dos risers alternativos √© melhor que o padr√£o?
+Algum dos risers alternativos È melhor que o padr„o?
 
-A plataforma de testes escolhida pela equipe de engenharia consiste na utiliza√ß√£o de um modelo em escala para os _risers_ com um protocolo de tempo acelerado, em que h√° uma rela√ß√£o direta entre o tempo medido de cada observa√ß√£o (em minutos) e a configura√ß√£o do sistema real. Todavia, o custo de cada observa√ß√£o √© significativamente custoso, sendo cerca de $US\$10000$ (dez mil d√≥lares). Afim de minimizar os custos com amostras coletadas √© poss√≠vel utilizar os dados hist√≥ricos existentes para a primeira configura√ß√£o _(Riser1)_.
+A plataforma de testes escolhida pela equipe de engenharia consiste na utilizaÁ„o de um modelo em escala para os _risers_ com um protocolo de tempo acelerado, em que h· uma relaÁ„o direta entre o tempo medido de cada observaÁ„o (em minutos) e a configuraÁ„o do sistema real. Todavia, o custo de cada observaÁ„o È significativamente custoso, sendo cerca de $US\$10.000$ (dez mil dÛlares). Afim de minimizar os custos com amostras coletadas È possÌvel utilizar os dados histÛricos existentes para a primeira configuraÁ„o _(Riser1)_.
 
 ```{r,results='show',warning=FALSE,echo=FALSE}
 ## EXPERIMENTAL DEFINITIONS
@@ -53,31 +53,31 @@ v_beta = 0.15
 v_power = 1-v_beta
 v_delta = 0.25
 ```
-Os  par√¢metros experimentais desejados s√£o:
+Os  par‚metros experimentais desejados s„o:
 
-* N√≠vel de signific√¢ncia: $\alpha = 0.05$;
+* NÌvel de signific‚ncia: $\alpha = 0.05$;
 
-* Tamanho de efeito de interesse pr√°tico: ${d^{\star}_{t}} = 0.25$;
+* Tamanho de efeito de interesse pr·tico: ${d^{\star}_{t}} = 0.25$;
 
-* Pot√™ncia desejada: $(1- \beta) = \pi  \geq 0.85$.
+* PotÍncia desejada: $(1- \beta) = \pi  \geq 0.85$.
 
 # 2. Planejamento Experimental
 
-Esta etapa do presente estudo de caso consiste em investigar o comportamento dos n√≠veis de fator a partir de uma an√°lise explorat√≥ria, e posteriormente, aplicar um teste de compara√ß√µes m√∫ltiplas para as m√©dias. A vari√¢ncia do processo √© desconhecida e ser√° estimada utilizando-se os dados hist√≥ricos de opera√ß√£o fornecidos em <https://git.io/vHDG3. A vari√¢ncia ser√° considerada como sendo uniforme para todas as configura√ß√µes neste estudo.
+Esta etapa do presente estudo de caso consiste em investigar o comportamento dos nÌveis de fator a partir de uma an·lise exploratÛria, e posteriormente, aplicar um teste de comparaÁıes m˙ltiplas para as mÈdias. A vari‚ncia do processo È desconhecida e ser· estimada utilizando-se os dados histÛricos de operaÁ„o fornecidos em <https://git.io/vHDG3. A vari‚ncia ser· considerada como sendo uniforme para todas as configuraÁıes neste estudo.
 
-Os dados experimentais utilizados foram obtidos atrav√©s de simula√ß√£o, por meio de um [aplicativo web] <http://orcslab.cpdee.ufmg.br:3838/riserdata/. A data de nascimento do segundo membro mais jovem da equipe (15/10/1992) foi o par√¢metro utilizado como semente para o gerador de n√∫meros da simula√ß√£o. Os dados gerados informam uma tabela com os n√≠veis de cada fator de interesse em uma coluna e os tempos (tomados em escala logar√≠tmica) em coluna respectiva.
+Os dados experimentais utilizados foram obtidos atravÈs de simulaÁ„o, por meio de um [aplicativo web] <http://orcslab.cpdee.ufmg.br:3838/riserdata/. A data de nascimento do segundo membro mais jovem da equipe (15/10/1992) foi o par‚metro utilizado como semente para o gerador de n˙meros da simulaÁ„o. Os dados gerados informam uma tabela com os nÌveis de cada fator de interesse em uma coluna e os tempos (tomados em escala logarÌtmica) em coluna respectiva.
 
-Os dados est√£o na escala de _log_ e ser√£o analisados nesta escala, pois n√£o necessitam de tranforma√ß√£o para tal.
+Os dados est„o na escala de _log_ e ser„o analisados nesta escala, pois n„o necessitam de tranformaÁ„o para tal.
 
-## 2.1 An√°lise de Vari√¢ncia
+## 2.1 An·lise de Vari‚ncia
  
-Para a avaliar o questionamento acima, ser√° utilizada a ferramenta estat√≠stica para an√°lise de vari√¢ncia denominada ANOVA.
+Para a avaliar o questionamento acima, ser· utilizada a ferramenta estatÌstica para an·lise de vari‚ncia denominada ANOVA.
 
-A t√©cnica ANOVA compara m√©dias de diferentes amostras para verificar se estas possuem m√©dias iguais ou n√£o. Assim, essa t√©cnica permite que v√°rios grupos sejam comparados [@Campelo2015-01], [@MontgomeryRunger2011].
+A tÈcnica ANOVA compara mÈdias de diferentes amostras para verificar se estas possuem mÈdias iguais ou n„o. Assim, essa tÈcnica permite que v·rios grupos sejam comparados [@Campelo2015-01], [@MontgomeryRunger2011].
 
-Em outras palavras, a an√°lise de vari√¢ncia √© utilizada quando se quer decidir se os n√≠veis apresentam m√©dias diferentes em rela√ß√£o √† uma m√©dia global $\mu$. As diferen√ßas entre as m√©dias dos n√≠veis e a m√©dia global √© $\tau_i$ $\forall \  i$ . Desta forma a ANOVA se basea no teste de a hip√≥teses abaixo, onde quando refutado a hip√≥tese nula, evidencia-se ind√≠cios de diferen√ßas entre os n√≠veis.
+Em outras palavras, a an·lise de vari‚ncia È utilizada quando se quer decidir se os nÌveis apresentam mÈdias diferentes em relaÁ„o È uma mÈdia global $\mu$. As diferenÁas entre as mÈdias dos nÌveis e a mÈdia global È $\tau_i$ $\forall \  i$ . Desta forma a ANOVA se basea no teste de a hipÛteses abaixo, onde quando refutado a hipÛtese nula, evidencia-se indÌcios de diferenÁas entre os nÌveis.
 
-Esta t√©cnica √© restrita apenas √† indica√ß√£o da exist√™ncia ou n√£o de diferen√ßas entre os n√≠veis avaliados sem indicar quais n√≠veis seriam diferentes.
+Esta tÈcnica È restrita apenas ‡ indicaÁ„o da existÍncia ou n„o de diferenÁas entre os nÌveis avaliados sem indicar quais nÌveis seriam diferentes.
 
 
 
@@ -88,32 +88,33 @@ H_{0}:& \tau_i = 0, \ \ \ \forall i\\
 H_{1}:& \exists \ \ \tau_i \neq 0
 \end{array}\right.
 $$
-Esta etapa foi considerada como uma primeira verifica√ß√£o ao questionamento deste estudo por apresentar um custo de coleta de amostras menor do que o teste de compara√ß√µes m√∫ltiplas discutido abaixo. Portanto, caso n√£o seja detectada alguma diferen√ßas entre os n√≠veis o estudo ser√° conclu√≠do por meio do teste ANOVA.
+Esta etapa foi considerada como uma primeira verificaÁ„o ao questionamento deste estudo por apresentar um custo de coleta de amostras menor do que o teste de comparaÁıes m˙ltiplas discutido abaixo. Portanto, caso n„o seja detectada alguma diferenÁas entre os nÌveis o estudo ser· concluÌdo por meio do teste ANOVA.
 
-## 2.2 Compara√ß√µes M√∫ltiplas
+## 2.2 ComparaÁıes M˙ltiplas
 
-Caso a an√°lise ANOVA identifique a exist√™ncia de diferen√ßas entre os n√≠veis, deve-se proceder com testes de compara√ß√£o m√∫ltipla, no intuito de identificar qual ou quais n√≠veis apresentam tal diferen√ßa.
+Caso a an·lise ANOVA identifique a existÍncia de diferenÁas entre os nÌveis, deve-se proceder com testes de comparaÁ„o m˙ltiplas todos contra um, no intuito de identificar qual ou quais nÌveis apresentam tal diferenÁa.
 
-Desta forma, somente, caso a an√°lise de vari√¢ncia indique a exist√™ncia de diferen√ßas entre os n√≠veis, ser√° aplicado o teste de compara√ß√µes m√∫ltiplas um-contra-todos (_one-vs-all_) de _Dunnett_, onde os _Risers_ propostos ser√£o confrontados com a configura√ß√£o padr√£o _Riser1_ para verificar se alguma proposta traria ganho de _MTTF_ frente √† configura√ß√£o j√° estabelecida.
+Desta forma, somente, caso a an·lise de vari‚ncia indique a existÍncia de diferenÁas entre os nÌveis, ser· aplicado o teste de comparaÁıes m˙ltiplas um-contra-todos (_one-vs-all_) de _Dunnett_, onde os _Risers_ propostos ser„o confrontados com a configuraÁ„o padr„o _Riser1_ para verificar se alguma proposta traria ganho de _MTTF_ frente ‡ configuraÁ„o j· estabelecida.
 
-Para que se proceda com o teste de compara√ß√µes m√∫ltiplas, deve-se manter o controle sobre os erros do tipo-$I$ em cada compara√ß√£o. √â preciso corrigir os valores de $\alpha$ para cada teste. A escolha para este caso √© o m√©todo de corre√ß√£o de Bonferroni:
-$$\alpha_{adj} = \frac{\alpha_{fam√≠lia}}{K} \,,$$ 
+Para que se proceda com o teste de comparaÁıes m˙ltiplas, deve-se manter o controle sobre os erros do tipo-$I$ em cada comparaÁ„o. … preciso corrigir os valores de $\alpha$ para cada teste. A escolha para este caso È o mÈtodo de correÁ„o de Bonferroni:
+$$\alpha_{adj} = \frac{\alpha_{famÌlia}}{K} \,,$$ 
 
-no qual $K=3$ √© o n√∫mero de compara√ß√µes a serem feitas que no caso do teste um-contra-todos de _Dunnett_ √© confome abaixo:
+no qual $K=3$ È o n˙mero de comparaÁıes a serem feitas que no caso do teste um-contra-todos de _Dunnett_ È confome abaixo:
 
 $$K=a-1 \,,$$
-onde $a$ √© o n√∫mero de n√≠veis, que neste do estudo √© 4 e o $\alpha$ experimental desejado √© o  $\alpha_{fam√≠lia} = 0.05$.
+onde $a$ È o n˙mero de nÌveis, que neste do estudo È 4 e o $\alpha$ experimental desejado È o  $\alpha_{famÌlia} = 0.05$. Assim o valor de $\alpha_{adj} = 0.0167$
 
 
-## 2.3 Defini√ß√£o do Tamanho Amostral
-Para calcular o tamanho amostral neste caso, utilizaremos, portanto, as mesmas rela√ß√µes utilizadas na compara√ß√£o de duas amostras independentes emparelhadas "todos contra um", alterando-se apenas os valores de $\alpha$ para os valores corrigidos $\alpha_{adj}$ para as m√∫ltiplas hip√≥teses e $a-1$ compara√ß√µes. O tamanho amostral para os n√≠veis que n√£o s√£o o grupo √© calculado como abaixo:
+## 2.3 DefiniÁ„o do Tamanho Amostral
+Para calcular o tamanho amostral, utilizaremos as mesmas relaÁıes utilizadas na comparaÁ„o de duas amostras independentes emparelhadas "todos contra um", alterando-se apenas os valores de $\alpha$ para os valores corrigidos $\alpha_{adj}$ para as m˙ltiplas hipÛteses e $a-1$ comparaÁıes. O tamanho amostral para o teste unilateral para os risers que ser„o comparados com o j· estabelecido È calculado como abaixo:
 $$n_i = \left(1 + \frac{1}{K}\right) \left( \frac{\hat{\sigma}}{\delta^{\star}}\right)^{2}(t_{\alpha_{adj}}+t_{\beta})^{2} \,, $$
-em que $t_{\alpha_{adj}}$ e $t_{\beta}$ s√£o dependentes de $n$. Para solucionar esse problema, eles foram substitu√≠dos por $z_{\alpha_{adj}}$ e $z_{\beta}$ e a equa√ß√£o foi testada iterativamente at√© a converg√™ncia (implementa√ß√£o em anexo no arquivo  _calcN.R_). Dessa forma, foi encontrado o valor $n_i = 60$.
+em que $t_{\alpha_{adj}}$ e $t_{\beta}$ s„o dependentes de $n$. Para solucionar esse problema, eles foram substituÌdos por $z_{\alpha_{adj}}$ e $z_{\beta}$ e a equaÁ„o foi testada iterativamente atÈ a convergÍncia (implementaÁ„o em anexo no arquivo  _calcN.R_). Dessa forma, foi encontrado o valor $n_i = 58$.
 
-Contudo, para maximizar o poder do procedimento de m√∫ltiplas compara√ß√µes, o tamanho amostral do grupo de controle deve ser calculado como [@Campelo2015-01]:
+Contudo, para maximizar o poder do procedimento de m˙ltiplas comparaÁıes, o tamanho amostral do grupo de controle deve ser calculado como [@Campelo2015-01]:
 
 $$n_0 = n_i\sqrt{K} \,,$$
 
+Lembrando que $K$ È o n˙mero de comparaÁıes (3), temos que $n_i = 101$
 
 
 ```{r,results='show',warning=FALSE,echo=FALSE}
@@ -153,34 +154,51 @@ v_nAnova = power.anova.test(groups = v_a,
 ```
 
 
-J√° temos ent√£o, neste ponto, subs√≠dios para o c√°lculo do tamanho amostral do ANOVA: 
-(Discutir essa ideia ainda...)
-
+Foi tambÈm feito o c·lculo do tamanho amostral para a tÈcnica  ANOVA. Isto È feito fazendo-se sucessivas iteraÁıes em $n$ atÈ que:
+$$F_{(1-\alpha)}=F_{\beta;\phi}$$
+onde ambas distribuiÁıes $F$ tem $(a-1)$ graus de liberdade no numerador e $a(n-1)$ no denomiador. O par‚metro de n„o-centralidade $\phi$ È dada por:
+$$\phi=(n\sum_{i=1}^{a}\tau^2_i)/\hat\sigma^2 $$
+e o valor de $\tau$ no caso de comparaÁıes todos contra um È dado por:
 $$\tau = \left( -\frac{(a-1)\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a} \right) $$
+e o valor encontrado para o tamanho amostral do ANOVa È $n=60$
 
-N√∫mero necess√°rio pra anova: 60*3 + 50
 
-N√∫mero necess√°rio pra an√°lises subsequentes: 58*3 + (101 - 10)
+Desta forma, tem-se a seguinte situaÁ„o:
 
-Mais barato fazer ANOVA antes e pegar mais amostras do grupo 1 apenas se necess√°rio.
-N das compara√ß√µes multiplas n√£o √© t√£o grande por ser unilateral.
+N˙mero de amostras necess·rias para o ANOVA: $60*3+50=230$
 
-CUSTO TOTAL!
+N˙mero de amostras necess·rias a compraÁ„o todos contra um: $58*3 + 91 =265$
 
-APRESENTAR OS VALORES DOS PAR√ÇMETROS EXPERIMENTAIS
+Desta forma, o preÁo para o ANOVA È de $\$2.300.000$ e o preÁo das comparaÁıes È $\$2.650.000$. O ANOVA precisa de 60 amostras por grupo e as comparaÁıes de 58 (fora o grupo controle), o que resultaria em uma sobreamostragem de 2 unidades por grupo. PorÈm, caso o ANOVA n„o dÍ resultado de diferenÁa entre os risers, seriam economizados $\$350.000$ fazendo o ANOVA antes. Essa informaÁıes est„o apresentadas na tabela 1.
 
-## 2.4 Tratamento e Valida√ß√£o dos Dados
+\begin{table}[]
+\centering
 
-Considerando o experimento realizado, foi criada uma rotina para valida√ß√£o dos dados obtidos e identifica√ß√£o de erros, onde o tempo de _MTTF_ na escala logar√≠tma deve ser maior que $0$. 
+\begin{tabular}{|l|l|l|}
+\hline
+          & Melhor caso & Pior caso   \\ \hline
+Com ANOVA & \$2.300.000 & \$2.710.000 \\ \hline
+Sem ANOVA & \$2.650.000 & \$2.650.000 \\ \hline
+DiferenÁa & \$350.000   & -\$60,000   \\ \hline
+\end{tabular}
+\caption{An·lise de preÁo das opÁıes}
+\label{my-label}
+\end{table}
+
+Ser· seguido o caminho com o ANOVA por causa da grande possÌvel economia e da n„o t„o significante gasto com a sobre amostragem caso o ANOVA identifique diferenÁa entre os risers.
+
+## 2.4 Tratamento e ValidaÁ„o dos Dados
+
+Considerando o experimento realizado, foi criada uma rotina para validaÁ„o dos dados obtidos e identificaÁ„o de erros, onde o tempo de _MTTF_ na escala logarÌtma deve ser maior que $0$. 
 
 1. LogTTF $> 0$
 
-Caso os valores de uma execu√ß√£o n√£o atendam essas condi√ß√µes, ela seria descartada. No entanto, nenhuma das amostras apresenta problema.
+Caso os valores de uma execuÁ„o n„o atendam essas condiÁıes, ela seria descartada. No entanto, nenhuma das amostras apresenta problema.
 
 
-# 3. An√°lise Estat√≠stica
+# 3. An·lise EstatÌstica
 
-## 3.1 An√°lise de Vari√¢ncia
+## 3.1 An·lise de Vari‚ncia
 
 ```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=4, fig.width=6}
 v_data = readr::read_csv('1992-10-15_60_60_60_60.csv')
@@ -197,11 +215,11 @@ v_model <- aov(LogTTF~Riser,
 summary.aov(v_model)
 ```
 
-Como pode ser observado, o gr√°fico acima n√£o indica visualmente diferen√ßa significativa entre os n√≠veis. Corrobora com isto, o _F-valor = 0.608_ do teste ANOVA indicando pela n√£o rejei√ß√£o da hip√≥tese de que n√£o h√° diferen√ßa entre os grupos.
+Como pode ser observado, o gr·fico acima n„o indica visualmente diferenÁa significativa entre os nÌveis. Corrobora com isto, o _F-valor = 0.608_ do teste ANOVA indicando pela n„o rejeiÁ„o da hipÛtese de que n„o h· diferenÁa entre os grupos.
 
-Este resultado tamb√©m indica que n√£o h√° necessidade de testes de compara√ß√£o m√∫ltiplas que verificariam quais n√≠veis teriam se apresentado diferentes do grupo de controle _Riser1_.
+Este resultado tambÈm indica que n„o h· necessidade de testes de comparaÁ„o m˙ltiplas que verificariam quais nÌveis teriam se apresentado diferentes do grupo de controle _Riser1_.
 
-## 3.2 Valida√ß√£o das Premissas
+## 3.2 ValidaÁ„o das Premissas
 
 ### Normalidade
 
@@ -215,8 +233,8 @@ qqPlot(v_model$residuals,
        las = 1)
 ```
 
-O _p-valor = 0.299_ encontrado no teste de _Shapiro-Wilk_ indica pela rejei√ß√£o normalidade das amostras
-No entanto, qq plot mostra que as viola√ß√µes de normalidade s√£o relativamente pequenas. A an√°lise ANOVA √© robusto a pequenas varia√ß√µes de normalidade [@Campelo2015-01]. Desta forma considerou-se a premissa de normalidade atendida.
+O _p-valor = 0.299_ encontrado no teste de _Shapiro-Wilk_ indica pela rejeiÁ„o normalidade das amostras
+No entanto, qq plot mostra que as violaÁıes de normalidade s„o relativamente pequenas. A an·lise ANOVA È robusto a pequenas variaÁıes de normalidade [@Campelo2015-01]. Desta forma considerou-se a premissa de normalidade atendida.
 
 ### Homocedasticidade
 
@@ -234,12 +252,12 @@ plot(x    = v_model$fitted.values,
 grid(NULL,NULL, lwd=2, col = "#44444422")
 ```
 
-O teste de igualdade de vari√¢ncia dos res√≠duos de _Fligner-Killeen_ apresentou um _p-valor = 0.1416_ o que tamb√©m indica pela rejei√ß√£o da homocedasticidade das amostras.
+O teste de igualdade de vari‚ncia dos resÌduos de _Fligner-Killeen_ apresentou um _p-valor = 0.1416_ o que tambÈm indica pela rejeiÁ„o da homocedasticidade das amostras.
 
-Contudo, podemos observar no gr√°fico acima, uma vari√¢ncia relativamente baixa entre os res√≠duos das amostras. Novamente com base de que a an√°lise ANOVA √© robusto a pequenas varia√ß√µes tamb√©m de homocedasticidade como indicado por [@Campelo2015-01], considerou-se a premissa atendida.
+Contudo, podemos observar no gr·fico acima, uma vari‚ncia relativamente baixa entre os resÌduos das amostras. Novamente com base de que a an·lise ANOVA È robusto a pequenas variaÁıes tambÈm de homocedasticidade como indicado por [@Campelo2015-01], considerou-se a premissa atendida.
 
 
-### Independ√™ncia
+### IndependÍncia
 
 ```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3.5}
 v_dwTest = durbinWatsonTest(v_model)
@@ -262,15 +280,15 @@ plot(x    = seq_along(v_model$residuals),
 grid(NA,NULL, lwd=2, col = "#44444422")
 ```
 
-O plot dos valores ordenados de diferen√ßas de tempo entre os algoritmos n√£o apresenta nenhum ind√≠cio de depend√™ncia temporal dos valores. O teste de autocorrela√ß√£o serial Durbin-Wastson apresenta $p = `r v_dwTestp`$, o que refor√ßa a hip√≥tese de que n√£o h√° autocorrela√ß√£o serial entre as amostras.
+O plot dos valores ordenados de diferenÁas de tempo entre os algoritmos n„o apresenta nenhum indÌcio de dependÍncia temporal dos valores. O teste de autocorrelaÁ„o serial Durbin-Wastson apresenta $p = `r v_dwTestp`$, o que reforÁa a hipÛtese de que n„o h· autocorrelaÁ„o serial entre as amostras.
 
 
-# 4. Discuss√£o e Conclus√µes
+# 4. Discuss„o e Conclusıes
 
-Os testes realizados levam √†s seguintes conclus√µes:
+Os testes realizados levam ‡s seguintes conclusıes:
 
-Vari√¢ncia entre grupos √© explicada pela vari√¢ncia intra grupo. N√£o h√° ind√≠cio de diferen√ßa significativa entre eles.
+Vari‚ncia entre grupos È explicada pela vari‚ncia intra grupo. N„o h· indÌcio de diferenÁa significativa entre eles.
 
-Recomenda-se manter riser 1. Custo do experimento √© significativo, mas previniu um custo potencialmente maior de trocar o Riser.
+Recomenda-se manter riser 1. Custo do experimento È significativo $(\$2.300.000)$, mas previniu um custo potencialmente maior de trocar o Riser.
 
-# Refer√™ncias
+# ReferÍncias
