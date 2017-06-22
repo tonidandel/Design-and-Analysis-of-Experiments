@@ -65,7 +65,9 @@ Os  parâmetros experimentais desejados são:
 
 Esta etapa do presente estudo de caso consiste em investigar o comportamento dos níveis de fator a partir de uma análise exploratória, e posteriormente, aplicar um teste de comparações múltiplas para as médias. A variância do processo é desconhecida e será estimada utilizando-se os dados históricos de operação fornecidos em <https://git.io/vHDG3. A variância será considerada como sendo uniforme para todas as configurações neste estudo.
 
-Os dados experimentais utilizados foram obtidos através de simulação, por meio de um [aplicativo web] <http://orcslab.cpdee.ufmg.br:3838/riserdata/. A data de nascimento do segundo membro mais jovem da equipe (15/10/1992) foi o parâmetro utilizado como semente para o gerador de números da simulação. Os dados gerados informam uma tabela com os níveis de cada fator de interesse em uma coluna e os tempos (tomados em escala logarítmica) em coluna respectiva. 
+Os dados experimentais utilizados foram obtidos através de simulação, por meio de um [aplicativo web] <http://orcslab.cpdee.ufmg.br:3838/riserdata/. A data de nascimento do segundo membro mais jovem da equipe (15/10/1992) foi o parâmetro utilizado como semente para o gerador de números da simulação. Os dados gerados informam uma tabela com os níveis de cada fator de interesse em uma coluna e os tempos (tomados em escala logarítmica) em coluna respectiva.
+
+Os dados estão na escala de _log_ e serão analisados nesta escala, pois não necessitam de tranformação para tal.
 
 ## 2.1 Análise de Variância
  
@@ -100,15 +102,19 @@ $$\alpha_{adj} = \frac{\alpha_{família}}{K} \,,$$
 no qual $K=3$ é o número de comparações a serem feitas que no caso do teste um-contra-todos de _Dunnett_ é confome abaixo:
 
 $$K=a-1 \,,$$
-onde $a$ é o número de níveis que neste do estudo é 4 e o $\alpha_{família} = 0.05$.
+onde $a$ é o número de níveis, que neste do estudo é 4 e o $\alpha$ experimental desejado é o  $\alpha_{família} = 0.05$.
 
 
 ## 2.3 Definição do Tamanho Amostral
-Para calcular o tamanho amostral neste caso, utilizaremos, portanto, as mesmas relações utilizadas na comparação de duas amostras independentes emparelhadas "todos contra um", alterando-se apenas os valores de $\alpha$ para os valores corrigidos $\alpha_{adj}$ para as múltiplas hipóteses e $a-1$ comparações:
+Para calcular o tamanho amostral neste caso, utilizaremos, portanto, as mesmas relações utilizadas na comparação de duas amostras independentes emparelhadas "todos contra um", alterando-se apenas os valores de $\alpha$ para os valores corrigidos $\alpha_{adj}$ para as múltiplas hipóteses e $a-1$ comparações. O tamanho amostral para os níveis que não são o grupo é calculado como abaixo:
 $$n_i = \left(1 + \frac{1}{K}\right) \left( \frac{\hat{\sigma}}{\delta^{\star}}\right)^{2}(t_{\alpha_{adj}}+t_{\beta})^{2} \,, $$
-com $n_0 = n_i\sqrt{K} \,,$
+em que $t_{\alpha_{adj}}$ e $t_{\beta}$ são dependentes de $n$. Para solucionar esse problema, eles foram substituídos por $z_{\alpha_{adj}}$ e $z_{\beta}$ e a equação foi testada iterativamente até a convergência (implementação em anexo no arquivo  _calcN.R_). Dessa forma, foi encontrado o valor $n_i = 60$.
 
-em que $t_{\alpha_{adj}}$ e $t_{\beta}$ são dependentes de $n$. Para solucionar esse problema, eles foram substituídos por $z_{\alpha_{adj}}$ e $z_{\beta}$ e a equação foi testada iterativamente até convergência (implementação em anexo no arquivo  _calcN.R_). Dessa forma, foi encontrado o valor $n_1 = 60$.
+Contudo, para maximizar o poder do procedimento de múltiplas comparações, o tamanho amostral do grupo de controle deve ser calculado como [@Campelo2015-01]:
+
+$$n_0 = n_i\sqrt{K} \,,$$
+
+
 
 ```{r,results='show',warning=FALSE,echo=FALSE}
 ## SAMPLE SIZE CALC
@@ -161,9 +167,11 @@ N das comparações multiplas não é tão grande por ser unilateral.
 
 CUSTO TOTAL!
 
+APRESENTAR OS VALORES DOS PARÂMETROS EXPERIMENTAIS
+
 ## 2.4 Tratamento e Validação dos Dados
 
-Considerando o experimento realizado, foi criada uma rotina para validação dos dados obtidos e identificação de erros. bla bla
+Considerando o experimento realizado, foi criada uma rotina para validação dos dados obtidos e identificação de erros, onde o tempo de _MTTF_ na escala logarítma deve ser maior que $0$. 
 
 1. LogTTF $> 0$
 
@@ -189,10 +197,9 @@ v_model <- aov(LogTTF~Riser,
 summary.aov(v_model)
 ```
 
-Gráfico não indica visualmente diferença significativa. 
-P valor grande -> não rejeita hipótese de que não há diferença
+Como pode ser observado, o gráfico acima não indica visualmente diferença significativa entre os níveis. Corrobora com isto, o _F-valor = 0.608_ do teste ANOVA indicando pela não rejeição da hipótese de que não há diferença entre os grupos.
 
-Não é necessário fazer comparação múltipla.
+Este resultado também indica que não há necessidade de testes de comparação múltiplas que verificariam quais níveis teriam se apresentado diferentes do grupo de controle _Riser1_.
 
 ## 3.2 Validação das Premissas
 
@@ -208,8 +215,8 @@ qqPlot(v_model$residuals,
        las = 1)
 ```
 
-p valor rejeita normalidade
-No entanto, qq plot mostra que as violações de normalidade são muito pequenas. Anova é robusto a pequenas variações, então tudo ok. =)
+O _p-valor = 0.299_ encontrado no teste de _Shapiro-Wilk_ indica pela rejeição normalidade das amostras
+No entanto, qq plot mostra que as violações de normalidade são relativamente pequenas. A análise ANOVA é robusto a pequenas variações de normalidade [@Campelo2015-01]. Desta forma considerou-se a premissa de normalidade atendida.
 
 ### Homocedasticidade
 
@@ -227,7 +234,9 @@ plot(x    = v_model$fitted.values,
 grid(NULL,NULL, lwd=2, col = "#44444422")
 ```
 
-Comentar plot e p valor. Variância praticamente a mesma 
+O teste de igualdade de variância dos resíduos de _Fligner-Killeen_ apresentou um _p-valor = 0.1416_ o que também indica pela rejeição da homocedasticidade das amostras.
+
+Contudo, podemos observar no gráfico acima, uma variância relativamente baixa entre os resíduos das amostras. Novamente com base de que a análise ANOVA é robusto a pequenas variações também de homocedasticidade como indicado por [@Campelo2015-01], considerou-se a premissa atendida.
 
 
 ### Independência
