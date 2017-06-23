@@ -5,6 +5,7 @@ date: "24 de Junho de 2017"
 output:
   pdf_document:
     fig_caption: yes
+    citation_package: natbib
   word_document: default
 header-includes:
 - \usepackage{fancyhdr}
@@ -57,15 +58,15 @@ Os parâmetros experimentais desejados são:
 
 * Nível de significância: $\alpha = 0.05$;
 
-* Tamanho de efeito de interesse prático: ${d^{\star}_{t}} = 0.25$;
+* Tamanho de efeito de interesse prático: ${\delta^{\star}_{t}} = 0.25$;
 
 * Potência desejada: $(1- \beta) = \pi  \geq 0.85$.
 
 # 2. Planejamento Experimental
 
-Esta etapa consiste em investigar o comportamento dos níveis de fator a partir de uma análise exploratória, e, posteriormente, aplicar um teste de comparações múltiplas para as médias. A variância do processo é desconhecida e será estimada utilizando-se os dados históricos de operação fornecidos em <https://git.io/vHDG3>. A variância será considerada como sendo uniforme para todas as configurações.
+Esta etapa consiste em investigar o comportamento dos níveis de fator a partir de uma análise exploratória, e, posteriormente, aplicar um teste de comparações múltiplas para as médias. A variância do processo é desconhecida e será estimada utilizando-se _[dados históricos de operação](https://git.io/vHDG3)_. A variância será considerada como sendo uniforme para todas as configurações.
 
-Os dados experimentais utilizados foram obtidos através de simulação, por meio de um [aplicativo web] <http://orcslab.cpdee.ufmg.br:3838/riserdata/>. A data de nascimento do segundo membro mais jovem da equipe (15/10/1992) foi o parâmetro utilizado como semente para o gerador de números da simulação. Os dados gerados informam uma tabela com os níveis de cada fator de interesse em uma coluna e os tempos (tomados em escala logarítmica) em coluna respectiva. Por este motivo não necessitam de tranformações inversas.
+Os dados experimentais utilizados foram obtidos através de simulação, por meio de um _[aplicativo web](http://orcslab.cpdee.ufmg.br:3838/riserdata/)_. A data de nascimento do segundo membro mais jovem da equipe (15/10/1992) foi o parâmetro utilizado como semente para o gerador de números da simulação. Os dados gerados informam uma tabela com os níveis de cada fator de interesse em uma coluna e os tempos (tomados em escala logarítmica) em coluna respectiva. Por este motivo não necessitam de tranformações inversas.
 
 ## 2.1 Análise de Variância
  
