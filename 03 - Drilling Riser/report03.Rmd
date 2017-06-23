@@ -194,22 +194,19 @@ Com ANOVA & \$2.300.000 & \$2.710.000 \\ \hline
 Sem ANOVA & \$2.650.000 & \$2.650.000 \\ \hline
 Diferença & \$350.000   & -\$60,000   \\ \hline
 \end{tabular}
-\caption{Análise de custo das opções}
+\caption{Análise de custo das opções.}
 \end{table}
 
-Será seguido o caminho com o ANOVA por causa da grande possível economia e da não tão significante gasto com a sobre amostragem caso o ANOVA identifique diferença entre os risers.
+Será seguido o caminho com a análise de variância em virtude da possível economia e do possível menor custo com a amostragem, caso o ANOVA venha a identificar alguma diferença entre as configurações possíveis de _risers_.
 
 ## 2.4 Tratamento e Validação dos Dados
-
 Considerando o experimento realizado, foi criada uma rotina para validação dos dados obtidos e identificação de erros, onde o tempo de _MTTF_ na escala logarítma deve ser maior que $0$. 
 
 1. LogTTF $> 0$
 
-Caso os valores de uma execução não atendam essas condições, ela seria descartada. No entanto, nenhuma das amostras apresenta problema.
-
+Caso os valores de uma execução não atendam essas condições, ela seria descartada. No entanto, nenhuma das amostras apresentou tal problema.
 
 # 3. Análise Estatística
-
 ## 3.1 Análise de Variância
 
 ```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=4, fig.width=6}
@@ -217,7 +214,7 @@ v_data = readr::read_csv('1992-10-15_60_60_60_60.csv')
 v_data$Riser = as.factor(v_data$Riser)
 boxplot(LogTTF~Riser, 
         data = v_data, 
-        xlab = "Riser",
+        xlab = "Configuração (A,B,C,D)",
         ylab = "LogTTF", 
         main = "Riser data",
         pch  = 16,
@@ -227,22 +224,22 @@ v_model <- aov(LogTTF~Riser,
 summary.aov(v_model)
 ```
 
-Como pode ser observado, o gráfico acima não indica visualmente diferença significativa entre os níveis. Corrobora com isto, o _F-valor = 0.608_ do teste ANOVA indicando pela não rejeição da hipótese de que não há diferença entre os grupos.
+Como pode ser observado, o gráfico anterior não indica visualmente diferença significativa entre os níveis. Corrobora com isto, o _F-valor = 0.608_ do teste ANOVA indicando pela não rejeição da hipótese de que não há diferença entre os grupos.
 
-Este resultado também indica que não há necessidade de testes de comparação múltiplas que verificariam quais níveis teriam se apresentado diferentes do grupo de controle _Riser1_.
+Este resultado também indica que não há necessidade de testes de comparação múltiplas, que poderiam identificar quais os níveis diferentes do grupo de controle _(Riser1)_.
 
 ## 3.2 Validação das Premissas
-
 ### Normalidade
 
 ```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=5}
+#par(mfrow=c(1,2), mai=.8*c(2.5,1,1,1))
 shapiro.test(v_model$residuals)
-
 qqPlot(v_model$residuals, 
        pch = 16, 
        lwd = 3, 
        cex = 2, 
-       las = 1)
+       las = 1,
+       main = "Teste de normalidade")
 ```
 
 O _p-valor = 0.299_ encontrado no teste de _Shapiro-Wilk_ indica pela rejeição normalidade das amostras. No entanto, o qq plot mostra que as violações de normalidade são relativamente pequenas. A análise ANOVA é robusto a pequenas variações de normalidade [@Campelo2015-01]. Desta forma considerou-se a premissa de normalidade atendida.
