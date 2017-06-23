@@ -63,31 +63,27 @@ Os parâmetros experimentais desejados são:
 
 # 2. Planejamento Experimental
 
-Esta etapa do presente estudo de caso consiste em investigar o comportamento dos níveis de fator a partir de uma análise exploratória, e posteriormente, aplicar um teste de comparações múltiplas para as médias. A variância do processo é desconhecida e será estimada utilizando-se os dados históricos de operação fornecidos em <https://git.io/vHDG3>. A variância será considerada como sendo uniforme para todas as configurações neste estudo.
+Esta etapa consiste em investigar o comportamento dos níveis de fator a partir de uma análise exploratória, e, posteriormente, aplicar um teste de comparações múltiplas para as médias. A variância do processo é desconhecida e será estimada utilizando-se os dados históricos de operação fornecidos em <https://git.io/vHDG3>. A variância será considerada como sendo uniforme para todas as configurações.
 
-Os dados experimentais utilizados foram obtidos através de simulação, por meio de um [aplicativo web] <http://orcslab.cpdee.ufmg.br:3838/riserdata/>. A data de nascimento do segundo membro mais jovem da equipe (15/10/1992) foi o parâmetro utilizado como semente para o gerador de números da simulação. Os dados gerados informam uma tabela com os níveis de cada fator de interesse em uma coluna e os tempos (tomados em escala logarítmica) em coluna respectiva.
-
-Os dados estão na escala de _log_ e serão analisados nesta escala, pois não necessitam de tranformação para tal.
+Os dados experimentais utilizados foram obtidos através de simulação, por meio de um [aplicativo web] <http://orcslab.cpdee.ufmg.br:3838/riserdata/>. A data de nascimento do segundo membro mais jovem da equipe (15/10/1992) foi o parâmetro utilizado como semente para o gerador de números da simulação. Os dados gerados informam uma tabela com os níveis de cada fator de interesse em uma coluna e os tempos (tomados em escala logarítmica) em coluna respectiva. Por este motivo não necessitam de tranformações inversas.
 
 ## 2.1 Análise de Variância
  
 Para a avaliar o questionamento acima, será utilizada a ferramenta estatística para análise de variância denominada ANOVA.
 
-A técnica ANOVA compara médias de diferentes amostras para verificar se estas possuem médias iguais ou não. Assim, essa técnica permite que vários grupos sejam comparados [@Campelo2015-01], [@MontgomeryRunger2011].
+A técnica ANOVA compara médias de diferentes amostras para verificar se estas possuem médias iguais ou não. Assim, essa técnica permite que vários grupos sejam comparados simultâneamente [@Campelo2015-01], [@MontgomeryRunger2011]. Em outras palavras, a análise de variância é utilizada quando se quer decidir se os níveis apresentam médias diferentes em relação é uma média global $\mu$. As diferenças entre as médias dos níveis e a média global é  $\tau_i$ $\forall \  i$. 
 
-Em outras palavras, a análise de variância é utilizada quando se quer decidir se os níveis apresentam médias diferentes em relação é uma média global $\mu$. As diferenças entre as médias dos níveis e a média global é  $\tau_i$ $\forall \  i$ . Desta forma a ANOVA se basea no teste de a hipóteses abaixo, onde quando refutado a hipótese nula, evidencia-se indícios de diferenças entre os níveis.
-
-Esta técnica é restrita apenas à indicação da existência ou não de diferenças entre os níveis avaliados sem indicar quais níveis seriam diferentes.
+Vale ressaltar que a técnica é restrita apenas à indicação de existência ou não de diferenças entre os níveis avaliados, sem indicar quais níveis seriam diferentes. Além disso, quando a análise de variância tem como resultado um indicativo de refutação da hipótese nula $\eqref{eq:01}$ é que podem ser evidenciados os indícios de diferenças entre os níveis.
 
 
-
-
-$$
+\begin{equation}
 \left\{\begin{array}{rc}
 H_{0}:& \tau_i = 0, \ \ \ \forall i\\
 H_{1}:& \exists \ \ \tau_i \neq 0
 \end{array}\right.
-$$
+\label{eq:01}
+\end{equation}
+
 Esta etapa foi considerada como uma primeira verificação ao questionamento deste estudo por apresentar um custo de coleta de amostras menor do que o teste de comparações múltiplas discutido abaixo. Portanto, caso não seja detectada alguma diferenças entre os níveis o estudo será concluído por meio do teste ANOVA.
 
 ## 2.2 Comparações Múltiplas
@@ -96,23 +92,34 @@ Caso a análise ANOVA identifique a existência de diferenças entre os níveis,
 
 Desta forma, somente, caso a análise de variância indique a existência de diferenças entre os níveis, será aplicado o teste de comparações múltiplas um-contra-todos (one-vs-all) de _Dunnett_, onde os _Risers_ propostos serão confrontados com a configuração padrão _Riser1_ para verificar se alguma proposta traria ganho de _MTTF_ frente à configuração já estabelecida.
 
-Para que se proceda com o teste de comparações múltiplas, deve-se manter o controle sobre os erros do tipo-$I$ em cada comparação. É preciso corrigir os valores de $\alpha$ para cada teste. A escolha para este caso é o método de correção de Bonferroni:
-$$\alpha_{adj} = \frac{\alpha_{família}}{K} \,,$$ 
-
-no qual $K=3$ é o número de comparações a serem feitas que no caso do teste um-contra-todos de _Dunnett_ é confome abaixo:
-
-$$K=a-1 \,,$$
-onde $a$ é o número de níveis, que neste do estudo é 4 e o $\alpha$ experimental desejado é o  $\alpha_{família} = 0.05$. Assim o valor de $\alpha_{adj} = 0.0167$
-
+Para que se proceda com o teste de comparações múltiplas, deve-se manter o controle sobre os erros do tipo-$I$ em cada comparação. É preciso corrigir os valores de $\alpha$ para cada teste. A escolha para este caso é o método de correção de Bonferroni $\eqref{eq:02}$:
+\begin{equation}
+\alpha_{adj} = \frac{\alpha_{família}}{K} \,,
+\label{eq:02}
+\end{equation}
+no qual $K=3$ consiste no número de comparações a serem feitas que no caso do teste um-contra-todos de _Dunnett_ $\eqref{eq:03}$:
+\begin{equation}
+K=a-1  \,,
+\label{eq:03}
+\end{equation}
+em que $a$ é o número de níveis, que neste do estudo é 4 e o $\alpha$ experimental desejado é o  $\alpha_{família} = 0.05$. Assim o valor de $\alpha_{adj} = 0.0167$
 
 ## 2.3 Definição do Tamanho Amostral
-Para calcular o tamanho amostral, utilizaremos as mesmas relações utilizadas na comparação de duas amostras independentes emparelhadas "todos contra um", alterando-se apenas os valores de $\alpha$ para os valores corrigidos $\alpha_{adj}$ para as múltiplas hipóteses e $a-1$ comparações. O tamanho amostral para o teste unilateral para os risers que serão comparados com o já estabelecido é calculado como abaixo:
-$$n_i = \left(1 + \frac{1}{K}\right) \left( \frac{\hat{\sigma}}{\delta^{\star}}\right)^{2}(t_{\alpha_{adj}}+t_{\beta})^{2} \,, $$
-em que $t_{\alpha_{adj}}$ e $t_{\beta}$ são dependentes de $n$. Para solucionar esse problema, eles foram substituídos por $z_{\alpha_{adj}}$ e $z_{\beta}$ e a equação foi testada iterativamente até a convergência (implementação em anexo no arquivo  _calcN.R_). Dessa forma, foi encontrado o valor $n_i = 58$.
+Para calcular o tamanho amostral, utilizaremos as mesmas relações utilizadas na comparação de duas amostras independentes emparelhadas "todos contra um", alterando-se apenas os valores de $\alpha$ para os valores corrigidos $\alpha_{adj}$ para as múltiplas hipóteses e $a-1$ comparações. O tamanho amostral para o teste unilateral para os risers que serão comparados com o já estabelecido é calculado conforme a equação $\eqref{eq:04}$:
 
-Contudo, para maximizar o poder do procedimento de múltiplas comparações, o tamanho amostral do grupo de controle deve ser calculado como [@Campelo2015-01]:
+\begin{equation}
+n_i = \left(1 + \frac{1}{K}\right) \left( \frac{\hat{\sigma}}{\delta^{\star}}\right)^{2}(t_{\alpha_{adj}}+t_{\beta})^{2} \,,
+\label{eq:04}
+\end{equation}
 
-$$n_0 = n_i\sqrt{K} \,,$$
+em que $t_{\alpha_{adj}}$ e $t_{\beta}$ são dependentes de $n$. Para solucionar esse problema, os mesmos foram substituídos por $z_{\alpha_{adj}}$ e $z_{\beta}$ e a equação foi testada iterativamente até a convergência (implementação em anexo no arquivo  _calcN.R_). Dessa forma, foi encontrado o valor $n_i = 58$.
+
+Contudo, para maximizar o poder do procedimento de múltiplas comparações, o tamanho amostral do grupo de controle deve ser calculado conforme a equação $\eqref{eq:05}$ [@Campelo2015-01]:
+
+\begin{equation}
+n_0 = n_i\sqrt{K} \,,
+\label{eq:05}
+\end{equation}
 
 Lembrando que $K$ é o número de comparações (3), temos que $n_i = 101$
 
@@ -154,16 +161,28 @@ v_nAnova = power.anova.test(groups = v_a,
 ```
 
 
-FFoi também feito o cálculo do tamanho amostral para a técnica ANOVA. Isto é feito fazendo-se sucessivas iterações em $n$ até que:
-$$F_{(1-\alpha)}=F_{\beta;\phi}$$
-onde ambas distribuições $F$ têm $(a-1)$ graus de liberdade no numerador e $a(n-1)$ no denomiador. O parâmetro de não-centralidade $\phi$ é dado por:
-$$\phi=(n\sum_{i=1}^{a}\tau^2_i)/\hat\sigma^2 $$
-e o valor de $\tau$ no caso de comparações todos contra um é dado por:
-$$\tau = \left( -\frac{(a-1)\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a} \right) $$
-e o valor encontrado para o tamanho amostral do ANOVa é $n=60$
+Foi também feito o cálculo do tamanho amostral para a técnica ANOVA. Isto é feito fazendo-se sucessivas iterações em $n$ até que:
+\begin{equation}
+F_{(1-\alpha)}=F_{\beta;\phi} \,,
+\label{eq:06}
+\end{equation}
 
+em que ambas distribuições $F$ têm $(a-1)$ graus de liberdade no numerador e $a(n-1)$ no denomiador. O parâmetro de não-centralidade $\phi$ é dado por:
 
-Desta forma, tem-se a seguinte situação:
+\begin{equation}
+\phi=(n\sum_{i=1}^{a}\tau^2_i)/\hat\sigma^2 \,.
+\label{eq:07}
+\end{equation}
+
+O valor de $\tau$, no caso de comparações "todos contra um" é dado por:
+
+\begin{equation}
+\tau = \left( -\frac{(a-1)\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a} \right) \,,
+\label{eq:08}
+\end{equation}
+sendo que o valor encontrado para o tamanho amostral do ANOVa é $n=60$
+
+Desta forma, tem-se a situação:
 
 Número de amostras necessárias para o ANOVA: $60*3+50=230$
 
@@ -173,16 +192,15 @@ Desta forma, o preço para o ANOVA é de $\$2.300.000$ e o prço das comparaçõ
 
 \begin{table}[]
 \centering
-
+\label{tab:01}
 \begin{tabular}{|l|l|l|}
 \hline
-          & Melhor caso & Pior caso   \\ \hline
+& Melhor caso & Pior caso   \\ \hline
 Com ANOVA & \$2.300.000 & \$2.710.000 \\ \hline
 Sem ANOVA & \$2.650.000 & \$2.650.000 \\ \hline
 Diferença & \$350.000   & -\$60,000   \\ \hline
 \end{tabular}
-\caption{Análise de preço das opções}
-\label{my-label}
+\caption{Análise de custo das opções}
 \end{table}
 
 Será seguido o caminho com o ANOVA por causa da grande possível economia e da não tão significante gasto com a sobre amostragem caso o ANOVA identifique diferença entre os risers.
