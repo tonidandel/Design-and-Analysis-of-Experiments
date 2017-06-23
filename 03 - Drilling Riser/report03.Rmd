@@ -37,11 +37,11 @@ library(lmtest)
 ```
 
 # 1. Descrição do Problema
-O objetivo do problema é realizar uma comparação entre quatro tipos de tubos de perfuração _drilling risers_, que consiste em uma espécie de conduíte ou tubo utilizado para servir como passagem temporária para o petróleo extraído em plataformas oceânicas. Mais especificamente, pretende-se comparar o tempo médio até a falha _(mean time to failure ou MTTF)_ de quatro configurações diferentes (níveis $A$, $B$, $C$, $D$) de equipamentos, de forma a escolher a que forneça a menor probabilidade de falha, considerando-se um período de $20$ anos. Para isto serão comparadas a configuração padrão (Riser 1) com as outras três, buscando encontrar qual delas proverá o maior _MTTF_. Ou seja, a questão a se responder é:
+Objetiva-se realizar uma comparação entre quatro tipos de tubos de perfuração _(drilling risers)_, que consiste em uma espécie de conduíte ou tubo utilizado para servir como passagem temporária para o petróleo extraído em plataformas oceânicas. Mais especificamente, pretende-se comparar o tempo médio até a falha _(mean time to failure ou MTTF)_ de quatro configurações diferentes (níveis $A$, $B$, $C$, $D$) de equipamentos, de forma a escolher a que forneça a menor probabilidade de falha, considerando-se um período de $20$ anos. Para isto será comparada a configuração padrão _(Riser1)_ com as outras três, buscando encontrar qual delas proverá o maior _MTTF_, que pode ser sumarizado na seguinte questão:
 
-Algum dos risers alternativos é melhor que o padrão?
+"Algum dos risers alternativos é melhor que o padrão?"
 
-A plataforma de testes escolhida pela equipe de engenharia consiste na utilização de um modelo em escala para os risers com um protocolo de tempo acelerado, em que há uma relação direta entre o tempo medido de cada observação (em minutos) e a configuração do sistema real. Todavia, o custo de cada observação é significativamente custoso, sendo cerca de $US\$10.000$ (dez mil dólares). Afim de minimizar os custos com amostras coletadas é possível utilizar os dados históricos existentes para a primeira configuração _(Riser1)_.
+A plataforma de testes escolhida pela equipe de engenharia consiste na utilização de um modelo em escala para com um protocolo de tempo acelerado, em que há uma relação direta entre o tempo medido de cada observação (em minutos) e a configuração do sistema real. Todavia, o custo de cada observação é significativamente alto, cerca de $US\$10.000$ (dez mil dólares). A fim de minimizar os custos com amostras coletadas, tem-se, como alternativa, utilizar dados históricos existentes para a primeira configuração _(Riser1)_.
 
 ```{r,results='show',warning=FALSE,echo=FALSE}
 ## EXPERIMENTAL DEFINITIONS
@@ -63,9 +63,9 @@ Os parâmetros experimentais desejados são:
 
 # 2. Planejamento Experimental
 
-Esta etapa do presente estudo de caso consiste em investigar o comportamento dos níveis de fator a partir de uma análise exploratória, e posteriormente, aplicar um teste de comparações múltiplas para as médias. A variância do processo é desconhecida e será estimada utilizando-se os dados históricos de operação fornecidos em <https://git.io/vHDG3. A variância será considerada como sendo uniforme para todas as configurações neste estudo.
+Esta etapa do presente estudo de caso consiste em investigar o comportamento dos níveis de fator a partir de uma análise exploratória, e posteriormente, aplicar um teste de comparações múltiplas para as médias. A variância do processo é desconhecida e será estimada utilizando-se os dados históricos de operação fornecidos em <https://git.io/vHDG3>. A variância será considerada como sendo uniforme para todas as configurações neste estudo.
 
-Os dados experimentais utilizados foram obtidos através de simulação, por meio de um [aplicativo web] <http://orcslab.cpdee.ufmg.br:3838/riserdata/. A data de nascimento do segundo membro mais jovem da equipe (15/10/1992) foi o parâmetro utilizado como semente para o gerador de números da simulação. Os dados gerados informam uma tabela com os níveis de cada fator de interesse em uma coluna e os tempos (tomados em escala logarítmica) em coluna respectiva.
+Os dados experimentais utilizados foram obtidos através de simulação, por meio de um [aplicativo web] <http://orcslab.cpdee.ufmg.br:3838/riserdata/>. A data de nascimento do segundo membro mais jovem da equipe (15/10/1992) foi o parâmetro utilizado como semente para o gerador de números da simulação. Os dados gerados informam uma tabela com os níveis de cada fator de interesse em uma coluna e os tempos (tomados em escala logarítmica) em coluna respectiva.
 
 Os dados estão na escala de _log_ e serão analisados nesta escala, pois não necessitam de tranformação para tal.
 
