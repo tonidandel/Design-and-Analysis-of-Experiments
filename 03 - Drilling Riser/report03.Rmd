@@ -10,7 +10,7 @@ header-includes:
 - \usepackage{fancyhdr}
 - \usepackage[utf8]{inputenc}
 - \pagestyle{fancy}
-- \fancyfoot[CO,CE]{EEE933 - Planejamento e An?lise de Experimentos}
+- \fancyfoot[CO,CE]{EEE933 - Planejamento e Análise de Experimentos}
 - \fancyfoot[LE,RO]{\thepage}
 csl: ieee.csl
 bibliography: bibliography.bib
@@ -97,7 +97,7 @@ Caso a análise ANOVA identifique a existência de diferenças entre os níveis,
 Desta forma, somente, caso a análise de variância indique a existência de diferenças entre os níveis, será aplicado o teste de comparações múltiplas um-contra-todos (one-vs-all) de _Dunnett_, onde os _Risers_ propostos serão confrontados com a configuração padrão _Riser1_ para verificar se alguma proposta traria ganho de _MTTF_ frente à configuração já estabelecida.
 
 Para que se proceda com o teste de comparações múltiplas, deve-se manter o controle sobre os erros do tipo-$I$ em cada comparação. É preciso corrigir os valores de $\alpha$ para cada teste. A escolha para este caso é o método de correção de Bonferroni:
-$$\alpha_{adj} = \frac{\alpha_{fam?lia}}{K} \,,$$ 
+$$\alpha_{adj} = \frac{\alpha_{família}}{K} \,,$$ 
 
 no qual $K=3$ é o número de comparações a serem feitas que no caso do teste um-contra-todos de _Dunnett_ é confome abaixo:
 
@@ -160,7 +160,7 @@ onde ambas distribuições $F$ têm $(a-1)$ graus de liberdade no numerador e $a
 $$\phi=(n\sum_{i=1}^{a}\tau^2_i)/\hat\sigma^2 $$
 e o valor de $\tau$ no caso de comparações todos contra um é dado por:
 $$\tau = \left( -\frac{(a-1)\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a} \right) $$
-e o valor encontrado para o tamanho amostral do ANOVa ? $n=60$
+e o valor encontrado para o tamanho amostral do ANOVa é $n=60$
 
 
 Desta forma, tem-se a seguinte situação:
@@ -179,9 +179,9 @@ Desta forma, o preço para o ANOVA é de $\$2.300.000$ e o prço das comparaçõ
           & Melhor caso & Pior caso   \\ \hline
 Com ANOVA & \$2.300.000 & \$2.710.000 \\ \hline
 Sem ANOVA & \$2.650.000 & \$2.650.000 \\ \hline
-Diferen?a & \$350.000   & -\$60,000   \\ \hline
+Diferença & \$350.000   & -\$60,000   \\ \hline
 \end{tabular}
-\caption{An?lise de pre?o das op??es}
+\caption{Análise de preço das opções}
 \label{my-label}
 \end{table}
 
