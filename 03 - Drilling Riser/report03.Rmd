@@ -97,32 +97,29 @@ Para que se proceda com o teste de comparações múltiplas, deve-se manter o co
 \alpha_{adj} = \frac{\alpha_{família}}{K} \,,
 \label{eq:02}
 \end{equation}
-no qual $K=3$ consiste no número de comparações a serem feitas que no caso do teste um-contra-todos de _Dunnett_ $\eqref{eq:03}$:
+no qual $K=3$ consiste no número de comparações a serem feitas que no caso do teste um-contra-todos de _Dunnett_ ($eq. \eqref{eq:03}$):
 \begin{equation}
-K=a-1  \,,
+K=a-1  \,;
 \label{eq:03}
 \end{equation}
-em que $a$ é o número de níveis, que neste do estudo é 4 e o $\alpha$ experimental desejado é o  $\alpha_{família} = 0.05$. Assim o valor de $\alpha_{adj} = 0.0167$
+sendo que $a=4$ consiste no número de níveis e $\alpha$ (experimental) desejado $\alpha_{família} = 0.05$. Assim, o valor de $\alpha_{adj} = 0.0167$.
 
 ## 2.3 Definição do Tamanho Amostral
-Para calcular o tamanho amostral, utilizaremos as mesmas relações utilizadas na comparação de duas amostras independentes emparelhadas "todos contra um", alterando-se apenas os valores de $\alpha$ para os valores corrigidos $\alpha_{adj}$ para as múltiplas hipóteses e $a-1$ comparações. O tamanho amostral para o teste unilateral para os risers que serão comparados com o já estabelecido é calculado conforme a equação $\eqref{eq:04}$:
-
+Para calcular o tamanho amostral serãos utilizadas as mesmas relações para a comparação de duas amostras independentes emparelhadas ("todos contra um"), alterando-se apenas os valores de $\alpha$ para os valores corrigidos $\alpha_{adj}$, considerando-se as múltiplas hipóteses e $a-1$ comparações. O tamanho amostral para o teste unilateral para as configurações que serão comparadas ao _riser1_ é calculado conforme a equação $\eqref{eq:04}$:
 \begin{equation}
 n_i = \left(1 + \frac{1}{K}\right) \left( \frac{\hat{\sigma}}{\delta^{\star}}\right)^{2}(t_{\alpha_{adj}}+t_{\beta})^{2} \,,
 \label{eq:04}
 \end{equation}
+em que $t_{\alpha_{adj}}$ e $t_{\beta}$ são dependentes de $n$.
 
-em que $t_{\alpha_{adj}}$ e $t_{\beta}$ são dependentes de $n$. Para solucionar esse problema, os mesmos foram substituídos por $z_{\alpha_{adj}}$ e $z_{\beta}$ e a equação foi testada iterativamente até a convergência (implementação em anexo no arquivo  _calcN.R_). Dessa forma, foi encontrado o valor $n_i = 58$.
+Para solucionar o problema da dependência de $n$, os termos $t_{\alpha_{adj}}$ e $t_{\beta}$ foram substituídos por $z_{\alpha_{adj}}$ e $z_{\beta}$ e a equação foi testada iterativamente até a convergência (implementação em anexo no arquivo _calcN.R_). Dessa forma, foi encontrado um primeiro valor para o tamanho amostral $n_i = 58$.
 
-Contudo, para maximizar o poder do procedimento de múltiplas comparações, o tamanho amostral do grupo de controle deve ser calculado conforme a equação $\eqref{eq:05}$ [@Campelo2015-01]:
-
+Contudo, para aumentar a potência do procedimento de múltiplas comparações, o tamanho amostral do grupo de controle deve ser calculado conforme a equação $\eqref{eq:05}$ [@Campelo2015-01]:
 \begin{equation}
 n_0 = n_i\sqrt{K} \,,
 \label{eq:05}
 \end{equation}
-
-Lembrando que $K$ é o número de comparações (3), temos que $n_i = 101$
-
+Lembrando que $K$ é o número de comparações, conforme  atesta a relação $\eqref{eq:03}$, têm-se, portanto $n_i = 101$.
 
 ```{r,results='show',warning=FALSE,echo=FALSE}
 ## SAMPLE SIZE CALC
@@ -160,35 +157,32 @@ v_nAnova = power.anova.test(groups = v_a,
 
 ```
 
-
-Foi também feito o cálculo do tamanho amostral para a técnica ANOVA. Isto é feito fazendo-se sucessivas iterações em $n$ até que:
+O cálculo do tamanho amostral foi igualmente realizado para a técnica ANOVA: isto pode ser feito a partir de sucessivas iterações em $n$ até que
 \begin{equation}
 F_{(1-\alpha)}=F_{\beta;\phi} \,,
 \label{eq:06}
 \end{equation}
-
-em que ambas distribuições $F$ têm $(a-1)$ graus de liberdade no numerador e $a(n-1)$ no denomiador. O parâmetro de não-centralidade $\phi$ é dado por:
-
+em que ambas distribuições $F$ têm $(a-1)$ graus de liberdade no numerador e $a(n-1)$ no denomiador. Além disso, o parâmetro de não-centralidade $\phi$ é dado por:
 \begin{equation}
 \phi=(n\sum_{i=1}^{a}\tau^2_i)/\hat\sigma^2 \,.
 \label{eq:07}
 \end{equation}
 
-O valor de $\tau$, no caso de comparações "todos contra um" é dado por:
+O valor de $\tau$, no caso de comparações "todos contra um" pode ser obtido a partir da relação $\eqref{eq:08}$
 
 \begin{equation}
 \tau = \left( -\frac{(a-1)\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a} \right) \,,
 \label{eq:08}
 \end{equation}
-sendo que o valor encontrado para o tamanho amostral do ANOVa é $n=60$
+que produz um valor de tamanho amostral para a análise de variância $n=60$. Desta forma, tem-se a situação:
 
-Desta forma, tem-se a situação:
+* Número de amostras necessárias para o ANOVA: $60 \times 3+50=230$
 
-Número de amostras necessárias para o ANOVA: $60*3+50=230$
+* Número de amostras necessárias a compração todos contra um: $58*3 + 91 =265$
 
-Número de amostras necessárias a compração todos contra um: $58*3 + 91 =265$
+Consequentemente, observa-se que o custo de aplicação a análise de variância será, para este caso, de $\$2.300.000$ e o das comparações $\$2.650.000$. 
 
-Desta forma, o preço para o ANOVA é de $\$2.300.000$ e o prço das comparações é $\$2.650.000$. O ANOVA precisa de 60 amostras por grupo e as comparações de 58 (fora o grupo controle), o que resultaria em uma sobreamostragem de 2 unidades por grupo. Porém, caso o ANOVA não dê resultado de diferença entre os risers, seriam economizados $\$350.000$ fazendo o ANOVA antes. Essa informações estão apresentadas na tabela 1.
+Serão necessárias $60$ coletas para a realização do ANOVA e $58$ para as comparações (excetuando-se o grupo controle), o que resultaria em uma sobreamostragem de $2$ unidades por grupo. Entretanto, caso o ANOVA não forneça como resultado a diferença entre as configurações dos _risers_, seriam economizados cerca de $\$350.000$ fazendo o ANOVA antecipadamente. Tais informações sumarizadas na tabela 1.
 
 \begin{table}[]
 \centering
