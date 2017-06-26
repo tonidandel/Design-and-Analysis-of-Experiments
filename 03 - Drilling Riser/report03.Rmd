@@ -36,6 +36,9 @@ source('calcN.R')
 library(car)
 library(lmtest)
 
+v_dataHist = readr::read_csv('riser1.csv')
+v_data = readr::read_csv('1992-10-15_60_60_60_60.csv')
+
 ```
 
 # 1. Descrição do Problema
@@ -162,7 +165,7 @@ O resultado obtido indica um tamanho amostral $n_0 = 101$ para o grupo controle 
 
 ```{r, results='hide', warning=FALSE, echo=FALSE}
 ## SAMPLE SIZE CALC
-v_dataHist = readr::read_csv('riser1.csv')
+
 v_sdHist = sd(v_dataHist$LogTTF)
 
 v_n = calcN_oneVsAll(p_alpha = v_alphaAdj,
@@ -206,7 +209,7 @@ O primeiro caso apresenta um custo experimental de $\$2.300.000$, versus $\$2.65
 Serão necessárias $60$ coletas para a realização do ANOVA e $58$ para as comparações (excetuando-se o grupo controle), o que resultaria em uma sobreamostragem de $2$ unidades por grupo. Entretanto, o segundo experimento só é necessário caso o ANOVA indique diferença entre as configurações dos _Risers_.
 Caso contrário, apenas o primeiro experimento já seria o suficiente, o que acarretaria em uma economiacerca de $\$350.000$ fazendo o ANOVA antecipadamente. Tais informações sumarizadas na Tabela 1.
 
-\begin{table}[]
+\begin{table}[h!]
 \centering
 \label{tab:01}
 \begin{tabular}{|l|l|l|}
@@ -234,7 +237,7 @@ Caso os valores de uma execução não atendam essas condições, ela seria desc
 O teste ANOVA realizado apresenta _F-valor = 0.608_, o que indica que a hipótese nula de que não há diferenças entre os grupos não foi refutada. O boxplot dos resíduos corrobora o resultado encontrado.
 
 ```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=4, fig.width=6}
-v_data = readr::read_csv('1992-10-15_60_60_60_60.csv')
+
 v_data$Riser = as.factor(v_data$Riser)
 boxplot(LogTTF~Riser, 
         data = v_data, 
@@ -262,7 +265,7 @@ shapiro.test(v_model$residuals)
 qqPlot(v_model$residuals, 
        pch = 16, 
        lwd = 3, 
-       cex = 2, 
+       cex = 1, 
        las = 1,
        main = "Teste de normalidade")
 ```
@@ -279,7 +282,7 @@ fligner.test(LogTTF~Riser,
 
 plot(x    = v_model$fitted.values,
      y    = v_model$residuals,
-     cex  = 2,
+     cex  = 0.8,
      las  = 1,
      pch  = 16,
      xlab = "Fitted values",
