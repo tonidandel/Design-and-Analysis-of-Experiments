@@ -1,0 +1,113 @@
+---
+title: 'Estudo de Caso final: Ancova'
+author: "Equipe 04"
+date: "03 de Julho de 2017"
+output:
+  pdf_document:
+    fig_caption: yes
+    citation_package: natbib
+  word_document: default
+urlcolor: blue
+header-includes:
+- \usepackage{fancyhdr}
+- \usepackage[utf8]{inputenc}
+- \pagestyle{fancy}
+- \fancyfoot[CO,CE]{EEE933 - Planejamento e Análise de Experimentos}
+- \fancyfoot[LE,RO]{\thepage}
+csl: ieee.csl
+bibliography: bibliography.bib
+---  
+Coordenador: Alessandro Cardoso    
+Relator: Bernardo Marques   
+Verificador: Danny Tonidandel   
+Monitor: Gustavo Vieira
+
+```{r setup,include=FALSE, results='hide',warning=FALSE,echo=FALSE}
+if (!require(readr, quietly = TRUE)){
+  install.packages("readr")
+}
+if (!require(car, quietly = TRUE)){
+  install.packages("car")
+}
+if (!require(lmtest, quietly = TRUE)){
+  install.packages("lmtest")
+}
+library(car)
+library(lmtest)
+
+v_dataHist = readr::read_csv('data.csv')
+```
+
+# 1. Descrição do Problema
+
+
+
+```{r,results='show',warning=FALSE,echo=FALSE}
+## EXPERIMENTAL DEFINITIONS
+v_alpha = 0.05
+v_a = 4
+v_k = v_a-1
+v_alphaAdj = v_alpha/v_k
+v_beta = 0.15
+v_power = 1-v_beta
+v_delta = 0.25
+```
+Os parâmetros experimentais desejados são:
+
+* Nível de significância: $\alpha = `r v_alpha`$;
+
+* Tamanho de efeito de interesse prático: $\delta^{\star} = `r v_delta`$;
+
+* Potência desejada: $(1- \beta) = \pi \geq `r v_power`$.
+
+# 2. Planejamento Experimental
+
+A primeira etapa do experimento consistiu na geração dos dados experimetais a partir dos dois algoritmos de otimização.
+
+Busca-se a verificação de diferenças estatísticas significativas entre as configurações testadas.
+
+Deve ser também efetuada uma análise exploratória qualitativa dos dados para complementar os testes. 
+
+Os dados experimentais utilizados foram obtidos através de simulação, por meio dos algoritmos <www.blablabla.com>.
+
+## 2.1 Análise de Co-Variância (ANCOVA)
+
+Para a avaliar existência de diferenças significativas entre os algoritmos, bem como entre possíveis covariantes, será utilizada a análise de covariância.
+
+A análise de convariância é, em diversos aspectos, similar à análise de variância, porém permite ter controle sobre a influência do covariante nas variâveis dependentes, as quais se deseja estudar.
+ 
+Vale ressaltar que a técnica não restrita apenas à indicação de existência ou não de diferenças entre os níveis avaliados, sem indicar quais níveis seriam diferentes. Além disso, quando a análise de variância tem como resultado um indicativo de refutação da hipótese nula $\eqref{eq:01}$ é que podem ser evidenciados os indícios de diferenças entre os níveis.
+
+
+## 2.2 Comparações Múltiplas
+
+
+## 2.3 Definição do Tamanho Amostral
+
+O cálculo do tamanho amostral para a técnica ANOVA pode ser feito iterativamente até encontrar o número $n$ tal que:
+
+\begin{equation}
+F_{(1-\alpha)}=F_{\beta;\phi} \,,
+\label{eq:06}
+\end{equation}
+
+em que ambas distribuições $F$ têm $(a-1)$ graus de liberdade no numerador e $a(n-1)$ no denomiador. O parâmetro de não-centralidade $\phi$ é dado por:
+
+## 2.4 Tratamento e Validação dos Dados
+
+# 3. Análise Estatística
+
+## 3.1 Análise de Variância
+
+## 3.2 Validação das Premissas
+
+### Normalidade
+
+### Homocedasticidade
+
+
+### Independência
+
+# 4. Discussão e Conclusões
+
+# Referências

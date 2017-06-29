@@ -1,0 +1,328 @@
+---
+title: 'Estudo de Caso 03: Comparison of Rising Drilling Configurations'
+author: "Equipe 04"
+date: "24 de Junho de 2017"
+output:
+  pdf_document:
+    fig_caption: yes
+    citation_package: natbib
+  word_document: default
+urlcolor: blue
+header-includes:
+- \usepackage{fancyhdr}
+- \usepackage[utf8]{inputenc}
+- \pagestyle{fancy}
+- \fancyfoot[CO,CE]{EEE933 - Planejamento e Análise de Experimentos}
+- \fancyfoot[LE,RO]{\thepage}
+csl: ieee.csl
+bibliography: bibliography.bib
+---  
+Coordenador: Bernardo Marques   
+Relator: Danny Tonidandel   
+Verificador: Gustavo Vieira   
+Monitor: Alessandro Cardoso
+
+```{r setup,include=FALSE, results='hide',warning=FALSE,echo=FALSE}
+if (!require(readr, quietly = TRUE)){
+  install.packages("readr")
+}
+if (!require(car, quietly = TRUE)){
+  install.packages("car")
+}
+if (!require(lmtest, quietly = TRUE)){
+  install.packages("lmtest")
+}
+source('calcN.R')
+library(car)
+library(lmtest)
+
+v_dataHist = readr::read_csv('riser1.csv')
+v_data = readr::read_csv('1992-10-15_60_60_60_60.csv')
+
+```
+
+# 1. Descrição do Problema
+
+Tubos de perfuração _(drilling risers)_ consistem em um tipo de conduíte ou tubo utilizado para transportar o petróleo extraído em plataformas oceânicas para a superfície. Um pesquisador precisa comparar o tempo médio até a falha _(mean time to failure ou MTTF)_ de quatro configurações diferentes (níveis $A$, $B$, $C$, $D$) de equipamentos, de forma a escolher a que forneça a menor probabilidade de falha, considerando-se um período de $20$ anos. Para isto será comparada a configuração padrão _(Riser1)_ com as outras três, buscando encontrar qual delas proverá o maior _MTTF_. Assim, o experimento pode ser sumarizado na seguinte questão:
+
+_Algum dos risers alternativos é melhor que o padrão? Se sim, qual deles é o melhor?_
+
+Para realizar o experimento, serão feitos testes utilizando de um modelo de perfuradores em menor escala, sujeitos a um protocolo de testes de tempo de vida acelerado, em que há uma relação direta entre o tempo medido de cada observação (em minutos) e a configuração do sistema real. O custo de cada observação é, em média, $US\$10.000$ (dez mil dólares) por observação. Além dos dados obtidos com os testes, existem dadosdados históricos existentes para a configuração padrão _(Riser1)_.
+
+```{r,results='show',warning=FALSE,echo=FALSE}
+## EXPERIMENTAL DEFINITIONS
+v_alpha = 0.05
+v_a = 4
+v_k = v_a-1
+v_alphaAdj = v_alpha/v_k
+v_beta = 0.15
+v_power = 1-v_beta
+v_delta = 0.25
+```
+Os parâmetros experimentais desejados são:
+
+* Nível de significância: $\alpha = `r v_alpha`$;
+
+* Tamanho de efeito de interesse prático: $\delta^{\star} = `r v_delta`$;
+
+* Potência desejada: $(1- \beta) = \pi \geq `r v_power`$.
+
+# 2. Planejamento Experimental
+
+A priemira etapa do experimento é a verificação de diferenças estatísticas significativas entre as configurações testadas. Se diferenças forem verificadas e as premissas forem validadas, a etapa seguinte consiste consiste em investigar e quantificar essas diferenças através de testes de comparações múltiplas para as médias. Deve ser também efetuada uma análise exploratória qualitativa dos dados para complementar os testes. 
+
+A variância do processo será estimada utilizando-se [dados históricos de operação](https://git.io/vHDG3) disponíveis da configuração padrão. Ela será considerada uniforme para todas as configurações.
+
+Os dados experimentais utilizados foram obtidos através de simulação, por meio de um [aplicativo web](http://orcslab.cpdee.ufmg.br:3838/riserdata/). A data de nascimento do segundo membro mais jovem da equipe (15/10/1992) foi o parâmetro utilizado como semente para o gerador de números da simulação. Os dados gerados informam uma tabela com os níveis de cada fator de interesse em uma coluna e os tempos (tomados em escala logarítmica) em coluna respectiva. Por este motivo não necessitam de tranformações inversas.
+
+
+## 2.1 Análise de Variância
+ 
+Para a avaliar existência de diferenças significativas entre as configurações de perfuradores, será utilizado o teste estatístico ANOVA.
+
+Essa técnica analisa médias e variâncias de observações de diferentes grupos para verificar se existe diferença estatístixa significativa entre as médias desses grupos. Assim, generaliza o teste t para mais de dois grupos, permitindo que sejam comparados simultâneamente [@Campelo2015-01], [@MontgomeryRunger2011]. Em outras palavras, a análise de variância é utilizada quando se quer decidir se os níveis apresentam médias diferentes em relação é uma média global $\mu$. As diferenças entre as médias dos níveis e a média global é  $\tau_i$ $\forall \  i$. 
+
+Vale ressaltar que a técnica é restrita apenas à indicação de existência ou não de diferenças entre os níveis avaliados, sem indicar quais níveis seriam diferentes. Além disso, quando a análise de variância tem como resultado um indicativo de refutação da hipótese nula $\eqref{eq:01}$ é que podem ser evidenciados os indícios de diferenças entre os níveis.
+
+
+\begin{equation}
+\left\{\begin{array}{rc}
+H_{0}:& \tau_i = 0, \ \ \ \forall i\\
+H_{1}:& \exists \ \ \tau_i \neq 0
+\end{array}\right.
+\label{eq:01}
+\end{equation}
+
+Esta etapa foi considerada como uma primeira verificação ao questionamento deste estudo por apresentar um custo de coleta de amostras menor do que o teste de comparações múltiplas discutido na Seção 2.2. Portanto, caso não seja detectada alguma diferenças entre os níveis, as comparações múltiplas são dispensáveis, o que reduz o custo do experimento.
+
+## 2.2 Comparações Múltiplas
+
+Caso a análise ANOVA identifique a existência de diferenças entre os níveis, deve-se proceder com testes de comparação múltiplas. As comparações devem ser realizadas em relação à configuração padrão, de maneira a verificar se alguma das alternativas propostas é melhor.
+Desta forma, caso a análise de variância indique a existência de diferenças entre os níveis, será aplicado o teste de comparações múltiplas um-contra-todos (one-vs-all) de _Dunnett_, onde os _Risers_ propostos serão confrontados com a configuração padrão _Riser1_ para verificar se alguma proposta traria ganho de _MTTF_ frente à configuração já estabelecida.
+
+Para realizar o teste de comparações múltiplas, deve-se manter o controle sobre os erros do tipo-$I$ em cada comparação de maneira com que ele não se acumule a cada teste sucessivo. Assim, os valores de $\alpha$ são corrigidos para cada teste através do método de correção de Bonferroni $\eqref{eq:02}$:
+
+\begin{equation}
+\alpha_{adj} = \frac{\alpha_{família}}{K} \,,
+\label{eq:02}
+\end{equation}
+
+no qual $K=3$ consiste no número de comparações a serem feitas que no caso do teste um-contra-todos de _Dunnett_. O número de comparações nesse caso é dado pela Equação \eqref{eq:03}:
+
+\begin{equation}
+K=a-1  \,;
+\label{eq:03}
+\end{equation}
+
+na qual $a=4$ indica oo número de níveis. Assim, utiliza-se o nível de significância ajustado $\alpha_{adj} = `r v_alphaAdj`$.
+
+## 2.3 Definição do Tamanho Amostral
+
+O experimento realizado possui duas etapas: ANOVA para verificar diferença entre as médias dos algoritmos, seguida de comparções múltiplas one-vs-all (se necessário). Cada uma dessas etapas requer diferentes tamanhos amostrais.
+
+O cálculo do tamanho amostral para a técnica ANOVA pode ser feito iterativamente até encontrar o número $n$ tal que:
+
+\begin{equation}
+F_{(1-\alpha)}=F_{\beta;\phi} \,,
+\label{eq:06}
+\end{equation}
+
+em que ambas distribuições $F$ têm $(a-1)$ graus de liberdade no numerador e $a(n-1)$ no denomiador. O parâmetro de não-centralidade $\phi$ é dado por:
+
+\begin{equation}
+\phi= \frac{\left(n\sum_{i=1}^{a}\tau^2_i\right)}{\hat\sigma^2} \,.
+\label{eq:07}
+\end{equation}
+
+O valor de $\tau$ para comparações "todos contra um" pode ser obtido a partir da relação $\eqref{eq:08}$
+
+\begin{equation}
+\tau = \left( -\frac{(a-1)\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a} \right) \,.
+\label{eq:08}
+\end{equation}
+
+O resultado desse teste indica um tamanho amostral $n=60$ observações em cada grupo.
+
+Para calcular o tamanho amostral das comparações múltiplas one-vs-all, serão utilizadas as mesmas relações para a comparação de duas amostras independentes emparelhadas, alterando-se apenas os valores de $\alpha$ para os valores corrigidos $\alpha_{adj}$, considerando-se as múltiplas hipóteses e $a-1$ comparações. Em comparações desse tipo, a potência é maximizada utilizando um número maior de observações para o grupo de controle, dado pela Equação \eqref{eq:05} [@Campelo2015-01]:
+
+\begin{equation}
+n_0 = n_i\sqrt{K} \,,
+\label{eq:05}
+\end{equation}
+
+onde $K =3 $ é o número de comparações, $n_0$ é o tamanho amostral do grupo controle e $n_i$ o número de observações dos demais grupos. Esse valor é calculado conforme a Equação $\eqref{eq:04}$:
+
+\begin{equation}
+n_i = \left(1 + \frac{1}{K}\right) \left( \frac{\hat{\sigma}}{\delta^{\star}}\right)^{2}(t_{\alpha_{adj}}+t_{\beta})^{2} \,,
+\label{eq:04}
+\end{equation}
+
+em que $t_{\alpha_{adj}}$ e $t_{\beta}$ são dependentes de $n$.
+
+Para solucionar o problema da dependência de $n$, os termos $t_{\alpha_{adj}}$ e $t_{\beta}$ foram substituídos por $z_{\alpha_{adj}}$ e $z_{\beta}$ e a equação foi testada iterativamente até a convergência (implementação em anexo no arquivo _calcN.R_). 
+
+O resultado obtido indica um tamanho amostral $n_0 = 101$ para o grupo controle e $n_i = 58$ para os demais. Considerando as 10 observações históricas já disponíveis para o _Riser1_, tem-se:
+
+```{r, results='hide', warning=FALSE, echo=FALSE}
+## SAMPLE SIZE CALC
+
+v_sdHist = sd(v_dataHist$LogTTF)
+
+v_n = calcN_oneVsAll(p_alpha = v_alphaAdj,
+            p_beta = v_beta,
+            p_alternative = 'one-sided',
+            p_k = v_k,
+            p_sd = v_sdHist,
+            p_delta = v_delta
+)
+
+v_nControl = ceiling(v_n*sqrt(v_k))
+
+v_tau = c(-v_delta*(v_a-1)/v_a, rep(v_delta/v_a, v_k))
+vartau = var(v_tau)
+v_nAnova = power.anova.test(groups = v_a, 
+                            between.var = vartau, 
+                            within.var = v_sdHist^2, 
+                            sig.level = v_alpha, 
+                            power = v_power)$n
+
+v_nControl = ceiling(v_n*sqrt(v_k))
+
+v_tau = c(-v_delta*(v_a-1)/v_a, rep(v_delta/v_a, v_k))
+#v_tau = c(-v_delta/2, v_delta/2, rep(0, v_k-1))
+vartau = var(v_tau)
+v_nAnova = power.anova.test(groups = v_a, 
+                            between.var = vartau, 
+                            within.var = v_sdHist^2, 
+                            sig.level = v_alpha, 
+                            power = v_power)$n
+
+```
+
+
+* Número de observações experimentais necessárias para o ANOVA: $60 \times 3+50=230$
+
+* Número de observações experimentais necessárias a comparação todos contra um: $58*3 + 91 =265$
+
+O primeiro caso apresenta um custo experimental de $\$2.300.000$, versus $\$2.650.000$ para o segundo. 
+
+Serão necessárias $60$ coletas para a realização do ANOVA e $58$ para as comparações (excetuando-se o grupo controle), o que resultaria em uma sobreamostragem de $2$ unidades por grupo. Entretanto, o segundo experimento só é necessário caso o ANOVA indique diferença entre as configurações dos _Risers_.
+Caso contrário, apenas o primeiro experimento já seria o suficiente, o que acarretaria em uma economiacerca de $\$350.000$ fazendo o ANOVA antecipadamente. Tais informações sumarizadas na Tabela 1.
+
+\begin{table}[h!]
+\centering
+\label{tab:01}
+\begin{tabular}{|l|l|l|}
+\hline
+& Melhor caso & Pior caso   \\ \hline
+Com ANOVA & \$2.300.000 & \$2.710.000 \\ \hline
+Sem ANOVA & \$2.650.000 & \$2.650.000 \\ \hline
+Diferença & \$350.000   & -\$60,000   \\ \hline
+\end{tabular}
+\caption{Análise de custo das opções.}
+\end{table}
+
+Assim, serão realizados inicialmente apenas experimentos necessários para o teste ANOVA, em virtude da possível economia e do possível menor custo com a amostragem. Caso sejam identificadas diferenças entre as configurações possíveis de _risers_, mais experimentos serão realizados para completar o tamanho amostral necessário.
+
+## 2.4 Tratamento e Validação dos Dados
+Considerando o experimento realizado, foi criada uma rotina para validação dos dados obtidos e identificação de erros, onde o tempo de _MTTF_ na escala logarítma deve ser maior que $0$. 
+
+1. LogTTF $> 0$
+
+Caso os valores de uma execução não atendam essas condições, ela seria descartada. No entanto, nenhuma das amostras apresentou tal problema.
+
+# 3. Análise Estatística
+## 3.1 Análise de Variância
+
+O teste ANOVA realizado apresenta _F-valor = 0.608_, o que indica que a hipótese nula de que não há diferenças entre os grupos não foi refutada. O boxplot dos resíduos corrobora o resultado encontrado.
+
+```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=4, fig.width=6}
+
+v_data$Riser = as.factor(v_data$Riser)
+boxplot(LogTTF~Riser, 
+        data = v_data, 
+        xlab = "Configuração (A,B,C,D)",
+        ylab = "LogTTF", 
+        main = "Riser data",
+        pch  = 16,
+        col  = "gray")
+v_model <- aov(LogTTF~Riser, 
+             data = v_data)
+summary.aov(v_model)
+```
+
+Este resultado indica que não há necessidade de testes de comparação múltiplas, que poderiam identificar quais os níveis diferentes do grupo de controle _(Riser1)_.
+
+## 3.2 Validação das Premissas
+
+### Normalidade
+
+O _p-valor = 0.299_ encontrado no teste de _Shapiro-Wilk_ não indica rejeição hipótese de normalidade das amostras. A análise visual do qq plot confirma que não há violações de normalidade significativas. Além disso, o test ANOVA é robusto a pequenas variações de normalidade [@Campelo2015-01]. Desta forma considerou-se a premissa de normalidade atendida.
+
+```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=5}
+#par(mfrow=c(1,2), mai=.8*c(2.5,1,1,1))
+shapiro.test(v_model$residuals)
+qqPlot(v_model$residuals, 
+       pch = 16, 
+       lwd = 3, 
+       cex = 1, 
+       las = 1,
+       main = "Teste de normalidade")
+```
+
+### Homocedasticidade
+
+O teste de igualdade de variância dos resíduos de _Fligner-Killeen_ apresentou um _p-valor = 0.1416_, o que indica falha em rejeitar a hipótese de homocedasticidade das amostras.
+
+Além disso, podemos observar no gráfico que não há indíveios de diferença de variância significativa para entre os resíduos de diferentes grupos. O teste ANOVA também é robusto a pequenas violações na homocedasticidade como indicado por [@Campelo2015-01]. Assim, essa premissa também é atendida.
+
+```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3.5}
+fligner.test(LogTTF~Riser, 
+             data = v_data)
+
+plot(x    = v_model$fitted.values,
+     y    = v_model$residuals,
+     cex  = 0.8,
+     las  = 1,
+     pch  = 16,
+     xlab = "Fitted values",
+     ylab = "Residuals")
+grid(NULL,NULL, lwd=2, col = "#44444422")
+```
+
+
+### Independência
+
+```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3.5}
+v_dwTest = durbinWatsonTest(v_model)
+v_dwTestp = v_dwTest$p
+```
+
+O plot dos valores ordenados de diferenças de tempo entre os algoritmos não apresenta nenhum indício de dependência temporal dos valores. O teste de autocorrelação serial Durbin-Wastson apresenta  $p = `r v_dwTestp`$, o que reforça a hipótese de que não há autocorrelação serial entre as amostras.
+
+```{r,results='hide',warning=FALSE,echo=FALSE, fig.height=3.5}
+plot(x    = seq_along(v_model$residuals),
+     y    = v_model$residuals,
+     type = "l",
+     las  = 1,
+     lwd  = 2,
+     lty  = 1,
+     xlab = "Residual order",
+     ylab = "Residual value")
+#points(x    = seq_along(v_model$residuals),
+#       y    = v_model$residuals,
+#       type = "p",
+#       cex  = 2,
+#       pch  = 5,
+#       col  = as.numeric(v_data[, 2]))
+grid(NA,NULL, lwd=2, col = "#44444422")
+```
+
+
+# 4. Discussão e Conclusões
+
+Os testes realizados indicam que não há diferença significativa entre o tempo de vida das diferentes configurações de _Risers_. Todas as premissas do teste ANOVA realizado foram confirmadas, o que reforça o resultado alcançado. Dessa forma, recomenda-se manter a configuração padrão _Riser1_, uma vez que não há vantagem observada nas alternativas consideradas.
+
+O custo do experimento realizado é significativo $(\$2.300.000)$, mas previniu um custo potencialmente maior de trocar a configuração de _Riser_.
+
+# Referências
