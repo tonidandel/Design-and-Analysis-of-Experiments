@@ -74,7 +74,9 @@ Os dados experimentais utilizados foram obtidos através de simulação, por mei
 
 Para a avaliar existência de diferenças significativas entre os algoritmos, bem como entre possíveis covariantes, será utilizada a análise de covariância.
 
-A análise de convariância é, em diversos aspectos, similar à análise de variância, porém permite ter controle sobre a influência do covariante nas variâveis dependentes, as quais se deseja estudar.
+A análise de convariância é, em diversos aspectos, similar à análise de variância, porém permite ter controle sobre a influência do covariante nas variâveis dependentes. Na análise de variância a variável dependente é contínua (e.g. tempo, velocidade, etc.), sendo que a independente é categória (e.g. "masculino/feminino", "fumante/não-fumante" etc. ).
+
+A análise de variância, pode-se assim dizer, tornar-se-á a análise de covariância quando for adicionado um covariante, que consiste em outra variável, que pode ser tanto categórica quanto contínua,
  
 Vale ressaltar que a técnica não restrita apenas à indicação de existência ou não de diferenças entre os níveis avaliados, sem indicar quais níveis seriam diferentes. Além disso, quando a análise de variância tem como resultado um indicativo de refutação da hipótese nula $\eqref{eq:01}$ é que podem ser evidenciados os indícios de diferenças entre os níveis.
 
