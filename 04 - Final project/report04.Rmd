@@ -76,10 +76,15 @@ Para a avaliar existência de diferenças significativas entre os algoritmos, be
 
 A análise de convariância é, em diversos aspectos, similar à análise de variância, porém permite ter controle sobre a influência do covariante nas variâveis dependentes. Na análise de variância a variável dependente é contínua (e.g. tempo, velocidade, etc.), sendo que a independente é categória (e.g. "masculino/feminino", "fumante/não-fumante" etc. ).
 
-A análise de variância, pode-se assim dizer, tornar-se-á a análise de covariância quando for adicionado um covariante, que consiste em outra variável, que pode ser tanto categórica quanto contínua,
- 
-Vale ressaltar que a técnica não restrita apenas à indicação de existência ou não de diferenças entre os níveis avaliados, sem indicar quais níveis seriam diferentes. Além disso, quando a análise de variância tem como resultado um indicativo de refutação da hipótese nula $\eqref{eq:01}$ é que podem ser evidenciados os indícios de diferenças entre os níveis.
+A análise de variância, pode-se assim dizer, tornar-se-á a análise de covariância quando for adicionado um covariante, que consiste em outra variável, que pode ser tanto categórica quanto contínua.
 
+Existem aliás, duas razões principais para sair-se da ANOVA e passar a ser considerada a análise de covarância é, isto é, as razões técnicas para adicionar um covariante, consistem em:
+
+* Reduzir fatores de variabilidade inter-grupos, ou alcançar umm nível maior de entendimento a partir da variância desconhecida;
+
+* Eliminar o efeito que ocorre quando o controle experimental não permite que o experimentador elimine, de maneira razoável, explicações alternativas para uma relação observada entre variáveis independentes e dependentes, o que é chamado de "confusão" _confounding_.
+ 
+Vale ressaltar que a técnica não é restrita apenas à indicação de existência ou não de diferenças entre os níveis avaliados.
 
 ## 2.2 Comparações Múltiplas
 
