@@ -1,0 +1,556 @@
+% !TeX spellcheck = pt_BR
+
+\documentclass[conference,harvard,brazil,english]{sbatex}
+\usepackage[latin1]{inputenc}
+\usepackage{ae}
+%
+% LaTeX2e class SBATeX
+%
+% Versão 1.0 alpha
+%   Walter Fetter Lages
+%   w.fetter@ieee.org
+%
+% Este arquivo sbai2013.tex é uma adaptação do arquivo revista.tex,
+% Versão: 1.0 alpha, desenvolvido por Maurício C. de Oliveira,
+% mcdeoliveira@ieee.org.
+%
+% As adaptações fazem com que, por default, sejam utilizadas
+% as opções adequadas para o formato do SBAI 2013, ao contrário do arquivo
+% revista.tex, que, por default, utiliza opções adequadas para o formato
+% da Revista da SBA.
+%
+%
+% --------------------------------------------------
+%
+% Para compilar este exemplo use a seqüência de comandos:
+%
+%     latex sbai2013
+%     bibtex sbai2013
+%     latex sbai2013
+%     latex sbai2013
+%
+% Para gerar um arquivo Postscript (.ps):
+%
+%     dvips -t a4 sbai2013
+%
+% Para gerar um arquivo Portable Document Format (.pdf):
+%
+%     dvips -Ppdf -t a4 sbai2013
+%     ps2pdf -dMaxSubsetPct=100 -dSubsetFonts=true -dEmbedAllFonts=true -dCompatibilityLevel=1.2 -sPAPERSIZE=a4 sbai2013.ps
+%
+% --------------------------------------------------
+%  Este arquivo foi testado no:
+%   - Windows: Miktex 2.9 + TeXnicCenter 1.0 Stable Release
+%   - Linux  : Tex Live 2007.dfsg.2-7ubuntu1.1 + Kile 2.0.83
+%              Tex Live 2007.dfsg.2-7ubuntu1.1 + Emacs 22 (GTK)
+% --------------------------------------------------
+%
+% --------------------------------------------------
+%  Estes comandos são necessários apenas para a
+%  a geração deste artigo exemplo. Eles não fazem
+%  parte do estilo SBATeX.
+% --------------------------------------------------
+\makeatletter
+\def\verbatim@font{\normalfont\ttfamily\footnotesize}
+\makeatother
+%\usepackage{amsmath}
+% --------------------------------------------------
+
+%------------------------------------------------------------------------
+%	CUSTOM PACKAGES
+%------------------------------------------------------------------------
+
+\usepackage{graphicx}
+%\usepackage[utf8]{inputenc}
+%\usepackage[brazil]{babel}
+%\usepackage[T1]{fontenc}
+%\usepackage{amsmath}
+%\usepackage{amsthm,amsfonts}
+\usepackage{amsfonts}
+\usepackage{color}
+\usepackage[colorlinks]{hyperref}
+\usepackage{abntex2abrev}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{lipsum}
+%\usepackage{abstract}
+%\usepackage{authblk}
+
+\usepackage{easy-todo}
+% \usepackage[colorinlistoftodos]{todonotes}
+% \usepackage[ampersand]{easylist}
+\usepackage{bm}
+\usepackage{mathtools}
+%\usepackage{listings}
+%\usepackage{lstautogobble}
+\usepackage{indentfirst}
+\usepackage{xfrac}
+
+%\lstset{
+%	autogobble=true,
+%	frame=single,
+%	tabsize=3,
+%	inputencoding=utf8,
+%	extendedchars=true,
+%	literate=%
+%	{é}{{\'{e}}}1
+%	{è}{{\`{e}}}1
+%	{ê}{{\^{e}}}1
+%	{É}{{\'{E}}}1
+%	{Ê}{{\^{E}}}1
+%	{û}{{\^{u}}}1
+%	{ù}{{\`{u}}}1
+%	{ú}{{\'{u}}}1
+%	{â}{{\^{a}}}1
+%	{à}{{\`{a}}}1
+%	{á}{{\'{a}}}1
+%	{ã}{{\~{a}}}1
+%	{Á}{{\'{A}}}1
+%	{Â}{{\^{A}}}1
+%	{Ã}{{\~{A}}}1
+%	{ç}{{\c{c}}}1
+%	{Ç}{{\c{C}}}1
+%	{õ}{{\~{o}}}1
+%	{ó}{{\'{o}}}1
+%	{ô}{{\^{o}}}1
+%	{Õ}{{\~{O}}}1
+%	{Ó}{{\'{O}}}1
+%	{Ô}{{\^{O}}}1
+%	{î}{{\^{i}}}1
+%	{Î}{{\^{I}}}1
+%	{í}{{\'{i}}}1
+%	{Í}{{\~{Í}}}1
+%}
+
+%-----------------------------------------------------------------------------
+%	FORMATING SECTION
+%-----------------------------------------------------------------------------
+% \usepackage[sc]{mathpazo} % Use the Palatino font
+% \linespread{1.05} % Line spacing - Palatino needs more space between lines
+% \usepackage{microtype} % Slightly tweak font spacing for aesthetics
+
+\usepackage{enumitem} % Customized lists
+\setlist[itemize]{noitemsep} % Make itemize lists more compact
+\setlist[enumerate]{noitemsep} % Make itemize lists more compact
+
+\usepackage{hyperref} % For hyperlinks in the PDF
+
+
+\begin{document}
+
+% CABEÇALHO
+
+\title{OTIMIZAÇÃO DE CUSTO E TEMPO EM ROTEIROS DE VIAGEM}
+
+\author[1]{Gustavo Linhares Vieira}{}
+\address{
+Programa de Pós-Graduação em Engenharia Elétrica - Universidade Federal de Minas Gerais\\
+Av. Antônio Carlos 6627, 31270-901, Belo Horizonte, MG, Brasil
+}
+
+\author[2]{Frederico Gadelha Guimarães}{}
+\address{
+Departamento de Engenharia Elétrica, Universidade Federal de Minas Gerais \\ 
+Av. Antônio Carlos 6627, Belo Horizonte, MG, Brasil
+}
+
+\author[2]{Lucas S. Batista}{\{gustavolvieira, fredericoguimaraes, lusoba\}@ufmg.br}
+
+
+% Com a opção 'journal' pode-se definir
+%\volume{X}
+%\numero{X}
+%\mes{Jan e Fev}
+%\ano{2010}
+% Caso contrário você verá um irritante aviso de
+% que estes valores não foram definidos.
+
+% \twocolumn apenas para conference
+\twocolumn[
+
+\maketitle
+
+\selectlanguage{english}
+\begin{abstract}
+	Current tools for trip planning allow users to search for flights and hotels and build their own itinerary, but they do not offer support for trips with flexibility on dates or destination ordering.
+	In order to solve this problem, we propose a new system that searches for the best combination of flights and accommodations for a trip, minimizing cost and transportation time. The system can optimize itineraries with flexible dates and does not require a fixed destination order, which allows it to consider all possible configurations that fulfill users specifications. This way, it offers good itineraries for trips with much less effort from users, which represents a significant improvement on trip planning experience.
+\end{abstract}
+
+\keywords{Route Planning, Travel Planning, Multiobjective Optimization}
+
+\selectlanguage{brazil}
+\begin{abstract}
+	As ferramentas atuais para planejamento de viagens permitem que usuários busquem passagens e hotéis e construam seu próprio itinerário, mas não oferecem suporte para viagens com flexibilidade nas datas ou na ordenação de destinos.
+	Para solucionar esse problema, propõe-se um novo sistema que busca as melhores combinações de passagens e hotéis para uma viagem, minimizando o custo e tempo de transporte. O sistema é capaz de otimizar roteiros com datas flexíveis e não requer uma ordem fixa dos destinos, de forma que considera todas as possíveis configurações que atendem as especificações do usuário. Dessa forma, oferece boas opções de itinerários para viagens com esforço do usuário muito menor, representando uma melhoria significativa na experiência de planejamento de viagens.
+\end{abstract}
+
+\keywords{Planejamento de Rotas, Planejamento de Viagens, Otimização Multiobjetivo.}
+]
+
+% CONTRIBUIÇÃO
+
+\selectlanguage{brazil}
+
+\section{Introdução}
+
+O uso cada vez mais proeminente da internet como via de comércio levou muitas mudanças ao mercado de turismo. Sites de vendas de voos e reservas de hotéis são cada vez mais acessados \cite{Buhalis2004}, o que representa um afastamento do antigo modelo de pacotes pré-moldados e agentes de turismo. Atualmente, é cada vez mais comum que viajantes planejem suas próprias viagens, ajustando cada detalhe à suas preferências \cite{Buhalis2008,Berne2012}.
+
+Uma etapa crucial no planejamento de viagens é determinar os transportes e acomodações do roteiro. Viajantes podem gastar muito tempo procurando pela combinação que provê maior conforto com menores custos e tempo de viagem. Muitas ferramentas foram desenvolvidas para ajudar os usuários nessa tarefa específica, oferecendo sugestões de voos e hotéis com base nas preferências do usuário. A experiência de uso desses sistemas tem um impacto significativo nas conversões e vendas \cite{Buhalis2008}. Entre as ferramentas de maior sucesso estão \href{www.skyscanner.com}{Skyscanner}, \href{www.expedia.com}{Expedia}, \href{www.rome2rio.com}{Rome2Rio}, \href{www.booking.com}{Booking.com} e \href{www.hipmunk.com}{Hipmunk}.
+
+A maioria dessas ferramentas, entretanto, oferecem apenas sugestões para trechos entre dois destinos da viagem. Isso significa que, para viagens maiores com mais destinos, o usuário precisa buscar cada trecho separadamente, o que demanda tempo e esforço. Além disso, nenhum desses sistemas possui opções de busca avançada que possam considerar viagens com datas flexíveis ou nas quais a ordem dos destinos não é fixa. Nessas situações, a quantidade de possíveis combinações de hotéis e passagens aumenta, e se torna mais trabalhoso  procurar a opção mais adequada.
+
+A busca das melhores combinações pode ser formulada como um problema de otimização onde os objetivos são minimizar o custo da viagem e o tempo gasto em trânsito entre diferentes destinos. Nesse problema, é necessário considerar todas a possíveis ordenações dos destinos na viagem e, para cada uma, as opções de transportes e acomodações disponíveis. Isso permitiria oferecer de forma automática para um usuário as melhores combinações para seu roteiro, garantindo assim uma experiência de uso melhor e mais eficiente.
+
+Esse trabalho propõe uma ferramenta para solucionar o problema descrito. O sistema desenvolvido baseia-se nas especificações do usuário para solucionar o problema de otimização descrito e obter como resultado o conjunto de melhores opções de transportes e acomodações para um roteiro de viagem.
+
+O artigo é organizado da seguinte forma: a Seção \ref{sec:review} apresenta trabalhos relacionados da área e conceitos importantes de otimização; a Seção \ref{sec:aco} descreve o método de otimização utilizado; a Seção \ref{sec:method} explora a modelagem do problema e aplicação do método discutido; na Seção \ref{sec:results} são apresentados e discutidos os resultados alcançados e os experimentos realizados; finalmente, a Seção \ref{sec:conclusion} conclui o trabalho, avalia sua contribuição e considera propostas de continuidade.
+
+\section{Revisão da Literatura}
+\label{sec:review}
+
+%\subsection{Planejamento de Viagens}
+
+O problema de otimização de roteiro de viagens proposto consiste em determinar a combinação de voos e hotéis que minimizam custo e tempo em trânsito em uma viagem. O conjunto de restrições considera datas inicial e final, datas específicas para cada destino, ordenação dos destinos e características das acomodações e transportes. Pode ser considerado uma aplicação multiobjetivo do problema do Caixeiro Viajante com Janelas de Tempo e Dependência Temporal \cite{Focacci1999}.
+
+Esse problema consiste em encontrar a rota mais curta para um caixeiro viajante visitando todas as cidades de um conjunto, e cada cidade deve ser visitada numa dada janela de tempo. É um problema NP-completo \cite{Desrosiers1995} que pode ser visto como a união entre o problema do caixeiro viajante clássico com um problema de escalonamento. Embora existam diversas soluções propostas \cite{Calvo2000,Lopez-Ibanez2010,DaSilva2010,Karabulut2012,Kinable2015}, não foram encontradas aplicações em planejamento de viagens e com múltiplos objetivos.
+
+Na literatura específica sobre planejamento de viagens, existem diversos trabalhos com aplicações que otimizam itinerários turísticos em um único destino, considerando possíveis pontos de interesse para serem visitados, seus horários de abertura e a disponibilidade de transporte na cidade \cite{Gavalas2015,Garcia2009,Sylejmani2011,Chia2016,Chen2015,Bao2013}. Esses problemas são em geral variações do problema de Orientação de Times com Janelas de Tempo e Múltiplas Restrições. O principal ponto que diferencia esses trabalhos do problema considerado é que eles não requerem que todos os pontos de interesse sejam visitados.
+
+%\subsection{Otimização Multiobjetivo}
+
+%A formulação geral de um problema de otimização é:
+%\begin{equation}
+%\begin{multlined}
+%\hspace{1.5cm} \text{minimizar}~~ \bm{f(x)} \in \mathbb{R}^m
+%\\[0.3cm]
+%\text{sujeito a: }
+%\begin{cases}
+%g_i(\bm{x}) \leq 0, & i = 1,\dots,p \\
+%h_j(\bm{x}) = 0, &j = 1,\dots,q \\
+%\bm{x} \in \mathbb{X}^n\\
+%\end{cases}	
+%\end{multlined}
+%\end{equation}
+
+%\noindent onde $\bm{f(x)}$ representa as $m$ funções objetivo, $\bm{g(x)}$, $\bm{h(x)}$ as funções de restrições de desigualdade e igualdade do problema e $\mathbb{X}^n$ o domínio das variáveis de otimização.
+
+%Em problemas com mais de um objetivo, o conceito de \textit{Dominância de Pareto} é utilizado para ranquear soluções e avaliar sua qualidade. Uma solução domina outra se tem valores iguais ou melhores para cada função objetivo, sendo melhor em pelo menos uma. Matematicamente:
+%\begin{equation*}
+%\begin{split}
+%\mathbf{a} \preceq \mathbf{b} \Longleftrightarrow \forall i \in \{1,...,m\} \text{ } a_i \leq b_i \\ \text{$\&$ } \exists i \in \{1,...,m\} ~|~ a_i < b_i 
+%\end{split}
+%\end{equation*}
+
+%\noindent onde $\mathbf{a}$ e $\mathbf{b}$ representam a imagem de duas possíveis soluções do problema, $a_i$ e $b_i$ seus respectivos valores para o $i$-ésimo objetivo e $\preceq$ o símbolo que representa dominância.
+
+%Para problemas com objetivos conflitantes, não há uma única solução que domina todas as demais. O conjunto de todas as soluções não dominadas no espaço de objetivos é chamado \textit{Fronteira de Pareto}. Um problema de otimização multiobjetivo busca encontrar soluções na Fronteira de Pareto (ou boas aproximações). 
+%Para isso, o \textit{Índice de Dominância de uma solução} --- definido como o número de outras soluções que a dominam --- é utilizado como forma de avaliar a qualidade da solução \cite{Goldberg1989GAS}.
+
+%Para obter uma boa representação da Fronteira de Pareto, a distribuição das soluções encontradas no espaço de objetivos também é crucial. Se elas se concentram em uma única região da Fronteira de Pareto, não representam uma boa representação do conjunto de soluções Pareto-ótimas, o que prejudica o processo de tomada de decisão.
+
+%A \textit{Crowding Distance} pode ser usada como um critério complementar de avaliação da aptidão de uma solução. Ela é determinada pelo hipervolume do hiperretângulo definido pelos vizinhos mais próximos da solução em questão. Quanto maior a Crowding Distance, mais afastada está a solução de seus vizinhos. Desse modo, essa métrica é um indicador da diversidade da solução.
+
+%A avaliação de desempenho de um método de otimização multiobjetivo requer uma maneira de quantificar a qualidade do conjunto de soluções obtidas após sua execução. Para isso, uma métrica usualmente empregada é o Hipervolume \cite{Zitzler2007}. Esse método calcula a qualidade de um conjunto de soluções através do hipervolume definido por elas e um ponto de referência no espaço de objetivos. Dessa forma, maiores hipervolumes indicam melhores conjuntos de soluções. Embora existam outras métricas válidas, como \textit{Epsilon} \cite{Zitzler2003} ou a \textit{Summary Attainment Surface} \cite{Fonseca1996}, o hipervolume é muito empregado devido à sua simplicidade.
+
+
+\section{Metaheurística: Colônia de Formigas}
+\label{sec:aco}
+
+O problema de otimização de roteiros proposto é um problema combinatório NP-completo. A grande quantidade de possíveis componentes de uma solução (voos e hotéis disponíveis) contribui para elevar o tamanho do espaço de buscas. Há também muitas restrições consideradas, o que sugere que grande parte das combinações de componentes possíveis não gera soluções viáveis. Desse modo, é desejável utilizar um método que possa se restringir às regiões factíveis do espaço de buscas. Além disso, deve ser capaz de navegar por todo esse espaço, incluindo transitar entre regiões possivelmente não conexas desse espaço.
+
+Dentre múltiplas opções, a metaheurística populacional de Colônia de Formigas \cite{Dorigo2005} se destaca como um método promissor. Além do seu sucesso com problemas combinatórios difíceis \cite{Hillier2010,Dorigo2004}, outras características o fazem particularmente apropriado para esse problema. Esse método, aliado à representação correta do problema, é capaz de evitar regiões infactíveis do espaço de buscas e criar uma estrutura de busca totalmente conexa. Além disso, permite avaliar cada componente da solução de maneira independente e representar múltiplos objetivos de uma maneira intuitiva.
+
+%O método se baseia no comportamento de formigas buscando comida. Enquanto procuram por diferentes caminhos, elas depositam uma trilha de feromônios ao longo do caminho, que funciona como um sinal para outras formigas. Trilhas que levam a alimentos próximos são percorridas mais frequentemente, e assim acumulam mais feromônios. 
+
+Essa metaheurística utiliza agentes que percorrem o espaço de busca construindo soluções passo-a-passo. A cada passo, um componente dentre aqueles factíveis é escolhido probabilisticamente. Essa probabilidade depende de uma função de avaliação heurística e de um valor de feromônio atribuído a cada componente. Em problemas multiobjetivos, a utilização de múltiplas matrizes de feromônio (uma para cada objetivo) é comumente empregada \cite{Angus2009}.
+
+%\begin{enumerate}
+%\item Inicialização dos feromônios
+%\item Repetir até condição de parada:
+%	\begin{enumerate}
+%	\item Construção das Soluções
+%	\item Atualização dos Feromônios
+%	\item \emph{Daemon Actions}
+%	\end{enumerate}
+%\end{enumerate}
+
+%\begin{lstlisting}
+%Inicialização dos feromônios
+%repetir até condicão de parada:
+%	Construção das Soluções
+%	Atualização dos Feromônios
+%	Daemon Actions
+%\end{lstlisting}
+
+%O valor de feromônio para cada componente indica quão provável é sua escolha na construção de uma solução. Em problemas multiobjetivos, a utilização de múltiplas matrizes de feromônio (uma para cada objetivo) é comumente empregada \cite{Angus2009}. A probabilidade de escolha de um componente também depende de seu valor heurístico, calculado a partir de suas características e de informações sobre o problema.
+
+%As \textit{Daemon Actions} são ações centralizadas realizadas após cada iteração, possivelmente específicas para cada problema. Alguns exemplos são introdução de elitismo usando as melhores soluções encontradas para atualizar feromônios ou uso de busca local para aperfeiçoar a solução.
+
+\section{Metodologia}
+\label{sec:method}
+
+
+\subsection{Modelagem do problema}
+
+\subsubsection{Entradas do Usuário} % (fold)
+\label{ssub:inputs_do_usuário}
+
+As entradas do usuário para o sistema definem o roteiro desejado e restrições específicas do viajante:
+
+\begin{itemize}
+	\item Destino inicial
+	\item Intervalos com limites das datas de partida e de retorno
+	\item Indicador de retorno ao destino inicial, se desejado
+	\item Conjunto de destinos a serem visitados, incluindo para cada um especificações de intervalo mínimo e máximo de permanência, ordenação do destino na viagem, ordenação do destino em relação a outros destinos e janela de datas para visita ao destino
+	\item Restrições de transporte, relativas a preços, companhias aéreas, categoria do vôo e horários de partida aceitáveis
+	\item Restrições de acomodação relativas a preços, localização e tipo de acomodação (hotéis, albergues, apartamentos, etc.)
+\end{itemize}
+% subsubsection inputs_do_usuário (end)
+
+\subsubsection{Estrutura da Solução} % (fold)
+\label{ssub:estrutura_da_solução}
+
+Os componentes das soluções são:
+\begin{itemize}
+	\item Transportes (T): conjunto de opções de transportes disponíveis para a viagem. Cada elemento possui informações referentes ao custo, destino de partida, destino final e hora e local de partida e de chegada
+	\item Acomodações (A): conjunto de todas as opções de acomodações disponíveis para a viagem. Cada elemento possui informações referentes ao custo da estadia, intervalo de datas da estadia, destino, tipo e localização
+\end{itemize}
+
+Uma solução candidata para o problema é definida como uma lista alternada de transportes e acomodações que define uma opção de transporte para cada trecho e uma opção de acomodação para cada estadia visitada. Para $k$ destinos, uma solução $s$ é:
+\begin{equation}
+\label{eq:solution}
+s = (T_1, A_1, T_2, A_2, \dots, T_{k}, A_{k}, T_{k+1})
+\end{equation}
+
+A estrutura proposta permite representar o espaço de buscas formado por todas as soluções factíveis (conjunto $S$) em forma de grafo. Neste grafo, as arestas representam os componentes da solução (transportes e acomodações), enquanto os vértices representam os destinos. A partir de um ponto inicial que representa o destino de origem, é possível acrescentar à solução qualquer $T_i \in \bm{T}$ que atenda às restrições temporais e, partindo dali, tenha como destino qualquer dos outros destinos. Nesses destinos, é então possível escolher qualquer $A_i \in \bm{A}$ que atendam às restrições de estadia no destino. A partir daí, em cada vértice estão disponíveis novos elementos de $\bm{T}$ que atendam às restrições nesse ponto. Esse processo se repete sucessivamente até que todos os destinos tenham sido visitados. 
+
+O grafo da Figura \ref{fig:solutionGraph} representa o espaço de soluções factíveis para um problema com 2 destinos, sendo $t \in \bm{T}$ uma opção factível de transporte entre os dois destinos e $a \in \bm{A}$ uma opção factível de acomodação no destino. Na situação representada, há sempre 3 opções de transporte entre destinos e 2 opções de acomodação para cada destino. Em situações reais, essas quantidades variam.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.5\textwidth]{Figures/solutionGraph.png}
+	\caption{Grafo representando o espaço de soluções factíveis para um problema com 2 destinos} \label{fig:solutionGraph}
+\end{figure}
+
+O grafo obtido possui topologia de árvore. Sendo $k$ o número de destinos, $p$ o número médio de transportes factíveis entre destinos e $q$ o número médio de acomodações disponíveis em cada destinos que atendam às restrições no ponto, é possível estimar o número de soluções factíveis possíveis como tamanho do espaço de buscas ($|\bm{S}|$):
+\begin{equation}
+|\bm{S}| = (k)! \  p^{k+1} \ q^{k}
+\end{equation} 
+
+% subsubsection componentes_da_solução (end)
+
+\subsubsection{Funções Objetivo} % (fold)
+\label{ssub:obj_func}
+
+As funções objetivo minimizadas no problema são:
+\begin{itemize}
+	\item Custo: soma dos custos de todos os componentes da solução
+	$$
+	F_1(s) = \sum_{i=1}^{k+1}{T_{i.custo}} + \sum_{j=1}^{k}{A_{j.custo}}
+	$$
+	\item Tempo de viagem: soma dos tempos de viagem de todas os transportes da solução
+	$$
+	F_2(s) = \sum_{i=1}^{k+1}{T_{i.horarioChegada} - T_{i.horarioPartida}}
+	$$
+\end{itemize}
+% subsubsection fun_ (end)
+
+\subsubsection{Restrições do Problema} % (fold)
+\label{ssub:restrições_do_problema}
+
+As seguintes restrições determinam a validade de uma solução $s$, de acordo com as especificações do problema e as especificações do usuário.
+\begin{itemize}
+	\item Todos os destinos visitados
+	\item Transportes conectando todos os destinos da solução
+	\item Transporte inicial partindo do destino inicial (e transporte final retornando para ele, quando especificado)
+	\item Após cada opção de transporte na solução, deve seguir-se uma opção de acomodação para aquele destino
+	\item Cada duas opções subsequentes de transportes devem ter datas de partida e chegada tais que a estadia no destino respeite as especificações do usuário de datas e duração
+	\item Cada acomodação deve ter intervalos de datas adequados às datas dos transportes relacionados ao mesmo destino
+	\item As ordens dos destinos devem respeitar as especificações de datas absolutas e relativas do usuário
+\end{itemize}
+% subsubsection restrições_do_problema (end)
+
+
+\subsection{Otimização via Colônia de Formigas} % (fold)
+\label{ssub:otimização_via_colônia_de_formigas}
+
+O Método de Colônia de Formigas apresentado na Seção \ref{sec:aco} é utilizado para obtenção do conjunto de soluções Pareto Ótimas do problema (ou de uma boa aproximação dele). A seguir, cada passo da implementação é descrito com mais detalhes.
+
+
+\paragraph{Inicialização dos Feromônios} Cada matriz é inicializada com o parâmetro $\tau_0$.
+
+\paragraph{Condição de parada} O número de iterações sem progresso é utilizado como critério principal. Um tempo limite de execução é utilizado como segundo critério. O número de soluções adicionado ao conjunto de elite a cada iteração é utilizado como medida de progresso.
+
+\paragraph{Construção da Solução} O processo inicia com uma solução vazia $s_p = \emptyset$. Iterativamente, adiciona-se a $s_p$ um componente $c_i \in N(s_p)$, onde $N(s_p) \subseteq \bm{T} \cup \bm{A}$ é o conjunto de componentes factíveis para a solução $s_p$. Para ser factível, o componente deve preencher todos os requisitos definidos na Seção \ref{ssub:restrições_do_problema}.
+
+O componente adicionado é escolhido com probabilidade calculada de acordo com a Equação~\eqref{eq:moacoProp}. Nela, $L$ é o número de matrizes de feromônio, $\tau_i^l$ é o valor de feromônio da $l$-ésima matriz para o componente $c_i$, $M$ é o número de heurísticas utilizadas,  $\eta^m_{i}$ o valor da $m$-ésima heurística do componente $c_i$ e $\alpha_l$ e $\beta_m$ parâmetros que regulam, respectivamente, o peso dos feromônios da matriz $l$ e da função heurística $m$.
+\begin{equation}
+\begin{split}
+\label{eq:moacoProp}
+p(c_{i}|s_p) = 
+\frac{\prod^L_{l=1} ({\tau^l_{i}})^{\alpha_l} . \prod_{m=1}^{M} ({\eta_{i}^m})^{\beta_m} }{\sum_{c_j \in N(s_p)} ( \prod_{l=1}^{L} ({\tau_{j}^l})^{\alpha_l} . \prod_{m=1}^{M} ({\eta_{j}^m})^{\beta_m}) }, \quad \\ \forall c_i \in N(s_p) \hspace{2.5cm}
+%\tag{\ref{eq:moacoProportionalRule}}
+\end{split}
+\end{equation}
+
+\paragraph{Avaliação e Armazenamento de Soluções} É mantido um conjunto das $t$ melhores soluções obtidas, de acordo com índice de dominância. A cada iteração, as novas soluções encontradas são avaliadas e o conjunto é atualizado.
+
+\paragraph{Atualização dos Feromônios} O valor de feromônio depositado para cada componente é baseado no valor de função objetivo de todas as soluções que utilizam aquele componente. O depósito em cada matriz é baseado no respectivo valor da função objetivo daquela matriz. Dois parâmetros controlam esse processo: $\rho \in (0,1]$ determina a taxa de evaporação dos feromônios, e $\gamma$ determina a taxa de depósito. A atualização segue a Equação \eqref{eq:pheromoneUpdate}:
+\begin{equation}
+\begin{split}
+\label{eq:pheromoneUpdate}
+\tau^{l}_{i} = (1 - \rho) \tau^l_{i} + \gamma \sum_{\substack{s \in S_{upd} | c_i \in s}} g^l(s)	
+\end{split}
+\end{equation}
+
+\noindent na qual $l$ indica o índice da matriz de feromônios, $S_{upd}$ é o conjunto de soluções obtidas na iteração atual e $g^l(s)$ o valor de aptidão normalizado da solução $s$ considerando o objetivo $l$.
+
+\paragraph{} Uma variação do método é considerada para fins de comparação. Nela, é realizada a cada iteração uma busca local para cada solução encontrada. Nessa busca, utiliza-se uma estrutura de vizinhança 1-opt, considerando as possíveis variações para cada componente da solução. Essa estrutura simples foi utilizada de maneira a evitar soluções infactíveis.
+
+
+\section{Resultados e Discussão}
+\label{sec:results}
+
+Para os testes, foram geradas aleatoriamente instâncias de problemas com diferentes tamanhos. Dessa forma, é possível avaliar a variação no desempenho dos métodos à medida que a complexidade aumenta e testar os limites do sistema desenvolvido. 
+
+O tamanho de um problema é determinado pelo número de destinos do roteiro e do número médio de opções de transporte e acomodação para cada destino. Nas instâncias geradas, apenas o número de destinos mudou. O número médio de componentes foi mantido constante (8) para evitar variabilidade indesejada. 
+
+O número médio de opções de transporte em cada destino é afetado também pelas margens de datas estabelecidas para partida, chegada e para cada destino. Quanto mais flexíveis as margens, maior o número de opções possíveis. Em todos as instâncias, as viagens consideradas tem margem de 3 dias para partida e retorno, e não foram estabelecidas restrições de ordenação ou data para os destinos intermediários.
+
+Para cada instância gerada, os algoritmos de otimização foram aplicados repetidamente com limites de execução prolongados (até 60 minutos). Os resultados combinados de todas as execuções foram utilizados para estimar a Fronteira de Pareto de cada instância. Essa fronteira estimada é utilizada como referência para os testes subsequentes. 
+
+A principal métrica utilizada para avaliar quantitativamente o resultado das execuções dos algoritmos foi a relação entre o hipervolume das soluções obtidas e o hipervolume da Fronteira de Pareto estimada. Valores próximos de 1 indicam que o conjunto de soluções encontrado se aproxima do conjunto ótimo estimado. Gráficos da distribuição de soluções no espaço de objetivos também são utilizados para avaliação qualitativa. Todos os tempos de execução indicados representam o tempo total de execução, que inclui a determinação de todas as possíveis permutações de destinos, o tempo de busca das informações no banco de dados e o tempo de otimização.
+
+O sistema foi desenvolvido na linguagem C\# na plataforma Visual Studio. Foi desenvolvida uma interface de uso web, tomando como base o framework ASP.NET v4.6. Todos os testes foram realizados em um servidor local em um computador com sistema operacional Windows 10, processador Intel(R) Core(TM) i7-3635QM 2.40 GHz e 8GB de memória RAM.
+
+\begin{figure}[!htb]
+	\centering
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{Figures/hv6s.png}
+		\caption{Tempo de execução de 6 segundos}
+		\label{fig:hv6s}
+	\end{subfigure}
+	\vspace{1mm}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{Figures/hv30s.png}
+		\caption{Tempo de execução de 30 segundos}
+		\label{fig:hv30s}
+	\end{subfigure}
+	\caption{Qualidade do conjunto de soluções encontrado para roteiros de 2 a 6 destinos, comparando o método de busca com colônia de formigas (esquerda) e a variação que inclui busca local (direita)}
+	\label{fig:quality_time_tradeoff}
+\end{figure}
+
+\begin{figure*}[htb]
+	\centering
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{Figures/trip1.png}
+		\caption{Roteiro com 2 destinos}
+		\label{fig:trip1}
+	\end{subfigure}
+	\vspace{1mm}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{Figures/trip2.png}
+		\caption{Roteiro com 3 destinos}
+		\label{fig:trip2}
+	\end{subfigure}
+	\vspace{1mm}
+	\hfill
+%	\begin{subfigure}[b]{0.48\textwidth}
+%		\includegraphics[width=\textwidth]{Figures/trip3.png}
+%		\caption{Roteiro com 4 destinos}
+%		\label{fig:trip3}
+%	\end{subfigure}
+%	\vspace{1mm}
+%	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{Figures/trip4.png}
+		\caption{Roteiro com 5 destinos}
+		\label{fig:trip4}
+	\end{subfigure}
+	\vspace{1mm}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\includegraphics[width=\textwidth]{Figures/trip5.png}
+		\caption{Roteiro com 6 destinos}
+		\label{fig:trip5}
+	\end{subfigure}
+	\caption{Qualidade do conjunto de soluções em função do tempo, para roteiros de 2 a 6 destinos. A área sombreada representa um intervalo de confiança de 95\%.}
+	\label{fig:quality_over_time}
+\end{figure*}
+
+\subsection{Qualidade e Tempo de Execução}
+
+Verificou-se que o tempo de convergência varia significativamente com o tamanho do problema. A Figura \ref{fig:quality_time_tradeoff} mostra o resultado de 10 execuções para problemas de 2 a 6 destinos, com tempos limites variando de 6 segundos a 30 segundos. Isso mostra que, para problemas pequenos, maiores tempos de execução não afetam a qualidade significativamente. Esses resultados também permitem estimar a qualidade esperada para problemas de diferentes tamanhos, com diferentes tempos de execução.
+
+Além disso, é possível notar que a otimização híbrida de busca local com colônia de formigas apresenta um resultado significativamente melhor. Embora a qualidade das soluções alcançadas seja similar para problemas menores, a diferença se torna mais distinta para problemas mais complexos.
+
+
+A figura \ref{fig:quality_over_time} apresenta resultados mais detalhados. Nela, é possível observar a qualidade do algoritmo em função do tempo. Nota-se que a velocidade de convergência de ambos os métodos é similar, no entanto o método com busca local converge para soluções melhores. A área sombreada mostra o intervalo de confiança de 95\% dos resultados. É possível notar que a variância é similar em ambos.
+
+\subsection{Análise de Complexidade e Restrições}
+
+Para problemas com 8 ou mais destinos, os tempos de otimização e busca dos componentes cresce significativamente, motivo pelo qual não foram incluídos nos demais experimentos.
+
+À medida que o número de destinos aumenta, o tempo de busca de componentes cresce mais rápido que o tempo de otimização. Isso acontece porque o sistema considera todas as possíveis permutações de destinos para então realizar buscas no banco de dados. A Figura \ref{fig:component_search_time_log} mostra o crescimento fatorial dos tempos de busca de componentes com o tamanho do problema. Maior flexibilidade nas datas também contribui para aumentar a complexidade desse processo. Isso é uma limitação da atual estrutura de busca de componentes, que dificulta ou até inviabiliza a solução de problemas muito complexos.
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.48\textwidth]{Figures/searchTimesLog.png}
+	\caption{Logaritmo do tempo de busca de componente em função do tamanho do roteiro}
+	\label{fig:component_search_time_log}
+\end{figure}
+
+
+
+\subsubsection*{Efeitos de Restrições na Complexidade}
+
+Nenhuma das instâncias utilizadas até então possuía restrições de ordenação dos destinos. Um maior número de restrições diminui a flexibilidade da rota e, como consequência, o número de soluções possíveis. Assim, problemas com mais restrições possuem menor complexidade. A Figura~\ref{fig:restriction_comparison} mostra uma comparação entre problemas com 4 e 6 destinos sem restrições de ordenação e um problema com 8 destinos e restrições de ordenação para todos eles.
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=0.48\textwidth]{Figures/restrictionsAnalysis.png}
+	\caption{Qualidade da solução para problemas com 4 e 6 destinos sem restrições de ordenação e com 8 destinos com restrições de ordenação, com tempo de execução de 1 minuto}
+	\label{fig:restriction_comparison}
+\end{figure}
+
+Os resultados indicam que, mesmo com mais destinos, a complexidade de um problema com 8 destinos ordenados é próxima a complexidade de um problema com 4 destinos não ordenados e menor que a complexidade de um problema com 6 destinos não ordenados.
+
+
+\section{Conclusões}
+\label{sec:conclusion}
+
+O trabalho desenvolveu com sucesso um método de otimização para roteiros de viagens capaz de buscar as melhores combinações de passagens e hotéis minimizando o custo e o tempo de viagem. O sistema desenvolvido é capaz de analisar as especificações e restrições definidas por um usuário e determinar automaticamente todas as possíveis configurações de datas e ordenações de destinos que atendem os requisitos.
+
+Além disso, a solução proposta apresenta uma alternativa inovadora para planejamento de viagens que se diferencia de outras já existentes por ser capaz de realizar planejamentos com datas flexíveis e ordenação de destinos não rígida. Isso oferece ao usuário uma liberdade muito maior ao planejar suas viagens, e poupa muito do seu tempo ao eliminar a necessidade de conferir manualmente diferentes configurações de sua viagem.
+
+%Uma vez que são conhecidos outros sistemas do tipo, não há base de comparação para a qualidade dos resultados. No entanto, é possível verificar que resultados melhores que aqueles obtidos através de busca manual podem ser alcançados em menor tempo, validando assim a utilidade prática da ferramenta desenvolvida.
+
+Esse diferencial é uma melhoria significativa para a experiência de planejamento de viagens. Dessa forma, portais de vendas de passagens e hotéis online podem se beneficiar significativamente dessa inovação, obtendo com ela uma vantagem competitiva sobre concorrentes. Desse modo, há potencial para que a ferramenta desenvolvida possa impactar positivamente o mercado de turismo online.
+
+
+A principal limitação do sistema é o aumento considerável no tempo necessário para otimização de roteiros com mais destinos. Embora viagens desse porte sejam pouco comuns, ainda é desejável que o sistema seja capaz de lidar com esses casos. O problema pode ser evitado com adição de restrições na ordenação dos destinos, que reduz a complexidade do problema.
+
+%\subsection{Propostas de Continuidade do Trabalho}
+
+A próxima etapa do trabalho é a integração com APIs que forneçam dados de passagens e hotéis em tempo real, de modo a validar o trabalho desenvolvido com dados reais e testar casos de uso. A partir desse ponto, o sistema já poderia ser usado na prática.
+
+%Os métodos de otimização também podem ser melhorados. Para lidar com problemas maiores, é possível adicionar métodos automáticos para introduzir restrições de ordenação, baseados em simulações que indicam as configurações que mais provavelmente gerariam bons resultados.
+
+%Além disso, métodos de otimização dos parâmetros podem melhorar o desempenho obtido. Outras possíveis melhorias que podem ser testadas são mudança dinâmica dos parâmetros durante a execução e utilização de formigas com características distintas.
+
+\section*{Agradecimentos}
+
+Gustavo L. Vieira gostaria de agradecer o apoio da FAPEMIG.
+
+O presente trabalho foi realizado com o apoio financeiro da CAPES, CNPq e FAPEMIG.
+
+
+% BIBLIOGRAFIA
+\bibliography{bibliography}
+% \bibliography{manualEntries}
+
+\end{document}

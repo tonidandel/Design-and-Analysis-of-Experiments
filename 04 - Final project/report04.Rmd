@@ -122,7 +122,7 @@ $\mu$ é uma constante, $\tau_{i}$ é o efeito do i-ésimo "tratamento", $X_{ij}
 em que:
 \begin{eqnarray}
 S_{yy} &=& \sum \limits_{i=1}^{a} \sum \limits_{j=1}^{n} {y_{ij}^{2}}- \frac{y_{..}^{2}}{an}  \,, \label{eq:002} \\
-S_{xx} &=& \sum \limits_{i=1}^{a} \sum \limits_{j=1}^{n}  x_{ij}y_{ij} - \frac{(x_{..})(y_{..})}{an}\,, \label{eq:003} \\
+S_{xx} &=& \sum \limits_{i=1}^{a} \sum \limits_{j=1}^{n}  {x_{i.}^{2}}- \frac{x_{..}^{2}}{an} \,, \label{eq:003} \\
 S_{xy} &=& \sum \limits_{i=1}^{a} \sum \limits_{j=1}^{n}  x_{ij}y_{ij} - \frac{(x_{..})(y_{..})}{an} \,, \label{eq:004} \\
 T_{yy} &=& \frac{1}{n} \sum \limits_{i=1}^{a} {y_{i.}^{2}}- \frac{y_{..}^{2}}{an} \,, \label{eq:005} \\
 T_{xx} &=& \frac{1}{n} \sum \limits_{i=1}^{a}  {x_{i.}^{2}}- \frac{x_{..}^{2}}{an} \,, \label{eq:006} \\
@@ -131,6 +131,9 @@ E_{yy} &=& S_{yy}-T_{yy}\,, \label{eq:008} \\
 E_{xx} &=& S_{xx} - T_{xx}\,, \label{eq:009} \\
 E_{xy} &=& S_{xy} - T_{xy}\,. \label{eq:010}
 \end{eqnarray}
+
+Assim, rejeita-se a hipótese nula $H_{0}: \beta=0$ se $F_{0}> F_{\alpha , 1, a(n-1)-1} \,.$
+
 ## 3.2 Cálculo do tamanho amostral para o ANOVA
 
 O cálculo do tamanho amostral para a técnica ANOVA pode ser feito iterativamente até encontrar o número $n$ tal que:
