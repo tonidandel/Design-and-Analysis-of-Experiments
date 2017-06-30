@@ -1,21 +1,23 @@
 ---
-title: 'Estudo de Caso final: Ancova'
+title: 'Estudo de Caso final: Avaliação de Algoritmos de Otimização de
+  Custo e Tempo em Roteiros de Viagem'
 author: "Equipe 04"
 date: "03 de Julho de 2017"
 output:
   pdf_document:
-    fig_caption: yes
     citation_package: natbib
+    fig_caption: yes
+  html_document: default
   word_document: default
-urlcolor: blue
 header-includes:
 - \usepackage{fancyhdr}
 - \usepackage[utf8]{inputenc}
 - \pagestyle{fancy}
-- \fancyfoot[CO,CE]{EEE933 - Planejamento e Análise de Experimentos}
+- \fancyfoot[CO,CE]{EEE933 - Planejamento e AnÃƒÂ¡lise de Experimentos}
 - \fancyfoot[LE,RO]{\thepage}
 csl: ieee.csl
 bibliography: bibliography.bib
+urlcolor: blue
 ---  
 Coordenador: Alessandro Cardoso    
 Relator: Bernardo Marques   
@@ -39,6 +41,11 @@ v_dataHist = readr::read_csv('data.csv')
 ```
 
 # 1. Descrição do Problema
+
+As ferramentas atuais para planejamento de viagens permitem que usuários busquem passagens e hotéis e construam seu próprio itinerário, mas não oferecem suporte para viagens com exibilidade nas datas ou na ordenação de destinos. Para solucionar esse problema, propõe-se um novo sistema que busca as melhores combinações de passagens e hotéis para uma viagem, minimizando o custo e tempo de transporte. O sistema é capaz de otimizar roteiros com datas flexíveis e não requer uma ordem fixa dos destinos, de forma que considera todas as possíveis configurações que atendem as especificações do usuário. Dessa forma, oferece boas opções de itinerários para viagens com esforço do usuário muito menor, representando uma melhoria significativa na experiência de planejamento de viagens.
+
+O conjunto de restrições considera datas inicial e final, datas específicas para cada destino, ordenação dos destinos e características das acomodações e transportes. Pode ser considerado uma aplicação multiobjetivo do problema do Caixeiro Viajante com Janelas de Tempo e Dependência Temporal
+
 O experimento envolve comparações entre métodos aplicados em diferentes instâncias de problemas de roteamento, configurando o clássico problema do "caixeiro viajante". A variabilidade decorrente das características de cada problema de teste é uma possível fonte de variação espúria quando não considerada na análise dos resultados. Para a avaliar existência de diferenças significativas entre os algoritmos, bem como a influência dos possíveis covariantes, tais como tamanho da instância e tempo de convergência, será utilizada a análise de covariância ANCOVA.
 
 ```{r,results='show',warning=FALSE,echo=FALSE}
@@ -47,7 +54,7 @@ v_alpha = 0.05
 v_a = 4
 v_k = v_a-1
 v_alphaAdj = v_alpha/v_k
-v_beta = 0.15
+v_beta = 0.20
 v_power = 1-v_beta
 v_delta = 0.25
 ```
@@ -56,8 +63,10 @@ Os parâmetros experimentais desejados são:
 * Nível de significância: $\alpha = `r v_alpha`$;
 
 * Tamanho de efeito de interesse prático: $\delta^{\star} = `r v_delta`$;
+(((Como vamos definir isso????)))
 
 * Potência desejada: $(1- \beta) = \pi \geq `r v_power`$.
+(((Alterei para fazermos um acoleta menor)))
 
 # 2. Planejamento Experimental
 A primeira etapa do experimento consistiu na geração dos dados experimetais a partir dos dois algoritmos de otimização. Busca-se a verificação de diferenças estatísticas significativas entre as configurações testadas. Uma análise exploratória qualitativa dos dados foi feita para complementar os testes. 
