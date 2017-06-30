@@ -1,2 +1,6 @@
 # Design-and-Analysis-of-Experiments
-Até o momento fiz alterações em quase todas as seções. Não é ainda a versão final, como podem observar.
+Repositório da "equipe 04" da disciplina EEE933- Design and Analysis of Experiments, PPGEE-UFMG:
+Alessandro Cardoso    
+Bernardo Marques   
+Danny Tonidandel   
+Gustavo Vieira
