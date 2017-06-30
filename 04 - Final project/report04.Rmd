@@ -95,11 +95,11 @@ A ANCOVA, permite, portanto, um controle do erro experimental, aumentando sua pr
 
 Considerando um experimento com um fator e uma covariável, o modelo estatístico da análise de covariância pode ser estabelecido como [@MontgomeryRunger2011]:
 \begin{equation}
-y_{ij} = \mu + \tau_{i} + \beta (X_{ij}- \bar{X}) + \epsilon_{ij} \,,
+y_{ij} = \mu + \tau_{i} + \beta (x_{ij}- \bar{x_{..}}) + \epsilon_{ij} \,,
 \label{eq:001}
 \end{equation}
 em que:
-$\mu$ é uma constante, $\tau_{i}$ é o efeito do i-ésimo "tratamento", $X_{ij}$ é o valor observado da covariável e $\bar{X}$ a média da covariável. Além disso, $\beta$ consiste no coeficiente de regressão linear entre a covariável $X$ e a variável de resposta $Y$, com $\beta \neq 0$ e $\epsilon_{ij}$ é uma componente aleatória de erro, com $i = 1, \ldots , a$ e $j = 1, \ldots , n$. Neste caso a relação deve ser linear. Vale ressaltar que este modelo pressupõe que a variável de resposta e a covariável estão relacionadas linearmente. Para efeito de simplificação, contudo, a análise de covariância pode ser vista como uma análise "ajustada" de variância, e pode ser sumarizada na tabela $\eqref{{tab:001}}$:
+$\mu$ é uma constante, $\tau_{i}$ é o efeito do i-ésimo "tratamento", $X_{ij}$ é o valor observado da covariável e $\bar{x_{..}}$ a média dos valores $x_{ij}$ (da covariável). Além disso, $\beta$ consiste no coeficiente de regressão linear entre a covariável $X$ e a variável de resposta $Y$, com $\beta \neq 0$ e $\epsilon_{ij}$ é uma componente aleatória de erro, com $i = 1, \ldots , a$ e $j = 1, \ldots , n$. Neste caso a relação deve ser linear. Vale ressaltar que este modelo pressupõe que a variável de resposta e a covariável estão relacionadas linearmente. Para efeito de simplificação, contudo, a análise de covariância pode ser vista como uma análise "ajustada" de variância, e pode ser sumarizada na tabela $\eqref{{tab:001}}$:
 
 % Please add the following required packages to your document preamble:
 
@@ -121,15 +121,15 @@ $\mu$ é uma constante, $\tau_{i}$ é o efeito do i-ésimo "tratamento", $X_{ij}
 
 em que:
 \begin{eqnarray}
-S_{yy} = \,, \label{eq:002} \\
-S_{xx} = \,, \label{eq:003} \\
-S_{xy} = \,, \label{eq:004} \\
-T_{yy} = \,, \label{eq:005} \\
-T_{xx} = \,, \label{eq:006} \\
-T_{xy} = \,, \label{eq:007} \\
-E_{yy} = \,, \label{eq:008} \\
-E_{xx} = \,, \label{eq:009} \\
-E_{xy} = \,. \label{eq:010}
+S_{yy} &=& \sum \limits_{i=1}^{a} \sum \limits_{j=1}^{n} {y_{ij}^{2}}- \frac{y_{..}^{2}}{an}  \,, \label{eq:002} \\
+S_{xx} &=& \sum \limits_{i=1}^{a} \sum \limits_{j=1}^{n}  x_{ij}y_{ij} - \frac{(x_{..})(y_{..})}{an}\,, \label{eq:003} \\
+S_{xy} &=& \sum \limits_{i=1}^{a} \sum \limits_{j=1}^{n}  x_{ij}y_{ij} - \frac{(x_{..})(y_{..})}{an} \,, \label{eq:004} \\
+T_{yy} &=& \frac{1}{n} \sum \limits_{i=1}^{a} {y_{i.}^{2}}- \frac{y_{..}^{2}}{an} \,, \label{eq:005} \\
+T_{xx} &=& \frac{1}{n} \sum \limits_{i=1}^{a}  {x_{i.}^{2}}- \frac{x_{..}^{2}}{an} \,, \label{eq:006} \\
+T_{xy} &=& \frac{1}{n}  \sum \limits_{i=1}^{a}  x_{i.}y_{i.} - \frac{(x_{..})(y_{..})}{an}     \,, \label{eq:007} \\
+E_{yy} &=& S_{yy}-T_{yy}\,, \label{eq:008} \\
+E_{xx} &=& S_{xx} - T_{xx}\,, \label{eq:009} \\
+E_{xy} &=& S_{xy} - T_{xy}\,. \label{eq:010}
 \end{eqnarray}
 ## 3.2 Cálculo do tamanho amostral para o ANOVA
 
