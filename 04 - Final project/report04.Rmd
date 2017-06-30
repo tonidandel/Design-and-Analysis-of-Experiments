@@ -70,25 +70,20 @@ Deve ser também efetuada uma análise exploratória qualitativa dos dados para 
 
 Os dados experimentais utilizados foram obtidos através de simulação, por meio dos algoritmos <www.blablabla.com>.
 
-## 2.1 Análise de Co-Variância (ANCOVA)
-
 Para a avaliar existência de diferenças significativas entre os algoritmos, bem como entre possíveis covariantes, será utilizada a análise de covariância.
 
-A análise de convariância é, em diversos aspectos, similar à análise de variância, porém permite ter controle sobre a influência do covariante nas variâveis dependentes. Na análise de variância a variável dependente é contínua (e.g. tempo, velocidade, etc.), sendo que a independente é categória (e.g. "masculino/feminino", "fumante/não-fumante" etc. ).
+## 2.1 Análise de Co-Variância (ANCOVA)
+A análise de covariância é uma técnica $-$ assim como a chamada "blocagem" ou pareamento (em testes-t) $-$ bastante útil para a melhora da precisão de um experimento [@montgomery1984design]. Em diversos aspectos é similar à análise de variância (ANOVA), porém permite ter controle sobre a influência do covariante nas variâveis dependentes. A covariável complementa o controle local e, obviamente, necessita estar correlacionada com a variável de resposta para que se possa fazer uso de tal análise. E quando a análise de variância é realizada com uma ou mais covariáveis, é usual chamar a análise de ANCOVA.
 
-A análise de variância, pode-se assim dizer, tornar-se-á a análise de covariância quando for adicionado um covariante, que consiste em outra variável, que pode ser tanto categórica quanto contínua.
+Na ANCOVA a variável dependente é contínua (e.g. tempo, velocidade, etc.), enquanto que a variável independente é normalmente categória (e.g. "masculino/feminino", "fumante/não-fumante" etc. ). A análise de variância, por sua vez, poderá converter-se na ANCOVA quando for adicionado um covariante, que consiste em outra variável, que pode ser tanto categórica quanto contínua. 
 
-A covariável complementa o controle local e, obviamente, necessita estar correlacionada com a variável de resposta para que se possa fazer uso de tal análise. E Quando a Análise de Variância é realizada com uma ou mais covariáveis, é usual chamar a análise de ANCOVA.
+Existem aliás, duas razões principais para sair-se da ANOVA e passar a ser considerada a análise de covarância, i.e., razões técnicas para adicionar um covariante, quais sejam:
 
-Existem aliás, duas razões principais para sair-se da ANOVA e passar a ser considerada a análise de covarância é, isto é, as razões técnicas para adicionar um covariante, consistem em:
-
-* Reduzir fatores de variabilidade inter-grupos, ou alcançar umm nível maior de entendimento a partir da variância desconhecida;
+* Reduzir fatores de variabilidade inter-grupos, ou alcançar um nível maior de entendimento a partir da variância desconhecida;
 
 * Isolar o efeito que ocorre quando o controle experimental não permite que o experimentador elimine, de maneira razoável, explicações alternativas para uma relação observada entre variáveis independentes e dependentes, o que é chamado de "confusão" _confounding_. Em outras palavras, esta variável é algo que pode estar influenciando o experimento mas que não está, a principio, no modelo original, e é uma potencial fonte de viéses no experimento.
 
-A ANCOVA, permite, portanto, um controle do erro experimental, aumentando sua precisão. É possı́vel também fazer o ajuste daos d
- 
-Vale ressaltar que a técnica não é restrita apenas à indicação de existência ou não de diferenças entre os níveis avaliados.
+A ANCOVA, permite, portanto, um controle do erro experimental, aumentando sua precisão. Vale ressaltar que a técnica não é restrita apenas à indicação de existência ou não de diferenças entre os níveis avaliados.
 
 ## 2.2 Comparações Múltiplas
 

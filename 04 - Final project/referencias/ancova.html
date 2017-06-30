@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title></title> 
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252"> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<!-- html --> 
+<meta name="src" content="ancova.tex"> 
+<meta name="date" content="2014-05-23 14:35:00"> 
+<link rel="stylesheet" type="text/css" href="ancova_arquivos/ancova.html"> 
+</head><body>
+     <h3 class="likesectionHead"><a id="x1-1000"></a>Aula 07: Análise de covariância</h3>
+<!--l. 2--><p class="noindent">
+<!--l. 5--></p><p class="noindent">
+     </p><h4 class="likesubsectionHead"><a id="x1-2000"></a>Objetivo dessa aula</h4>
+<!--l. 6--><p class="noindent">
+<!--l. 8--></p><p class="indent">     O objetivo dessa aula é realizar uma análise de covariância de um experimento com um fator.
+Será utilizado o exemplo do livro do Montgomery sobre comprimento e diâmetro de fios de
+algodão.
+<!--l. 12--></p><p class="noindent">
+     </p><h4 class="likesubsectionHead"><a id="x1-3000"></a>Trabalhando com o arquivo de dados</h4>
+<!--l. 13--><p class="noindent">
+<!--l. 16--></p><p class="indent">     <a href="https://docs.ufpr.br/%7Eaanjos//CE213/dados/exemplo12.txt">Clique aqui</a> para ver e copiar o arquivo com conjunto de dados.
+<!--l. 19--></p><p class="indent">     Inicialmente faz-se a leitura e organização dos dados.
+<!--l. 21--></p><p class="indent">     Note que neste caso tem-se 2 variáveis numéricas, a resposta (<span class="cmtt-12">resp</span>) e a covariável
+(<span class="cmtt-12">cov</span>).
+<!--l. 24--></p><p class="indent">     Nesse exemplo, a resposta é o comprimento dos fios e o diâmetro a covariável.
+                                                                                            
+                                                                                            
+</p><div class="verbatim" id="verbatim-1">
+&gt;&nbsp;ex12&nbsp;&lt;-&nbsp;read.table("exemplo12.txt",&nbsp;header=T)
+&nbsp;<br>&gt;&nbsp;ex12
+&nbsp;<br>
+&nbsp;<br>&gt;&nbsp;dim(ex12)
+&nbsp;<br>[1]&nbsp;15&nbsp;&nbsp;3
+&nbsp;<br>&gt;&nbsp;names(ex12)
+&nbsp;<br>[1]&nbsp;"maq"&nbsp;&nbsp;"cov"&nbsp;&nbsp;"resp"
+&nbsp;<br>&gt;
+&nbsp;<br>&gt;&nbsp;ex12$maq&nbsp;&lt;-&nbsp;as.factor(ex12$maq)
+&nbsp;<br>&gt;&nbsp;is.numeric(ex12$cov)
+&nbsp;<br>[1]&nbsp;TRUE
+&nbsp;<br>&gt;&nbsp;is.numeric(ex12$resp)
+&nbsp;<br>[1]&nbsp;TRUE
+&nbsp;<br>&gt;
+&nbsp;<br>&gt;&nbsp;summary(ex12)
+&nbsp;<br>&nbsp;maq&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cov&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resp
+&nbsp;<br>&nbsp;1:5&nbsp;&nbsp;&nbsp;Min.&nbsp;&nbsp;&nbsp;:15.00&nbsp;&nbsp;&nbsp;Min.&nbsp;&nbsp;&nbsp;:32.0
+&nbsp;<br>&nbsp;2:5&nbsp;&nbsp;&nbsp;1st&nbsp;Qu.:21.50&nbsp;&nbsp;&nbsp;1st&nbsp;Qu.:36.5
+&nbsp;<br>&nbsp;3:5&nbsp;&nbsp;&nbsp;Median&nbsp;:24.00&nbsp;&nbsp;&nbsp;Median&nbsp;:40.0
+&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mean&nbsp;&nbsp;&nbsp;:24.13&nbsp;&nbsp;&nbsp;Mean&nbsp;&nbsp;&nbsp;:40.2
+&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3rd&nbsp;Qu.:27.00&nbsp;&nbsp;&nbsp;3rd&nbsp;Qu.:43.0
+&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Max.&nbsp;&nbsp;&nbsp;:32.00&nbsp;&nbsp;&nbsp;Max.&nbsp;&nbsp;&nbsp;:49.0
+</div>
+<!--l. 50--><p class="nopar">
+<!--l. 52--></p><p class="indent">Na análise de covariância os testes de significância tem que ser obtidos em ajustes
+separados.
+<!--l. 55--></p><p class="indent">É necessário verificar se o efeito da covariável influencia na variável resposta.
+<!--l. 59--></p><p class="noindent">
+</p><h4 class="likesubsectionHead"><a id="x1-4000"></a>Análise exploratória</h4>
+<!--l. 60--><p class="noindent">
+<!--l. 62--></p><p class="indent">As estatísticas descritivas podem ser obtidas com as funções utilizadas nas aulas anteriores
+além de gráficos.
+<!--l. 64--></p><p class="indent">Nessa análise, tem-se o interesse de estudar a relação entre a variável resposta e a covariável.
+                                                                                            
+                                                                                            
+Como a metodologiade análise de covariância utiliza princípios da análise de regressão é natural que
+essa investigação utilize também procedimentos dessa área.
+<!--l. 67--></p><p class="indent">Portanto, inicialmente, pode-se fazer um gráfico de dispersão para avaliar a relação entre a
+variável resposta e a covariável.
+                                                                                            
+                                                                                            
+</p><div class="verbatim" id="verbatim-2">
+attach(ex12)
+&nbsp;<br>ex12.lm&lt;-lm(cov~resp)
+&nbsp;<br>plot(cov~resp)
+&nbsp;<br>abline(ex12.lm$coef)
+</div>
+<!--l. 74--><p class="nopar">
+<!--l. 77--></p><p class="indent">Observe que neste caso existe uma associação entre a variável resposta e a covariável.
+<!--l. 79--></p><p class="indent">Não é objetivo nessa análise, verificar a qualidade do ajuste do modelo. Claro, dependendo da
+forma da relação, isso deve ser incluido no modelo.
+                                                                                            
+                                                                                            
+</p><div class="verbatim" id="verbatim-3">
+&gt;&nbsp;cor(cov,resp)
+&nbsp;<br>[1]&nbsp;0.938542
+</div>
+<!--l. 85--><p class="nopar">
+<!--l. 87--></p><p class="indent"><span class="cmbx-12">Observa</span><span class="cmbx-12">ç</span><span class="cmbx-12">ão: </span>para dados não completos, use a opção
+<!--l. 89--></p><p class="indent"><span class="cmtt-12">cor(...,use="complete.obs")</span>
+<!--l. 91--></p><p class="indent">Portanto, a relação entre essas variáveis pode estar afetando os resultados experimentais.
+<!--l. 93--></p><p class="indent">Para avaliar se esse efeito é significativo, faz-se a análise de covariância para examinar essa
+suspeita.
+<!--l. 96--></p><p class="noindent">
+</p><h4 class="likesubsectionHead"><a id="x1-5000"></a>Análise de Covariância</h4>
+<!--l. 97--><p class="noindent">
+<!--l. 100--></p><p class="indent">Primeiro testa-se o intercepto (coeficiente <span class="cmmi-12">&#946;</span>) da reta de regressão. Na análise de variância
+abaixo deve-se considerar apenas o teste referente à variável <span class="cmtt-12">cov </span>que neste caso está corrigida para o
+efeito de <span class="cmtt-12">maq</span>. Note que para isto a variável <span class="cmtt-12">cov </span>tem que ser a última na especificação do
+modelo.
+                                                                                            
+                                                                                            
+</p><div class="verbatim" id="verbatim-4">
+&gt;&nbsp;ex12.av&nbsp;&lt;-&nbsp;aov(resp&nbsp;~&nbsp;maq&nbsp;+&nbsp;cov,&nbsp;data=ex12)
+&nbsp;<br>&gt;&nbsp;summary(ex12.av)
+&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Df&nbsp;&nbsp;Sum&nbsp;Sq&nbsp;Mean&nbsp;Sq&nbsp;F&nbsp;value&nbsp;&nbsp;&nbsp;&nbsp;Pr(&gt;F)
+&nbsp;<br>maq&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;140.400&nbsp;&nbsp;70.200&nbsp;&nbsp;27.593&nbsp;5.170e-05&nbsp;***
+&nbsp;<br>cov&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;178.014&nbsp;178.014&nbsp;&nbsp;69.969&nbsp;4.264e-06&nbsp;***
+&nbsp;<br>Residuals&nbsp;&nbsp;&nbsp;11&nbsp;&nbsp;27.986&nbsp;&nbsp;&nbsp;2.544
+&nbsp;<br>---
+&nbsp;<br>Signif.&nbsp;codes:&nbsp;&nbsp;0&nbsp;‘***’&nbsp;0.001&nbsp;‘**’&nbsp;0.01&nbsp;‘*’&nbsp;0.05&nbsp;‘.’&nbsp;0.1&nbsp;‘&nbsp;’&nbsp;1
+</div>
+<!--l. 115--><p class="nopar">
+<!--l. 117--></p><p class="indent">A seguir testa-se o efeito do fator <span class="cmtt-12">maq </span>corrigindo para o efeito da covariável. Para isto basta
+inverter a ordem dos termos na especificação do modelo.
+                                                                                            
+                                                                                            
+</p><div class="verbatim" id="verbatim-5">
+&gt;&nbsp;ex12.av&nbsp;&lt;-&nbsp;aov(resp&nbsp;~&nbsp;cov&nbsp;+&nbsp;maq,&nbsp;data=ex12)
+&nbsp;<br>&gt;&nbsp;summary(ex12.av)
+&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Df&nbsp;&nbsp;Sum&nbsp;Sq&nbsp;Mean&nbsp;Sq&nbsp;&nbsp;F&nbsp;value&nbsp;&nbsp;&nbsp;Pr(&gt;F)
+&nbsp;<br>cov&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;305.130&nbsp;305.130&nbsp;119.9330&nbsp;2.96e-07&nbsp;***
+&nbsp;<br>maq&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;13.284&nbsp;&nbsp;&nbsp;6.642&nbsp;&nbsp;&nbsp;2.6106&nbsp;&nbsp;&nbsp;0.1181
+&nbsp;<br>Residuals&nbsp;&nbsp;&nbsp;11&nbsp;&nbsp;27.986&nbsp;&nbsp;&nbsp;2.544
+&nbsp;<br>---
+&nbsp;<br>Signif.&nbsp;codes:&nbsp;&nbsp;0&nbsp;‘***’&nbsp;0.001&nbsp;‘**’&nbsp;0.01&nbsp;‘*’&nbsp;0.05&nbsp;‘.’&nbsp;0.1&nbsp;‘&nbsp;’&nbsp;1
+</div>
+<!--l. 130--><p class="nopar">
+<!--l. 132--></p><p class="indent">Portanto, para esse experimento, a covariável teve um efeito significativo na interpretação dos
+resultados.
+<!--l. 134--></p><p class="indent">Caso o efeito da covariável fosse não significativo a análise poderia ser feita da forma habitual,
+ou seja, somente com o fator <span class="cmtt-12">maq </span>no modelo.
+<!--l. 137--></p><p class="indent">Observe que, nesse caso, as conclusões ainda seriam as mesmas. Mas, compare os p-valores
+para <span class="cmtt-12">maq </span>nas duas situações (com e sem a covariável) e observe que os valores são bem
+distintos.
+                                                                                            
+                                                                                            
+</p><div class="verbatim" id="verbatim-6">
+summary(aov(resp~maq))
+</div>
+<!--l. 141--><p class="nopar">
+<!--l. 145--></p><p class="noindent">
+</p><h4 class="likesubsectionHead"><a id="x1-6000"></a>Ajustando as médias</h4>
+<!--l. 146--><p class="noindent">
+<!--l. 149--></p><p class="indent">Como o efeito da Covariável foi significativo, isso implica na correção das médias dos
+tratamentos.
+<!--l. 151--></p><p class="indent">Com o comando <span class="cmtt-12">lm </span>pode-se obter o valor de <span class="cmmi-12">&#946; </span>da covariável diâmetro para correção das
+médias.
+                                                                                            
+                                                                                            
+</p><div class="verbatim" id="verbatim-7">
+beta&lt;-lm(resp~cov+maq)
+&nbsp;<br>summary(beta)
+&nbsp;<br>
+&nbsp;<br>&gt;&nbsp;beta$coef[2]
+&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cov
+&nbsp;<br>0.9539877
+</div>
+<!--l. 160--><p class="nopar">
+<!--l. 162--></p><p class="indent">Depois, pode-se obter o valor da média corrigida, por exemplo da máquina 1:
+                                                                                            
+                                                                                            
+</p><div class="verbatim" id="verbatim-8">
+media.resp&lt;-tapply(resp,maq,mean)
+&nbsp;<br>media.cov&lt;-tapply(cov,maq,mean)
+&nbsp;<br>media.cor1&lt;-media.resp[1]-beta$coef[2]*(media.cov[1]-mean(cov))
+</div>
+<!--l. 168--><p class="nopar">
+<!--l. 172--></p><p class="noindent">
+</p><h4 class="likesubsectionHead"><a id="x1-7000"></a>Exercício</h4>
+<!--l. 173--><p class="noindent">
+<!--l. 176--></p><p class="indent">
+</p><dl class="enumerate"><dt class="enumerate">
+1.</dt><dd class="enumerate">Analise os dados  do  experimento  abaixo,  considerando  um  experimento  com  uma
+covariável, conduzido em um delineamento completamente casualizado.<br class="newline">
+<!--l. 180--><p class="noindent">Este experimento refere-se aos dados coletados por um pesquisador, que queria saber
+se o produto TBT  (Tributil-Estanho)  poderia  estar  afetando  a  atividade  enzimática
+(nmol/min/mg)  no  cérebro  e  no  músculo  de  peixes.  Nesse  caso,  o  pesquisador  não
+conseguiu utilizar peixes com o mesmo peso pela dificuldade de encontrá-los na natureza.
+</p><div class="table">
+<!--l. 183--><p class="noindent"><a id="x1-70021"></a></p><hr class="float"><div class="float">
+<div class="center">
+<!--l. 184--><p class="noindent">
+<br></p><div class="caption"><span class="id"><span class="cmbx-12">Tabela</span>&nbsp;1: </span><span class="content">Atividade enzimática (nmol/min/mg) no cérebro e no músculo de peixes submetidos
+a presença de TBT e sem a presença de TBT (C).</span></div><!--tex4ht:label?: x1-70021 -->
+<div class="tabular"><table id="TBL-1" class="tabular" cellspacing="0" cellpadding="0"><colgroup id="TBL-1-1g"><col id="TBL-1-1"><col id="TBL-1-2"><col id="TBL-1-3"><col id="TBL-1-4"></colgroup><tbody><tr class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr style="vertical-align:baseline;" id="TBL-1-1-"><td style="white-space:nowrap; text-align:left;" id="TBL-1-1-1" class="td11">Tratamentos</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-1-2" class="td11">peso</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-1-3" class="td11">TBTc</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-1-4" class="td11">TBTm</td>
+</tr><tr class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr style="vertical-align:baseline;" id="TBL-1-2-"><td style="white-space:nowrap; text-align:left;" id="TBL-1-2-1" class="td11">C               </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-2-2" class="td11">64.1</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-2-3" class="td11">44.58</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-2-4" class="td11">50.649</td></tr><tr style="vertical-align:baseline;" id="TBL-1-3-"><td style="white-space:nowrap; text-align:left;" id="TBL-1-3-1" class="td11">C </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-3-2" class="td11">69.8</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-3-3" class="td11"> 58.8 </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-3-4" class="td11">65.392</td>
+</tr><tr style="vertical-align:baseline;" id="TBL-1-4-"><td style="white-space:nowrap; text-align:left;" id="TBL-1-4-1" class="td11">C               </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-4-2" class="td11">56.8</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-4-3" class="td11"> 91.5 </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-4-4" class="td11">61.087</td></tr><tr style="vertical-align:baseline;" id="TBL-1-5-"><td style="white-space:nowrap; text-align:left;" id="TBL-1-5-1" class="td11">C </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-5-2" class="td11"> 128 </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-5-3" class="td11"> 7.41 </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-5-4" class="td11">91.420</td>
+</tr><tr style="vertical-align:baseline;" id="TBL-1-6-"><td style="white-space:nowrap; text-align:left;" id="TBL-1-6-1" class="td11">C               </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-6-2" class="td11"> 112 </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-6-3" class="td11"> 8.32 </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-6-4" class="td11">92.710</td></tr><tr style="vertical-align:baseline;" id="TBL-1-7-"><td style="white-space:nowrap; text-align:left;" id="TBL-1-7-1" class="td11">C </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-7-2" class="td11"> 129 </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-7-3" class="td11"> 16.67 </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-7-4" class="td11">75.770</td>
+</tr><tr style="vertical-align:baseline;" id="TBL-1-8-"><td style="white-space:nowrap; text-align:left;" id="TBL-1-8-1" class="td11">C               </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-8-2" class="td11"> 198 </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-8-3" class="td11">20.24</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-8-4" class="td11">61.610</td>
+</tr><tr style="vertical-align:baseline;" id="TBL-1-9-"><td style="white-space:nowrap; text-align:left;" id="TBL-1-9-1" class="td11">C </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-9-2" class="td11"> 140 </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-9-3" class="td11">15.11</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-9-4" class="td11">47.910</td>
+</tr><tr style="vertical-align:baseline;" id="TBL-1-10-"><td style="white-space:nowrap; text-align:left;" id="TBL-1-10-1" class="td11">C </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-10-2" class="td11"> 214 </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-10-3" class="td11"> NA  </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-10-4" class="td11">15.510</td>
+</tr><tr style="vertical-align:baseline;" id="TBL-1-11-"><td style="white-space:nowrap; text-align:left;" id="TBL-1-11-1" class="td11">TBT </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-11-2" class="td11">98.2</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-11-3" class="td11">40.17</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-11-4" class="td11">55.120</td>
+</tr><tr style="vertical-align:baseline;" id="TBL-1-12-"><td style="white-space:nowrap; text-align:left;" id="TBL-1-12-1" class="td11">TBT </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-12-2" class="td11">80.2</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-12-3" class="td11">69.24</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-12-4" class="td11">42.046</td>
+</tr><tr style="vertical-align:baseline;" id="TBL-1-13-"><td style="white-space:nowrap; text-align:left;" id="TBL-1-13-1" class="td11">TBT </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-13-2" class="td11">79.8</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-13-3" class="td11">16.55</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-13-4" class="td11">44.510</td>
+</tr><tr style="vertical-align:baseline;" id="TBL-1-14-"><td style="white-space:nowrap; text-align:left;" id="TBL-1-14-1" class="td11">TBT </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-14-2" class="td11">88.7</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-14-3" class="td11">22.77</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-14-4" class="td11">95.242</td>
+</tr><tr style="vertical-align:baseline;" id="TBL-1-15-"><td style="white-space:nowrap; text-align:left;" id="TBL-1-15-1" class="td11">TBT </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-15-2" class="td11">79.5</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-15-3" class="td11">39.88</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-15-4" class="td11">56.060</td>
+</tr><tr style="vertical-align:baseline;" id="TBL-1-16-"><td style="white-space:nowrap; text-align:left;" id="TBL-1-16-1" class="td11">TBT </td><td style="white-space:nowrap; text-align:center;" id="TBL-1-16-2" class="td11">98.1</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-16-3" class="td11">38.28</td><td style="white-space:nowrap; text-align:center;" id="TBL-1-16-4" class="td11">70.516</td>
+</tr><tr class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr style="vertical-align:baseline;" id="TBL-1-17-"><td style="white-space:nowrap; text-align:left;" id="TBL-1-17-1" class="td11"> </td></tr></tbody></table></div></div>
+                                                                                            
+                                                                                            
+</div><hr class="endfloat">
+</div>
+</dd></dl>
+                                                                                            
+                                                                                            
+ 
+ 
+
+                                                                                            
+
+
+</body></html>
