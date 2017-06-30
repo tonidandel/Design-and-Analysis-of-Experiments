@@ -39,6 +39,7 @@ v_dataHist = readr::read_csv('data.csv')
 ```
 
 # 1. Descrição do Problema
+O experimento envolve comparações entre métodos aplicados em diferentes instâncias de problemas de roteamento, configurando o clássico problema do "caixeiro viajante". A variabilidade decorrente das características de cada problema de teste é uma possível fonte de variação espúria quando não considerada na análise dos resultados. Para a avaliar existência de diferenças significativas entre os algoritmos, bem como a influência dos possíveis covariantes, tais como tamanho da instância e tempo de convergência, será utilizada a análise de covariância ANCOVA.
 
 ```{r,results='show',warning=FALSE,echo=FALSE}
 ## EXPERIMENTAL DEFINITIONS
@@ -59,13 +60,12 @@ Os parâmetros experimentais desejados são:
 * Potência desejada: $(1- \beta) = \pi \geq `r v_power`$.
 
 # 2. Planejamento Experimental
-O experimento envolve comparações entre métodos aplicados em diferentes instâncias de problemas de roteamento, configurando o clássico problema do caixeiro viajante. A variabilidade decorrente das características de cada problema de teste é uma forte fonte de variação espúria quando não considerada na análise dos resultados. Para a avaliar existência de diferenças significativas entre os algoritmos, bem como entre possíveis covariantes, será utilizada a análise de covariância.
 
 A primeira etapa do experimento consistiu na geração dos dados experimetais a partir dos dois algoritmos de otimização. Busca-se a verificação de diferenças estatísticas significativas entre as configurações testadas. Uma análise exploratória qualitativa dos dados foi feita para complementar os testes. 
 
 ## 2.1. Análise exploratória
 
-## 2.1. Análise de Co-Variância (ANCOVA)
+# 3. Análise de Co-Variância (ANCOVA)
 A análise de covariância é uma técnica $-$ assim como a chamada "blocagem" ou pareamento (em testes-t) $-$ bastante útil para a melhora da precisão de um experimento [@montgomery1984design]. Em diversos aspectos é similar à análise de variância (ANOVA), porém permite ter controle sobre a influência do covariante nas variâveis dependentes. A covariável complementa o controle local e, obviamente, necessita estar correlacionada com a variável de resposta para que se possa fazer uso de tal análise. E quando a análise de variância é realizada com uma ou mais covariáveis, é usual chamar a análise de ANCOVA.
 
 Na ANCOVA a variável dependente é contínua (e.g. tempo, velocidade, etc.), enquanto que a variável independente é normalmente categória (e.g. "masculino/feminino", "fumante/não-fumante" etc. ). A análise de variância, por sua vez, poderá converter-se na ANCOVA quando for adicionado um covariante, que consiste em outra variável, que pode ser tanto categórica quanto contínua. 
@@ -78,10 +78,10 @@ Existem aliás, duas razões principais para sair-se da ANOVA e passar a ser con
 
 A ANCOVA, permite, portanto, um controle do erro experimental, aumentando sua precisão. Vale ressaltar que a técnica não é restrita apenas à indicação de existência ou não de diferenças entre os níveis avaliados.
 
-## 2.2 Comparações Múltiplas
+## 3.1 outra subseção
 
 
-## 2.3 Definição do Tamanho Amostral
+## 3.2 mais outra subseção
 
 O cálculo do tamanho amostral para a técnica ANOVA pode ser feito iterativamente até encontrar o número $n$ tal que:
 
@@ -92,13 +92,13 @@ F_{(1-\alpha)}=F_{\beta;\phi} \,,
 
 em que ambas distribuições $F$ têm $(a-1)$ graus de liberdade no numerador e $a(n-1)$ no denomiador. O parâmetro de não-centralidade $\phi$ é dado por:
 
-## 2.4 Tratamento e Validação dos Dados
+## 3.3 Tratamento e Validação dos Dados
 
-# 3. Análise Estatística
+# 4. Análise Estatística
 
-## 3.1 Análise de Variância
+## 4.1 Análise de Covariância
 
-## 3.2 Validação das Premissas
+## 4.2 Validação das Premissas
 
 ### Normalidade
 
@@ -106,6 +106,6 @@ em que ambas distribuições $F$ têm $(a-1)$ graus de liberdade no numerador e 
 
 ### Independência
 
-# 4. Discussão e Conclusões
+# 5. Discussão e Conclusões
 
 # Referências
