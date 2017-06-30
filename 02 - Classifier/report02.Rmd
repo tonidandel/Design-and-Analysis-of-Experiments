@@ -173,7 +173,7 @@ $$
 
 ## 2.1.2 Não-inferioridade da Acurácia
 
-Foi definido um teste de não-inferioridade do algoritmo proposto em relação ao atual. A  hipótese nula estabelece que a diferença entre a acurácia média do algoritmo proposto e do algoritmo orignal é maior que a margem de não-inferioridade estabelecida ($\delta_{acc}^{*}$), enquanto a enquanto a hipótese alternativa propõe que a diferença das acurácias é menor que essa margem. Sendo $\mu_p^{a}$ a média da acurácia do algoritmo proposto e $\mu_o^{a}$ a média da acurácia do algoritmo original, tem-se:
+Foi definido um teste de não-inferioridade do algoritmo proposto em relação ao atual. A  hipótese nula estabelece que a diferença entre a acurácia média do algoritmo proposto e do algoritmo orignal é maior que a margem de não-inferioridade estabelecida ($\delta_{acc}^{*}$), enquanto a hipótese alternativa propõe que a diferença das acurácias é menor que essa margem. Sendo $\mu_p^{a}$ a média da acurácia do algoritmo proposto e $\mu_o^{a}$ a média da acurácia do algoritmo original, tem-se:
 
 $$
 \left\{\begin{array}{rc}

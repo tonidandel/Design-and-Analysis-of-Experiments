@@ -1,13 +1,25 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{3}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
+\bibitem[Campelo(2015)]{Campelo2015-01}
+Felipe Campelo.
+\newblock Lecture notes on design and analysis of experiments.
+\newblock \url{https://github.com/fcampelo/Design-and-Analysis-of-Experiments},
+  2015.
+\newblock Version 2.11, Chapter 7; Creative Commons BY-NC-SA 4.0.
+
 \bibitem[Montgomery(1984)]{montgomery1984design}
 D.~C. Montgomery.
 \newblock \emph{Design and analysis of experiments}, volume~7.
 \newblock Wiley New York, 1984.
+
+\bibitem[Montgomery and Runger(2011)]{MontgomeryRunger2011}
+D.~C. Montgomery and G.~C. Runger.
+\newblock \emph{Applied Statistics and Probability for Engineers}, volume~5.
+\newblock John Wiley and Sons, 2011.
 
 \end{thebibliography}

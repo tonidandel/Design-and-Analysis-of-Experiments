@@ -60,10 +60,9 @@ Os parâmetros experimentais desejados são:
 * Potência desejada: $(1- \beta) = \pi \geq `r v_power`$.
 
 # 2. Planejamento Experimental
-
 A primeira etapa do experimento consistiu na geração dos dados experimetais a partir dos dois algoritmos de otimização. Busca-se a verificação de diferenças estatísticas significativas entre as configurações testadas. Uma análise exploratória qualitativa dos dados foi feita para complementar os testes. 
 
-## 2.1. Análise exploratória
+Como não se tinha ideia a respeito do tamanho amostral necessário, foi realizado o cálculo pensando-se em utilizar o teste da análise de variância para avalizar a existência de diferenças significativas entre as classes de problemas. Embora a técnica permita analisar as médias e variâncias de observações de diferentes grupos, generalizando o teste-t para mais de dois deles [@Campelo2015-01], ela é restrita apenas à indicação de existência ou não de diferenças entre os níveis avaliados, sem indicar quais níveis seriam diferentes [@MontgomeryRunger2011], tampouco a influência de variáveis concomitantes.  Neste ponto, evidencia-se a necessidade de uma análise de covariancia.
 
 # 3. Análise de Co-Variância (ANCOVA)
 A análise de covariância é uma técnica $-$ assim como a chamada "blocagem" ou pareamento (em testes-t) $-$ bastante útil para a melhora da precisão de um experimento [@montgomery1984design]. Em diversos aspectos é similar à análise de variância (ANOVA), porém permite ter controle sobre a influência do covariante nas variâveis dependentes. A covariável complementa o controle local e, obviamente, necessita estar correlacionada com a variável de resposta para que se possa fazer uso de tal análise. E quando a análise de variância é realizada com uma ou mais covariáveis, é usual chamar a análise de ANCOVA.
@@ -81,7 +80,7 @@ A ANCOVA, permite, portanto, um controle do erro experimental, aumentando sua pr
 ## 3.1 outra subseção
 
 
-## 3.2 mais outra subseção
+## 3.2 Cálculo do tamanho amostral para o ANOVA
 
 O cálculo do tamanho amostral para a técnica ANOVA pode ser feito iterativamente até encontrar o número $n$ tal que:
 
