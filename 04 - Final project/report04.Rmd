@@ -1,6 +1,6 @@
 ---
-title: 'Estudo de Caso final: Avaliação de Algoritmos de Otimização de
-  Custo e Tempo em Roteiros de Viagem'
+title: 'Estudo de Caso final - avaliação de algoritmos de otimização de
+  custo e tempo em roteiros de viagem'
 author: "Equipe 04"
 date: "03 de Julho de 2017"
 output:
@@ -41,12 +41,11 @@ v_dataHist = readr::read_csv('data.csv')
 ```
 
 # 1. Descrição do Problema
+As ferramentas atuais para planejamento de viagens permitem que usuários busquem passagens e hotéis e construam seu próprio itinerário, mas não oferecem suporte para viagens com exibilidade nas datas ou na ordenação de destinos. Para solucionar esse problema, foi proposto um novo sistema que busca as melhores combinações de passagens e hotéis para uma viagem, minimizando o custo e tempo de transporte. O sistema busca otimizar roteiros com datas flexíveis e não requer uma ordem fixa dos destinos, de forma que considera todas as possíveis configurações que atendem as especificações do usuário. Dessa forma, oferece boas opções de itinerários para viagens com esforço do usuário muito menor, representando uma melhoria significativa na experiência de planejamento de viagens.
 
-As ferramentas atuais para planejamento de viagens permitem que usuários busquem passagens e hotéis e construam seu próprio itinerário, mas não oferecem suporte para viagens com exibilidade nas datas ou na ordenação de destinos. Para solucionar esse problema, propõe-se um novo sistema que busca as melhores combinações de passagens e hotéis para uma viagem, minimizando o custo e tempo de transporte. O sistema é capaz de otimizar roteiros com datas flexíveis e não requer uma ordem fixa dos destinos, de forma que considera todas as possíveis configurações que atendem as especificações do usuário. Dessa forma, oferece boas opções de itinerários para viagens com esforço do usuário muito menor, representando uma melhoria significativa na experiência de planejamento de viagens.
+O conjunto de restrições considera datas inicial e final, datas específicas para cada destino, ordenação dos destinos e características das acomodações e transportes. Pode ser considerado uma aplicação multiobjetivo do problema do caixeiro viajante com janelas de tempo e dependência temporal
 
-O conjunto de restrições considera datas inicial e final, datas específicas para cada destino, ordenação dos destinos e características das acomodações e transportes. Pode ser considerado uma aplicação multiobjetivo do problema do Caixeiro Viajante com Janelas de Tempo e Dependência Temporal
-
-O experimento envolve comparações entre métodos aplicados em diferentes instâncias de problemas de roteamento, configurando o clássico problema do "caixeiro viajante". A variabilidade decorrente das características de cada problema de teste é uma possível fonte de variação espúria quando não considerada na análise dos resultados. Para a avaliar existência de diferenças significativas entre os algoritmos, bem como a influência dos possíveis covariantes, tais como tamanho da instância e tempo de convergência, será utilizada a análise de covariância ANCOVA.
+O experimento envolve comparações entre métodos aplicados em diferentes instâncias de problemas de roteamento, configurando o clássico problema do "caixeiro viajante". A variabilidade decorrente das características de cada problema de teste é uma possível fonte de variação espúria quando não considerada na análise dos resultados. Para a avaliar existência de diferenças significativas entre os algoritmos, bem como a influência dos possíveis covariantes, tais como tamanho da instância e tempo de convergência, será utilizada a análise de covariância.
 
 ```{r,results='show',warning=FALSE,echo=FALSE}
 ## EXPERIMENTAL DEFINITIONS
@@ -69,7 +68,11 @@ Os parâmetros experimentais desejados são:
 (((Alterei para fazermos um acoleta menor)))
 
 # 2. Planejamento Experimental
-A primeira etapa do experimento consistiu na geração dos dados experimetais a partir dos dois algoritmos de otimização. Busca-se a verificação de diferenças estatísticas significativas entre as configurações testadas. Uma análise exploratória qualitativa dos dados foi feita para complementar os testes. 
+A primeira etapa do experimento consistiu na geração dos dados experimetais a partir dos dois algoritmos de otimização.
+
+Para os testes, foram geradas aleatoriamente as instâncias de problemas com diferentes tamanhos. Dessa forma é possível avaliar a variaçaõ do desempenho dos métodos à medida que a complexidade aumenta. O tamanho de um problema é determinado pelo número médio de opções de destinos do roteiro e do número médio de opções de transporte e acomodação para cada destino.
+
+Busca-se a verificação de diferenças estatísticas significativas entre as configurações testadas. Uma análise exploratória qualitativa dos dados foi feita para complementar os testes. 
 
 Como não se tinha ideia a respeito do tamanho amostral necessário, foi realizado o cálculo pensando-se em utilizar o teste da análise de variância para avalizar a existência de diferenças significativas entre as classes de problemas. Embora a técnica permita analisar as médias e variâncias de observações de diferentes grupos, generalizando o teste-t para mais de dois deles [@Campelo2015-01], ela é restrita apenas à indicação de existência ou não de diferenças entre os níveis avaliados, sem indicar quais níveis seriam diferentes [@MontgomeryRunger2011], tampouco a influência de variáveis concomitantes.  Neste ponto, evidencia-se a necessidade de uma análise de covariancia.
 
@@ -86,8 +89,15 @@ Existem aliás, duas razões principais para sair-se da ANOVA e passar a ser con
 
 A ANCOVA, permite, portanto, um controle do erro experimental, aumentando sua precisão. Vale ressaltar que a técnica não é restrita apenas à indicação de existência ou não de diferenças entre os níveis avaliados.
 
-## 3.1 outra subseção
+## 3.1 Modelo Estatístico linear da ANCOVA
 
+Considerando um experimento com um fator e uma covariável, o modelo estatístico da análise de covariância pode ser estabelecido como:
+\begin{equation}
+y_{ij} = \mu + \alpha_{i} + \beta (X_{ij}- \bar{X}) + \epsilon_{ij} \,,
+\label{eq:001}
+\end{equation}
+em que:
+$\mu$ é uma constante, $\alpha_{i}$ é o efeito do i-ésimo "tratamento"[@MontgomeryRunger2011], $X_{ij}$ é o valor observado da covariável e $\bar{X}$ a média da covariável. Além disso, $\beta$ consiste no coeficiente de regressão linear entre a covariável $X$ e a variável de resposta $Y$, com $\beta \neq 0$. Neste caso a relação deve ser linear. Vale ressaltar que este modelo pressupõe que a variável de resposta e a covariável estão relacionadas linearmente.
 
 ## 3.2 Cálculo do tamanho amostral para o ANOVA
 
