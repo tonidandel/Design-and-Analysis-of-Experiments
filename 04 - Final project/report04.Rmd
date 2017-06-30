@@ -15,6 +15,8 @@ header-includes:
 - \pagestyle{fancy}
 - \fancyfoot[CO,CE]{EEE933 - Planejamento e AnÃƒÂ¡lise de Experimentos}
 - \fancyfoot[LE,RO]{\thepage}
+- \usepackage{booktabs}
+- \usepackage{graphicx}
 csl: ieee.csl
 bibliography: bibliography.bib
 urlcolor: blue
@@ -91,13 +93,31 @@ A ANCOVA, permite, portanto, um controle do erro experimental, aumentando sua pr
 
 ## 3.1 Modelo Estatístico linear da ANCOVA
 
-Considerando um experimento com um fator e uma covariável, o modelo estatístico da análise de covariância pode ser estabelecido como:
+Considerando um experimento com um fator e uma covariável, o modelo estatístico da análise de covariância pode ser estabelecido como [@MontgomeryRunger2011]:
 \begin{equation}
-y_{ij} = \mu + \alpha_{i} + \beta (X_{ij}- \bar{X}) + \epsilon_{ij} \,,
+y_{ij} = \mu + \tau_{i} + \beta (X_{ij}- \bar{X}) + \epsilon_{ij} \,,
 \label{eq:001}
 \end{equation}
 em que:
-$\mu$ é uma constante, $\alpha_{i}$ é o efeito do i-ésimo "tratamento"[@MontgomeryRunger2011], $X_{ij}$ é o valor observado da covariável e $\bar{X}$ a média da covariável. Além disso, $\beta$ consiste no coeficiente de regressão linear entre a covariável $X$ e a variável de resposta $Y$, com $\beta \neq 0$. Neste caso a relação deve ser linear. Vale ressaltar que este modelo pressupõe que a variável de resposta e a covariável estão relacionadas linearmente.
+$\mu$ é uma constante, $\tau_{i}$ é o efeito do i-ésimo "tratamento", $X_{ij}$ é o valor observado da covariável e $\bar{X}$ a média da covariável. Além disso, $\beta$ consiste no coeficiente de regressão linear entre a covariável $X$ e a variável de resposta $Y$, com $\beta \neq 0$ e $\epsilon_{ij}$ é uma componente aleatória de erro, com $i = 1, \ldots , a$ e $j = 1, \ldots , n$. Neste caso a relação deve ser linear. Vale ressaltar que este modelo pressupõe que a variável de resposta e a covariável estão relacionadas linearmente. Para efeito de simplificação, contudo, a análise de covariância pode ser vista como uma análise "ajustada" de variância, e pode ser sumarizada na tabela $\eqref{{tab:001}}$:
+
+% Please add the following required packages to your document preamble:
+
+\begin{table}[]
+\centering
+\caption{ANCOVA como um ``modelo ajustado'' da ANOVA.}
+\label{tab:001}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}|l|c|c|c|c|@{}}
+\toprule
+\textbf{Fontes de variação} & \textbf{$\sum$ de quadrados}                                                                                        & \textbf{Graus de Lib} & \textbf{média quadrática}    & \textbf{$F_{0}$}                             \\ \midrule
+\textbf{regressão}          & $(S_{xy}/S_{xx})$                                                                                                   & $1$                   &                              &                                              \\ \midrule
+\textbf{Tratamentos}        & \begin{tabular}[c]{@{}c@{}}$SS'_{E}- SS_{E} - $\\ $(S_{xy})^{2}/S_{xx} - [E_{yy}-(E_{xy})^{2}/E_{xx}]$\end{tabular} & $a-1$                 & $\frac{SS'_{E}-SS_{E}}{a-1}$ & $\frac{1}{MS_{E}}\frac{SS'_{E}-SS_{E}}{a-1}$ \\ \midrule
+\textbf{Erro}               & $SS_{E} = E_{yy}-(E_{xy})^{2}/E_{xx}$                                                                               & $a(n-1)-1$            & $\frac{SS_{E}}{a(n-1)-1}$    &                                              \\ \midrule
+\textbf{Total}              & S\_\{yy\}                                                                                                           & $an-1$                &                              &                                              \\ \bottomrule
+\end{tabular}%
+}
+\end{table}
 
 ## 3.2 Cálculo do tamanho amostral para o ANOVA
 
