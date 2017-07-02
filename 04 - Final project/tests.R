@@ -1,0 +1,140 @@
+source('calcN.R')
+library(car)
+library(lmtest)
+
+
+## DATA EXPLORATION
+
+v_data = readr::read_csv('results_fixed.csv')
+v_data$algorithm = as.factor(v_data$algorithm)
+v_dataSdRuns = aggregate(cbind(quality,time)~instance:algorithm:size,data=v_data, FUN=sd)
+
+plot(x = log(subset(v_dataSdRuns, algorithm=='ACO')$size),
+     y = subset(v_dataSdRuns, algorithm=='ACO')$quality,
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "Quality Run SD")
+points(x = log(subset(v_dataSdRuns, algorithm=='ACO_Local')$size),
+     y = subset(v_dataSdRuns, algorithm=='ACO_Local')$quality,
+     cex  = 1,
+     pch  = 18,
+     col='blue')
+
+plot(x = log(subset(v_dataSdRuns, algorithm=='ACO')$size),
+     y = subset(v_dataSdRuns, algorithm=='ACO')$time,
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "Time Run SD")
+points(x = log(subset(v_dataSdRuns, algorithm=='ACO_Local')$size),
+     y = subset(v_dataSdRuns, algorithm=='ACO_Local')$time,
+     cex  = 1,
+     pch  = 18,
+     col='blue')
+
+
+v_data = aggregate(cbind(quality,time,size,avgTransportations,avgAccommodations,destinations)~algorithm:instance, data=v_data, FUN=mean)
+v_minQuality = aggregate(cbind(quality)~size:instance, data=v_data, FUN=min)$quality
+
+plot(x = log(subset(v_data, algorithm=='ACO')$size),
+     y = subset(v_data, algorithm=='ACO')$time,
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "Time")
+points(x = log(subset(v_data, algorithm=='ACO_Local')$size),
+     y = subset(v_data, algorithm=='ACO_Local')$time,
+     cex  = 1,
+     pch  = 18,
+     col='blue')
+legend("topleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+
+plot(x = log(subset(v_data, algorithm=='ACO')$size),
+     y = subset(v_data, algorithm=='ACO')$quality,
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "Quality")
+points(x = log(subset(v_data, algorithm=='ACO_Local')$size),
+       y = subset(v_data, algorithm=='ACO_Local')$quality,
+       cex  = 1,
+       pch  = 18,
+       col='blue')
+legend(x=10, y=0.25, legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+
+plot(x = log(subset(v_data, algorithm=='ACO')$size),
+     y = subset(v_data, algorithm=='ACO')$quality/v_minQuality,
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "Relative Quality")
+points(x = log(subset(v_data, algorithm=='ACO_Local')$size),
+       y = subset(v_data, algorithm=='ACO_Local')$quality/v_minQuality,
+       cex  = 1,
+       pch  = 18,
+       col='blue')
+legend("bottomleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+
+
+v_dataDiff = aggregate(cbind(quality, time)~size:instance, data=v_data, FUN=diff)
+v_dataDiff$qualityDiffPercent = 100* v_dataDiff$quality/v_minQuality
+
+
+plot(x = log(v_dataDiff$size),
+     y = v_dataDiff$time,
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     xlab = "log(size)",
+     ylab = "Time Diff")
+
+plot(x = log(v_dataDiff$size),
+     y = v_dataDiff$quality,
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     xlab = "log(size)",
+     ylab = "Quality Diff")
+
+plot(x = log(v_dataDiff$size),
+     y = v_dataDiff$qualityDiffPercent,
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     xlab = "log(size)",
+     ylab = "Quality Diff %")
+
+
+# Time model fit
+
+v_modelTimeFit = lm(time~size*factor(algorithm)+I(size^2), data=v_data)
+Anova(v_modelTimeFit)
+
+abline(coef = c(v_modelTimeFit$coefficients[1], v_modelTimeFit$coefficients[2]), col='red')
+abline(coef = c(v_modelTimeFit$coefficients[1]+v_modelTimeFit$coefficients[3], v_modelTimeFit$coefficients[2]), col='blue')
+plot(v_modelTimeFit, which=1)
+plot(v_modelTimeFit, which=2)
+
+
+# ANOVA
+v_modelAnovaTime <- aov(time~algorithm, 
+               data = v_data)
+summary.aov(v_modelAnovaTime)
+
+v_tTestTime = t.test(v_dataDiff$time, 
+                    mu = 0, 
+                    conf.level = 0.05, 
+                    alternative = 'two.sided'
+)
+# without considering problem size as a covariate, it seems that there is no difference between algorithms
