@@ -39,7 +39,10 @@ if (!require(lmtest, quietly = TRUE)){
 library(car)
 library(lmtest)
 
-v_dataHist = readr::read_csv('data.csv')
+source('calcN.R')
+library(car)
+library(lmtest)
+
 ```
 
 # 1. Descrição do Problema
@@ -64,19 +67,166 @@ Os parâmetros experimentais desejados são:
 * Nível de significância: $\alpha = `r v_alpha`$;
 
 * Tamanho de efeito de interesse prático: $\delta^{\star} = `r v_delta`$;
-(((Como vamos definir isso????)))
 
 * Potência desejada: $(1- \beta) = \pi \geq `r v_power`$.
-(((Alterei para fazermos um acoleta menor)))
 
 # 2. Planejamento Experimental
-A primeira etapa do experimento consistiu na geração dos dados experimetais a partir dos dois algoritmos de otimização.
+A primeira etapa do experimento consistiu na geração dos dados experimetais a partir dos dois algoritmos de otimização. Foi realizado o cálculo do tamanho amostral pensando-se em utilizar o teste da análise de variância para avalizar a existência de diferenças significativas entre as classes de problemas. Embora a técnica permita analisar as médias e variâncias de observações de diferentes grupos, generalizando o teste-t para mais de dois deles [@Campelo2015-01], ela é restrita apenas à indicação de existência ou não de diferenças entre os níveis avaliados, sem indicar quais níveis seriam diferentes [@MontgomeryRunger2011], tampouco a influência de variáveis concomitantes.
 
-Para os testes, foram geradas aleatoriamente as instâncias de problemas com diferentes tamanhos. Dessa forma é possível avaliar a variaçaõ do desempenho dos métodos à medida que a complexidade aumenta. O tamanho de um problema é determinado pelo número médio de opções de destinos do roteiro e do número médio de opções de transporte e acomodação para cada destino.
+Foram geradas aleatoriamente as instâncias de problemas com diferentes tamanhos. Dessa forma é possível avaliar a variação do desempenho dos métodos à medida que a complexidade aumenta. O tamanho de um problema é determinado pelo número médio de opções de destinos do roteiro e do número médio de opções de transporte e acomodação para cada destino.
 
-Busca-se a verificação de diferenças estatísticas significativas entre as configurações testadas. Uma análise exploratória qualitativa dos dados foi feita para complementar os testes. 
+Busca-se a verificação de diferenças estatísticas significativas entre as configurações testadas. Uma análise exploratória qualitativa dos dados foi feita como etapa preliminar para os testes. 
 
-Como não se tinha ideia a respeito do tamanho amostral necessário, foi realizado o cálculo pensando-se em utilizar o teste da análise de variância para avalizar a existência de diferenças significativas entre as classes de problemas. Embora a técnica permita analisar as médias e variâncias de observações de diferentes grupos, generalizando o teste-t para mais de dois deles [@Campelo2015-01], ela é restrita apenas à indicação de existência ou não de diferenças entre os níveis avaliados, sem indicar quais níveis seriam diferentes [@MontgomeryRunger2011], tampouco a influência de variáveis concomitantes.  Neste ponto, evidencia-se a necessidade de uma análise de covariancia.
+## 2.1. Análise Exploratória
+
+```{r, echo=FALSE, fig.height=3.8, fig.width=3.8, message=FALSE, warning=FALSE, results='show'}
+## DATA EXPLORATION
+v_data = readr::read_csv('results_fixed.csv')
+v_data$algorithm = as.factor(v_data$algorithm)
+v_dataSdRuns = aggregate(cbind(quality,time)~instance:algorithm:size,data=v_data, FUN=sd)
+
+#par(mfrow=c(1,2), mai=.3*c(2.5,1,1,1))
+plot(x = log(subset(v_dataSdRuns, algorithm=='ACO')$size),
+     y = subset(v_dataSdRuns, algorithm=='ACO')$quality,
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "Quality Run SD")
+points(x = log(subset(v_dataSdRuns, algorithm=='ACO_Local')$size),
+     y = subset(v_dataSdRuns, algorithm=='ACO_Local')$quality,
+     cex  = 1,
+     pch  = 18,
+     col='blue')
+
+plot(x = log(subset(v_dataSdRuns, algorithm=='ACO')$size),
+     y = subset(v_dataSdRuns, algorithm=='ACO')$time,
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "Time Run SD")
+points(x = log(subset(v_dataSdRuns, algorithm=='ACO_Local')$size),
+     y = subset(v_dataSdRuns, algorithm=='ACO_Local')$time,
+     cex  = 1,
+     pch  = 18,
+     col='blue')
+
+
+v_data = aggregate(cbind(quality,time,size,avgTransportations,avgAccommodations,destinations)~algorithm:instance, data=v_data, FUN=mean)
+v_minQuality = aggregate(cbind(quality)~size:instance, data=v_data, FUN=min)$quality
+
+#par(mfrow=c(2,2), mai=.6*c(2.5,1,1,1))
+plot(x = log(subset(v_data, algorithm=='ACO')$size),
+     y = subset(v_data, algorithm=='ACO')$time,
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "Time")
+points(x = log(subset(v_data, algorithm=='ACO_Local')$size),
+     y = subset(v_data, algorithm=='ACO_Local')$time,
+     cex  = 1,
+     pch  = 18,
+     col='blue')
+legend("topleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+
+plot(x = log(subset(v_data, algorithm=='ACO')$size),
+     y = subset(v_data, algorithm=='ACO')$quality,
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "Quality")
+points(x = log(subset(v_data, algorithm=='ACO_Local')$size),
+       y = subset(v_data, algorithm=='ACO_Local')$quality,
+       cex  = 1,
+       pch  = 18,
+       col='blue')
+legend(x=10, y=0.25, legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+
+plot(x = log(subset(v_data, algorithm=='ACO')$size),
+     y = subset(v_data, algorithm=='ACO')$quality/v_minQuality,
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "Relative Quality")
+points(x = log(subset(v_data, algorithm=='ACO_Local')$size),
+       y = subset(v_data, algorithm=='ACO_Local')$quality/v_minQuality,
+       cex  = 1,
+       pch  = 18,
+       col='blue')
+legend("bottomleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+
+
+v_dataDiff = aggregate(cbind(quality, time)~size:instance, data=v_data, FUN=diff)
+v_dataDiff$qualityDiffPercent = 100* v_dataDiff$quality/v_minQuality
+
+#par(mfrow=c(2,2), mai=.5*c(2.5,1,1,1))
+plot(x = log(v_dataDiff$size),
+     y = v_dataDiff$time,
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     xlab = "log(size)",
+     ylab = "Time Diff")
+
+plot(x = log(v_dataDiff$size),
+     y = v_dataDiff$quality,
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     xlab = "log(size)",
+     ylab = "Quality Diff")
+
+plot(x = log(v_dataDiff$size),
+     y = v_dataDiff$qualityDiffPercent,
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     xlab = "log(size)",
+     ylab = "Quality Diff %")
+
+# Time model fit
+
+v_modelTimeFit = lm(time~size*factor(algorithm)+I(size^2), data=v_data)
+Anova(v_modelTimeFit)
+
+abline(coef = c(v_modelTimeFit$coefficients[1], v_modelTimeFit$coefficients[2]), col='red')
+abline(coef = c(v_modelTimeFit$coefficients[1]+v_modelTimeFit$coefficients[3], v_modelTimeFit$coefficients[2]), col='blue')
+plot(v_modelTimeFit, which=1)
+plot(v_modelTimeFit, which=2)
+
+
+# ANOVA
+v_modelAnovaTime <- aov(time~algorithm, 
+               data = v_data)
+summary.aov(v_modelAnovaTime)
+
+v_tTestTime = t.test(v_dataDiff$time, 
+                    mu = 0, 
+                    conf.level = 0.05, 
+                    alternative = 'two.sided'
+)
+# without considering problem size as a covariate, it seems that there is no difference between algorithms
+
+```
+
+## 2.2. ANOVA
+
+```{r, echo=FALSE, fig.height=3.8, fig.width=3.8, message=FALSE, warning=FALSE}
+
+
+```
+colocar plots aqui.
+
+Sem considerar ainda o tamanho do problema como um covariante, parece, em um primeiro momento, após a análise de variância, que não há diferenças significativas entre os algoritmos. Neste ponto, evidencia-se a necessidade de uma nova abordagem, que pode ser capaz de detectar tais diferenças: uma alternativa é, justamente, a análise de covariancia.
 
 # 3. Análise de Co-Variância (ANCOVA)
 A análise de covariância é uma técnica $-$ assim como a chamada "blocagem" ou pareamento (em testes-t) $-$ bastante útil para a melhora da precisão de um experimento [@montgomery1984design]. Em diversos aspectos é similar à análise de variância (ANOVA), porém permite ter controle sobre a influência do covariante nas variâveis dependentes. A covariável complementa o controle local e, obviamente, necessita estar correlacionada com a variável de resposta para que se possa fazer uso de tal análise. E quando a análise de variância é realizada com uma ou mais covariáveis, é usual chamar a análise de ANCOVA.
