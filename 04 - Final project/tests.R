@@ -4,11 +4,11 @@ library(lmtest)
 
 
 ## DATA EXPLORATION
-
 v_data = readr::read_csv('results_fixed.csv')
 v_data$algorithm = as.factor(v_data$algorithm)
 v_dataSdRuns = aggregate(cbind(quality,time)~instance:algorithm:size,data=v_data, FUN=sd)
 
+par(mfrow=c(1,2), mai=.3*c(2.5,1,1,1))
 plot(x = log(subset(v_dataSdRuns, algorithm=='ACO')$size),
      y = subset(v_dataSdRuns, algorithm=='ACO')$quality,
      cex  = 1,
@@ -41,6 +41,7 @@ points(x = log(subset(v_dataSdRuns, algorithm=='ACO_Local')$size),
 v_data = aggregate(cbind(quality,time,size,avgTransportations,avgAccommodations,destinations)~algorithm:instance, data=v_data, FUN=mean)
 v_minQuality = aggregate(cbind(quality)~size:instance, data=v_data, FUN=min)$quality
 
+par(mfrow=c(2,2), mai=.4*c(2.5,1,1,1))
 plot(x = log(subset(v_data, algorithm=='ACO')$size),
      y = subset(v_data, algorithm=='ACO')$time,
      cex  = 1,
@@ -90,7 +91,7 @@ legend("bottomleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  
 v_dataDiff = aggregate(cbind(quality, time)~size:instance, data=v_data, FUN=diff)
 v_dataDiff$qualityDiffPercent = 100* v_dataDiff$quality/v_minQuality
 
-
+par(mfrow=c(2,2), mai=.3*c(2.5,1,1,1))
 plot(x = log(v_dataDiff$size),
      y = v_dataDiff$time,
      cex  = 1,
