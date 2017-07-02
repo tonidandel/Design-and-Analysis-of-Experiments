@@ -115,9 +115,8 @@ plot(x = log(v_dataDiff$size),
      xlab = "log(size)",
      ylab = "Quality Diff %")
 
-
+## ANCOVA
 # Time model fit
-
 v_modelTimeFit = lm(time~size*factor(algorithm)+I(size^2), data=v_data)
 Anova(v_modelTimeFit)
 
@@ -125,6 +124,15 @@ abline(coef = c(v_modelTimeFit$coefficients[1], v_modelTimeFit$coefficients[2]),
 abline(coef = c(v_modelTimeFit$coefficients[1]+v_modelTimeFit$coefficients[3], v_modelTimeFit$coefficients[2]), col='blue')
 plot(v_modelTimeFit, which=1)
 plot(v_modelTimeFit, which=2)
+
+# quality model fit
+v_modelQualityFit = lm(quality~size*factor(algorithm)+I(size^2), data=v_data)
+Anova(v_modelTimeFit)
+
+abline(coef = c(v_modelQualityFit$coefficients[1], v_modelQualityFit$coefficients[2]), col='red')
+abline(coef = c(v_modelQualityFit$v_modelQualityFit[1]+v_modelQualityFit$coefficients[3], v_modelQualityFit$coefficients[2]), col='blue')
+plot(v_modelQualityFit, which=1)
+plot(v_modelQualityFit, which=2)
 
 
 # ANOVA
@@ -134,7 +142,11 @@ summary.aov(v_modelAnovaTime)
 
 v_tTestTime = t.test(v_dataDiff$time, 
                     mu = 0, 
-                    conf.level = 0.05, 
+                    conf.level = 0.95, 
                     alternative = 'two.sided'
 )
-# without considering problem size as a covariate, it seems that there is no difference between algorithms
+v_tTestQuality = t.test(v_dataDiff$quality, 
+                     mu = 0, 
+                     conf.level = 0.95, 
+                     alternative = 'two.sided'
+)
