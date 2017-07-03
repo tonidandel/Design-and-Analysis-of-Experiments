@@ -97,7 +97,7 @@ plot(x = log(v_dataDiff$size),
 summary.aov(aov(log(time)~algorithm, data=v_data))
 
 # Time - simple model
-v_modelAnovaTime <- aov(log(time)~algorithm+log(size), 
+v_modelAnovaTime <- aov(log(time)~algorithm+as.factor(log(size)), 
                         data = v_data)
 summary.aov(v_modelAnovaTime)
 summary.lm(v_modelAnovaTime)
@@ -114,6 +114,7 @@ v_tTestTime = t.test(log(time)~algorithm,
 )
 v_tTestTime
 
+# mudar de lugar
 # Time - iteraction effects
 v_modelAnovaTime <- aov(log(time)~algorithm*log(size), 
                         data = v_data)
@@ -125,7 +126,7 @@ plot(v_modelAnovaTime)
 
 
 # Quality - simple model
-v_modelAnovaQuality <- aov((qualityRelative)~algorithm+log(size), 
+v_modelAnovaQuality <- aov((qualityRelative)~algorithm+as.factor(log(size)), 
                            data = v_data)
 summary.aov(v_modelAnovaQuality)
 summary.lm(v_modelAnovaQuality)
