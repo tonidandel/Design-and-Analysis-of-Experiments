@@ -1,6 +1,6 @@
 ---
-title: 'Estudo de Caso final - avaliação de algoritmos de otimização de
-  custo e tempo em roteiros de viagem'
+title: 'Trabalho Final - Avaliação de Algoritmos em um Problema de Otimização de
+   Roteiros de Viagem'
 author: "Equipe 04"
 date: "03 de Julho de 2017"
 output:
@@ -21,10 +21,10 @@ csl: ieee.csl
 bibliography: bibliography.bib
 urlcolor: blue
 ---  
-Coordenador: Alessandro Cardoso    
+Coordenador: Gustavo Vieira    
 Relator: Bernardo Marques   
 Verificador: Danny Tonidandel   
-Monitor: Gustavo Vieira
+Monitor: Alessandro Cardoso
 
 ```{r setup,include=FALSE, results='hide',warning=FALSE,echo=FALSE}
 if (!require(readr, quietly = TRUE)){
@@ -36,8 +36,6 @@ if (!require(car, quietly = TRUE)){
 if (!require(lmtest, quietly = TRUE)){
   install.packages("lmtest")
 }
-library(car)
-library(lmtest)
 
 source('calcN.R')
 library(car)
@@ -45,195 +43,63 @@ library(lmtest)
 
 ```
 
+# Sumário
+...
+
 # 1. Descrição do Problema
+
 As ferramentas atuais para planejamento de viagens permitem que usuários busquem passagens e hotéis e construam seu próprio itinerário, mas não oferecem suporte para viagens com flexibilidade nas datas ou na ordenação de destinos. Para solucionar esse problema, foi proposto um novo sistema que busca as melhores combinações de passagens e hotéis para uma viagem, minimizando o custo e tempo de transporte. O sistema busca otimizar roteiros com datas flexíveis e não requer uma ordem fixa dos destinos, de forma que considera todas as possíveis configurações que atendem as especificações do usuário. Dessa forma, oferece boas opções de itinerários para viagens com esforço do usuário muito menor, representando uma melhoria significativa na experiência de planejamento de viagens.
 
-O conjunto de restrições considera datas inicial e final, datas específicas para cada destino, ordenação dos destinos e características das acomodações e transportes. Pode ser considerado uma aplicação multiobjetivo do problema do caixeiro viajante com janelas de tempo e dependência temporal.
+O conjunto de restrições do problema considera datas inicial e final, datas específicas para cada destino, ordenação dos destinos e características das acomodações e transportes. Pode ser considerado uma aplicação multiobjetivo do problema do caixeiro viajante com janelas de tempo e dependência temporal.
 
-O experimento envolve comparações entre métodos aplicados em diferentes instâncias de problemas de roteamento. A variabilidade decorrente das características de cada problema de teste é uma possível fonte de variação espúria quando não considerada na análise dos resultados. Para a avaliar existência de diferenças significativas entre os algoritmos, bem como a influência das possíveis covariantes, tais como tamanho da instância e tempo de convergência, será utilizada a análise de covariância.
+Para realizar a otimização de roteiros, foi utilizado um algoritmo de colônia de formigas [@cite]. Uma melhoria para o algoritmo utilizando busca local foi proposta. O objetivo do trabalho é comparar os algoritmos e determinar se a melhoria proposta é melhor para solucionar o problema, avaliando tanto o tempo gasto na otimização e a qualidade do conjunto de soluções encontrado. Assim, as perguntas a serem respondidas são:
+
+- TODO
+- TODO
+
+No entanto, o tamanho do roteiro a ser avaliado também influencia esses resultados. Assim, é necessário considerar o tamanho da instância como uma covariável do problema. Para lidar com isso, serão utilizadas técnicas de blocagem, e também exploradas técnicas estatísticas de análise de covariância.
 
 ```{r,results='show',warning=FALSE,echo=FALSE}
 ## EXPERIMENTAL DEFINITIONS
 v_alpha = 0.05
-v_a = 4
-v_k = v_a-1
-v_alphaAdj = v_alpha/v_k
 v_beta = 0.20
 v_power = 1-v_beta
 v_delta = 0.25
+v_dTime = 1
+v_dQuality = 1
 ```
 Os parâmetros experimentais desejados são:
 
 * Nível de significância: $\alpha = `r v_alpha`$;
 
-* Tamanho de efeito de interesse prático: $\delta^{\star} = `r v_delta`$;
+* Tamanho de efeito de interesse prático: $d^{\star}_time = d^{\star}_quality = `r v_dTime`$;
 
 * Potência desejada: $(1- \beta) = \pi \geq `r v_power`$.
 
+
+TODO: explicar melhor o problema
+
 # 2. Planejamento Experimental
 
-A primeira etapa do experimento consistiu na geração dos dados experimetais a partir dos dois algoritmos de otimização. Foi realizado o cálculo do tamanho amostral pensando-se em utilizar o teste da análise de variância para avalizar a existência de diferenças significativas entre as classes de problemas. Embora a técnica permita analisar as médias e variâncias de observações de diferentes grupos, generalizando o teste-t para mais de dois deles [@Campelo2015-01], ela é restrita apenas à indicação de existência ou não de diferenças entre os níveis avaliados, sem indicar quais níveis seriam diferentes [@MontgomeryRunger2011], tampouco a influência de variáveis concomitantes.
+Os dados experimentais do problema foram obtidos através de simulações. Foram geradas instâncias do problema de diferentes tamanhos. Para cada uma delas, cada algoritmo foi aplicado 8 vezes, e os resultados registrados. A ordem das instâncias geradas e da aplicação dos algoritmos foi aleatorizada de maneira a bloquear possíveis efeitos de ordem.
 
-Afim de avaliar o desempenho dos dois algoritmos analisados e qual é o melhor tendo os dois parâmetros de comparação abaixo:
+Nos experimentos, foi medido o tempo gasto na execução de cada algoritmo. Para minimizar a influência de outros processos do sistema, a execução foi limitada a um único núcleo do processador, com prioridade de execução alta.
 
-1. Tempo de execução dos algoritmos;
+Cada algoritmo de otimização produz como resultado um conjunto de soluções. A qualidade desse conjunto é medida através do Hipervolume [@cite] do conjunto na fronteira de Pareto, considerando como referência o ponto da solução Nadir na fronteira de Pareto (isto é, a pior solução teórica). Para cada instância avaliada, um novo ponto de referência é calculado através de uma heurística.
 
-2. Qualidade relativa do resultado apresentado na resolução dos problemas.
+O método de Hipervolume é bastante sensível ao ponto de referência definido [@cite]. Sendo assim, a qualidade medida entre diferentes instâncias não tem significado quando comparadas entre si. No entanto, a métrica é eficiente para comparar a qualidade de diferentes conjuntos de solução encontrados no mesmo ponto. Sendo assim, é necessário avaliar a qualidade relativa das soluções em cada instância, e não o seu valor absoluto.
 
+## 2.1 Definição do Tamanho Amostral
 
-Foram geradas aleatoriamente as instâncias de problemas com diferentes tamanhos. Dessa forma é possível avaliar a variação do desempenho dos métodos à medida que a complexidade aumenta. O tamanho de um problema é determinado pelo número médio de opções de destinos do roteiro e do número médio de opções de transporte e acomodação para cada destino.
+O tamanho amostral do problema foi cálculado a partir dos requisitos experimentais estabelecidos. Uma vez que o tamanho de efeito de interesse prático foi definido em relação a variância, não era necessário conhecer a variância dos dados previamente. Assume-se que a variância entre os diferentes algorítmos é igual.
 
+Dessa forma, o tamanho amostral do experimento foi calculado através da equação:
 
-Busca-se a verificação de diferenças estatísticas significativas entre as configurações testadas. (((Uma análise exploratória qualitativa dos dados foi feita como etapa preliminar para os testes.))) 
+$$n = 2 \left( \frac{1}{d^{\star}_t}\right)^{2}(t_{\alpha/2}+t_{\beta})^{2} \,,$$
+, solucionada iterativamente.
 
-## 2.1. Análise Exploratória NÃO ENTENDI ESTA SEÇÃO
+## 2.2 Análise de Variância com Blocagem
 
-```{r, echo=FALSE, fig.height=3.8, fig.width=3.8, message=FALSE, warning=FALSE, results='show'}
-## DATA EXPLORATION
-v_data = readr::read_csv('results_fixed.csv')
-v_data$algorithm = as.factor(v_data$algorithm)
-v_dataSdRuns = aggregate(cbind(quality,time)~instance:algorithm:size,data=v_data, FUN=sd)
-
-#par(mfrow=c(1,2), mai=.3*c(2.5,1,1,1))
-plot(x = log(subset(v_dataSdRuns, algorithm=='ACO')$size),
-     y = subset(v_dataSdRuns, algorithm=='ACO')$quality,
-     cex  = 1,
-     las  = 1,
-     pch  = 16,
-     col='red',
-     xlab = "log size",
-     ylab = "Quality Run SD")
-points(x = log(subset(v_dataSdRuns, algorithm=='ACO_Local')$size),
-     y = subset(v_dataSdRuns, algorithm=='ACO_Local')$quality,
-     cex  = 1,
-     pch  = 18,
-     col='blue')
-
-plot(x = log(subset(v_dataSdRuns, algorithm=='ACO')$size),
-     y = subset(v_dataSdRuns, algorithm=='ACO')$time,
-     cex  = 1,
-     las  = 1,
-     pch  = 16,
-     col='red',
-     xlab = "log size",
-     ylab = "Time Run SD")
-points(x = log(subset(v_dataSdRuns, algorithm=='ACO_Local')$size),
-     y = subset(v_dataSdRuns, algorithm=='ACO_Local')$time,
-     cex  = 1,
-     pch  = 18,
-     col='blue')
-
-
-v_data = aggregate(cbind(quality,time,size,avgTransportations,avgAccommodations,destinations)~algorithm:instance, data=v_data, FUN=mean)
-v_minQuality = aggregate(cbind(quality)~size:instance, data=v_data, FUN=min)$quality
-
-#par(mfrow=c(2,2), mai=.6*c(2.5,1,1,1))
-plot(x = log(subset(v_data, algorithm=='ACO')$size),
-     y = subset(v_data, algorithm=='ACO')$time,
-     cex  = 1,
-     las  = 1,
-     pch  = 16,
-     col='red',
-     xlab = "log size",
-     ylab = "Time")
-points(x = log(subset(v_data, algorithm=='ACO_Local')$size),
-     y = subset(v_data, algorithm=='ACO_Local')$time,
-     cex  = 1,
-     pch  = 18,
-     col='blue')
-legend("topleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
-
-plot(x = log(subset(v_data, algorithm=='ACO')$size),
-     y = subset(v_data, algorithm=='ACO')$quality,
-     cex  = 1,
-     las  = 1,
-     pch  = 16,
-     col='red',
-     xlab = "log size",
-     ylab = "Quality")
-points(x = log(subset(v_data, algorithm=='ACO_Local')$size),
-       y = subset(v_data, algorithm=='ACO_Local')$quality,
-       cex  = 1,
-       pch  = 18,
-       col='blue')
-legend(x=10, y=0.25, legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
-
-plot(x = log(subset(v_data, algorithm=='ACO')$size),
-     y = subset(v_data, algorithm=='ACO')$quality/v_minQuality,
-     cex  = 1,
-     las  = 1,
-     pch  = 16,
-     col='red',
-     xlab = "log size",
-     ylab = "Relative Quality")
-points(x = log(subset(v_data, algorithm=='ACO_Local')$size),
-       y = subset(v_data, algorithm=='ACO_Local')$quality/v_minQuality,
-       cex  = 1,
-       pch  = 18,
-       col='blue')
-legend("bottomleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
-
-
-v_dataDiff = aggregate(cbind(quality, time)~size:instance, data=v_data, FUN=diff)
-v_dataDiff$qualityDiffPercent = 100* v_dataDiff$quality/v_minQuality
-
-#par(mfrow=c(2,2), mai=.5*c(2.5,1,1,1))
-plot(x = log(v_dataDiff$size),
-     y = v_dataDiff$time,
-     cex  = 1,
-     las  = 1,
-     pch  = 16,
-     xlab = "log(size)",
-     ylab = "Time Diff")
-
-plot(x = log(v_dataDiff$size),
-     y = v_dataDiff$quality,
-     cex  = 1,
-     las  = 1,
-     pch  = 16,
-     xlab = "log(size)",
-     ylab = "Quality Diff")
-
-plot(x = log(v_dataDiff$size),
-     y = v_dataDiff$qualityDiffPercent,
-     cex  = 1,
-     las  = 1,
-     pch  = 16,
-     xlab = "log(size)",
-     ylab = "Quality Diff %")
-
-# Time model fit
-
-v_modelTimeFit = lm(time~size*factor(algorithm)+I(size^2), data=v_data)
-Anova(v_modelTimeFit)
-
-abline(coef = c(v_modelTimeFit$coefficients[1], v_modelTimeFit$coefficients[2]), col='red')
-abline(coef = c(v_modelTimeFit$coefficients[1]+v_modelTimeFit$coefficients[3], v_modelTimeFit$coefficients[2]), col='blue')
-plot(v_modelTimeFit, which=1)
-plot(v_modelTimeFit, which=2)
-
-
-# ANOVA
-v_modelAnovaTime <- aov(time~algorithm, 
-               data = v_data)
-summary.aov(v_modelAnovaTime)
-
-v_tTestTime = t.test(v_dataDiff$time, 
-                    mu = 0, 
-                    conf.level = 0.05, 
-                    alternative = 'two.sided'
-)
-# without considering problem size as a covariate, it seems that there is no difference between algorithms
-
-```
-
-
-```{r, echo=FALSE, fig.height=3.8, fig.width=3.8, message=FALSE, warning=FALSE}
-
-
-```
-## 2.2 Análise de Variância - ANOVA
- 
 Para a avaliar existência de diferenças significativas entre os dois parâmetros, será utilizado o teste estatístico ANOVA.
 
 Essa técnica analisa médias e variâncias de observações de diferentes grupos para verificar se existe diferença estatístixa significativa entre as médias desses grupos. Assim, generaliza o teste t para mais de dois grupos, permitindo que sejam comparados simultâneamente [@Campelo2015-01], [@MontgomeryRunger2011]. Em outras palavras, a análise de variância é utilizada quando se quer decidir se os níveis apresentam médias diferentes em relação é uma média global $\mu$. As diferenças entre as médias dos níveis e a média global é  $\tau_i$ $\forall \  i$. 
@@ -250,6 +116,7 @@ H_{1}:& \exists \ \ \tau_i \neq 0
 \end{equation}
 
 Esta etapa foi considerada como uma primeira verificação ao questionamento deste estudo por apresentar uma abordagem que pode minimizar o custo de coleta de amostras menor do que o teste de comparações múltiplas discutido na Seção 2.2. Portanto, caso não seja detectada alguma diferenças entre os níveis, as comparações múltiplas são dispensáveis, o que reduz o custo do experimento.
+
 
 ## 2.3 Comparações Múltiplas
 
@@ -268,62 +135,12 @@ no qual $K=1$ consiste no número de comparações a serem feitas que no caso do
 \begin{equation}
 K=a-1  \,;
 \label{eq:03}
-\end{equation}
-
-na qual $a=2$ indica oo número de níveis. Assim, utiliza-se o nível de significância ajustado $\alpha_{adj} = `r v_alphaAdj`$.
-
-## 2.4 Definição do Tamanho Amostral para ANOVA
-
-O experimento realizado possui duas etapas: ANOVA para verificar diferença entre as médias dos algoritmos, seguida de comparções múltiplas one-vs-all (se necessário). Cada uma dessas etapas requer diferentes tamanhos amostrais.
-
-O cálculo do tamanho amostral para a técnica ANOVA pode ser feito iterativamente até encontrar o número $n$ tal que:
-
-\begin{equation}
-F_{(1-\alpha)}=F_{\beta;\phi} \,,
-\label{eq:06}
-\end{equation}
-
-em que ambas distribuições $F$ têm $(a-1)$ graus de liberdade no numerador e $a(n-1)$ no denomiador. O parâmetro de não-centralidade $\phi$ é dado por:
-
-\begin{equation}
-\phi= \frac{\left(n\sum_{i=1}^{a}\tau^2_i\right)}{\hat\sigma^2} \,.
-\label{eq:07}
-\end{equation}
-
-O valor de $\tau$ para comparações "todos contra um" pode ser obtido a partir da relação $\eqref{eq:08}$
-
-\begin{equation}
-\tau = \left( -\frac{(a-1)\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a} \right) \,.
-\label{eq:08}
-\end{equation}
-
-O resultado desse teste indica um tamanho amostral $n=?????$ observações em cada grupo.
-
-Para calcular o tamanho amostral das comparações múltiplas one-vs-all, serão utilizadas as mesmas relações para a comparação de duas amostras independentes emparelhadas, alterando-se apenas os valores de $\alpha$ para os valores corrigidos $\alpha_{adj}$, considerando-se as múltiplas hipóteses e $a-1$ comparações. Em comparações desse tipo, a potência é maximizada utilizando um número maior de observações para o grupo de controle, dado pela Equação \eqref{eq:05} [@Campelo2015-01]:
-
-\begin{equation}
-n_0 = n_i\sqrt{K} \,,
-\label{eq:05}
-\end{equation}
-
-onde $K =1 $ é o número de comparações, $n_0$ é o tamanho amostral do grupo controle e $n_i$ o número de observações dos demais grupos. Esse valor é calculado conforme a Equação $\eqref{eq:04}$:
-
-\begin{equation}
-n_i = \left(1 + \frac{1}{K}\right) \left( \frac{\hat{\sigma}}{\delta^{\star}}\right)^{2}(t_{\alpha_{adj}}+t_{\beta})^{2} \,,
-\label{eq:04}
-\end{equation}
-
-em que $t_{\alpha_{adj}}$ e $t_{\beta}$ são dependentes de $n$.
-
-Para solucionar o problema da dependência de $n$, os termos $t_{\alpha_{adj}}$ e $t_{\beta}$ foram substituídos por $z_{\alpha_{adj}}$ e $z_{\beta}$ e a equação foi testada iterativamente até a convergência (implementação em anexo no arquivo _calcN.R_). 
-
-O resultado obtido indica um tamanho amostral $n_0 = ???$ para o grupo controle e $n_i = ???$ o segundo.
-
-Serão necessárias $????$ coletas para a realização do ANOVA e $????$ para as comparações (excetuando-se o grupo controle), o que resultaria em uma sobreamostragem de $2$ unidades por grupo. Entretanto, o segundo experimento só é necessário caso o ANOVA indique diferença entre os parâmetros analisados.
+\end{equation}.
 
 
-## 2.5 Análise de Covariância (ANCOVA)
-A análise de covariância é uma técnica $-$ assim como a chamada "blocagem" ou pareamento (em testes-t) $-$ bastante útil para a melhora da precisão de um experimento [@montgomery1984design]. Em diversos aspectos é similar à análise de variância (ANOVA), porém permite ter controle sobre a influência do covariante nas variâveis dependentes. 
+## 2.4 Análise de Covariância (ANCOVA)
+
+A análise de covariância é uma técnica $-$ assim como a blocagem ou pareamento (em testes-t) $-$ bastante útil para a melhora da precisão de um experimento [@montgomery1984design]. Em diversos aspectos é similar à análise de variância (ANOVA), porém permite ter controle sobre a influência do covariante nas variâveis dependentes. 
 
 
 A covariável complementa o controle local e, obviamente, necessita estar correlacionada com a variável de resposta para que se possa fazer uso de tal análise. E quando a análise de variância é realizada com uma ou mais covariáveis, é usual chamar a análise de ANCOVA.
@@ -379,28 +196,282 @@ E_{xy} &=& S_{xy} - T_{xy}\,. \label{eq:010}
 Assim, rejeita-se a hipótese nula $H_{0}: \beta=0$ se $F_{0}> F_{\alpha , 1, a(n-1)-1} \,.$
 
 
-## 2.6 Tratamento e Validação dos Dados
-Os dados de coletados não apresentaram normalidade quanto à sua distribuição. Para contornar tal constatação, os dados passaram por transformação para uma escala XXXXXXX. 
+# 3. Resultados Análise Estatística
+
+## 3.1 Tratamento e Validação dos Dados
 
 Considerando o experimento realizado, foi criada uma rotina para validação dos dados obtidos e identificação de erros, onde o tempo de execução e valor de qualidade das respostas dos algoritmos na escala (((XXXXXlogarítma))) devem ser maior que $0$.
 
-1. LogTempo $> 0$
+1. Tempo $> 0$
 
-2. LogQualidade $> 0$
+2. 0 > Qualidade $> 1$
 
 Caso os valores de uma execução não atendam essas condições, ela seria descartada. No entanto, nenhuma das amostras apresentou tal problema.
 
-# 3. Análise Estatística
 
-## 3.1 Análise de Covariância
+## 3.2 Análise Exploratória dos Dados
 
-## 3.2 Validação das Premissas
+```{r, echo=FALSE, fig.height=3.8, message=FALSE, warning=FALSE, results='show'}
 
-### Normalidade
+v_data = readr::read_csv('results_fixed.csv')
+v_data$algorithm = as.factor(v_data$algorithm)
 
-### Homocedasticidade
+v_dataSdRuns = aggregate(cbind(quality,time)~instance:algorithm:size,data=v_data, FUN=sd)
 
-### Independência
+v_data = aggregate(cbind(quality,time,size,avgTransportations,avgAccommodations,destinations)~algorithm:instance, data=v_data, FUN=mean)
+
+v_data$qualityRelative = v_data$quality/array(sapply(subset(v_data, algorithm=='ACO')$quality, function(v) return(rep(v,2))))
+
+par(mfrow=c(1,2), mai=.4*c(2.5,1,1,1))
+
+plot(x = (subset(v_data, algorithm=='ACO')$size),
+     y = (subset(v_data, algorithm=='ACO')$time),
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "size",
+     ylab = "Time")
+points(x = (subset(v_data, algorithm=='ACO_Local')$size),
+     y = (subset(v_data, algorithm=='ACO_Local')$time),
+     cex  = 1,
+     pch  = 18,
+     col='blue')
+legend("bottomright", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+
+plot(x = (subset(v_data, algorithm=='ACO')$size),
+     y = subset(v_data, algorithm=='ACO')$qualityRelative,
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "size",
+     ylab = "Relative Quality")
+points(x = (subset(v_data, algorithm=='ACO_Local')$size),
+       y = subset(v_data, algorithm=='ACO_Local')$qualityRelative,
+       cex  = 1,
+       pch  = 18,
+       col='blue')
+legend("bottomleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+
+```
+
+A escala não permite ter uma visualização adequada dos dados. Assim, é aplicada uma transformação logaritmica na variável Size para solucionar esse problema.
+
+```{r, echo=FALSE, fig.height=3.8, message=FALSE, warning=FALSE, results='show'}
+
+par(mfrow=c(1,2), mai=.4*c(2.5,1,1,1))
+
+plot(x = log(subset(v_data, algorithm=='ACO')$size),
+     y = (subset(v_data, algorithm=='ACO')$time),
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "Time")
+points(x = log(subset(v_data, algorithm=='ACO_Local')$size),
+     y = (subset(v_data, algorithm=='ACO_Local')$time),
+     cex  = 1,
+     pch  = 18,
+     col='blue')
+legend("topleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+
+plot(x = log(subset(v_data, algorithm=='ACO')$size),
+     y = subset(v_data, algorithm=='ACO')$qualityRelative,
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "Relative Quality")
+points(x = log(subset(v_data, algorithm=='ACO_Local')$size),
+       y = subset(v_data, algorithm=='ACO_Local')$qualityRelative,
+       cex  = 1,
+       pch  = 18,
+       col='blue')
+legend("bottomleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+
+```
+
+
+Para normalizar a distribuição dos dados e obter uma relação linear entre a covariável e o tempo, foi aplicada uma transformação normal na variável de resposta Time.
+
+
+```{r, echo=FALSE, fig.height=3.8, message=FALSE, warning=FALSE, results='show'}
+
+par(mfrow=c(1,2), mai=.4*c(2.5,1,1,1))
+
+plot(x = log(subset(v_data, algorithm=='ACO')$size),
+     y = log(subset(v_data, algorithm=='ACO')$time),
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "Time")
+points(x = log(subset(v_data, algorithm=='ACO_Local')$size),
+     y = log(subset(v_data, algorithm=='ACO_Local')$time),
+     cex  = 1,
+     pch  = 18,
+     col='blue')
+legend("topleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+
+plot(x = log(subset(v_data, algorithm=='ACO')$size),
+     y = subset(v_data, algorithm=='ACO')$qualityRelative,
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "Relative Quality")
+points(x = log(subset(v_data, algorithm=='ACO_Local')$size),
+       y = subset(v_data, algorithm=='ACO_Local')$qualityRelative,
+       cex  = 1,
+       pch  = 18,
+       col='blue')
+legend("bottomleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+
+```
+
+Os resultados parecem indicar uma relação linear entre tempo e tamanho de problema (ambos em escala logarítmica). Além disso, a qualidade relativa das soluções parece não depender do tamanho. Finalmente, há indícios de que o algoritmo proposto é melhor que a alternativa tanto em quesitos de tempo quanto qualidade da solução encontrada.
+
+## 3.2 Análise de Variância com Blocagem
+
+### Tempo
+Análise inicial sem considerar efeitos de tamanho do problema:
+```{r, echo=FALSE, fig.height=3.8, fig.width=3.8, message=FALSE, warning=FALSE, results='show'}
+summary.aov(aov(log(time)~algorithm, data=v_data))
+```
+
+Considerando efeitos:
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
+# Time - simple model
+v_modelAnovaTime <- aov(log(time)~algorithm+log(size), 
+                        data = v_data)
+summary.aov(v_modelAnovaTime)
+v_r2 = summary.lm(v_modelAnovaTime)$r.square
+
+par(mfrow=c(2,2), mai=.3*c(2.5,1,1,1))
+plot(v_modelAnovaTime)
+
+```
+
+
+Considerando variável de interação entre tempo e tamanho do problema
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
+# Time - iteraction effects
+v_modelAnovaTime <- aov(log(time)~algorithm*log(size), 
+                        data = v_data)
+summary.aov(v_modelAnovaTime)
+v_r2 = summary.lm(v_modelAnovaTime)$r.square
+
+par(mfrow=c(2,2), mai=.3*c(2.5,1,1,1))
+plot(v_modelAnovaTime)
+```
+
+### Qualidade da Solução
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
+v_modelAnovaQuality <- aov((qualityRelative)~algorithm+log(size), 
+                           data = v_data)
+summary.aov(v_modelAnovaQuality)
+v_r2 =summary.lm(v_modelAnovaQuality)$r.square
+
+par(mfrow=c(2,2), mai=.3*c(2.5,1,1,1))
+plot(v_modelAnovaQuality)
+
+v_tTestQuality = t.test(qualityRelative~algorithm,
+                        data=v_data,
+                        mu = 0,
+                        conf.level = 0.95, 
+                        alternative = 'two.sided',
+                        paired=TRUE
+)
+v_tTestQuality
+```
+
+```{r, echo=FALSE, fig.height=3.8, fig.width=3.8, message=FALSE, warning=FALSE, results='show'}
+
+```
+
+## 3.3 Análise de Covariância
+
+# Geração do Conjunto de Dados
+```{r, echo=FALSE, fig.height=3.8, fig.width=3.8, message=FALSE, warning=FALSE, results='show'}
+v_data2 = v_data[seq(nrow(v_data)/2)*2 - rep(c(0,1),nrow(v_data)/4),]
+```
+TODO: plots do novo conjunto
+
+# Tempo
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
+v_data2 = v_data[seq(nrow(v_data)/2)*2 - rep(c(0,1),nrow(v_data)/4),]
+
+# Time model fit
+v_modelAncovaTime = aov(log(time)~algorithm+log(size), data=v_data2)
+summary.aov(v_modelAncovaTime)
+v_r2 = summary.lm(v_modelAncovaTime)$r.square
+
+v_modelAncovaTime2 = aov(log(time)~log(size)+algorithm, data=v_data2)
+summary.aov(v_modelAncovaTime2)
+v_r2Model2 = summary.lm(v_modelAncovaTime2)$r.square
+
+v_modelFitTime = lm(log(time)~log(size)+algorithm, data=v_data2)
+
+plot(x = log(subset(v_data2, algorithm=='ACO')$size),
+     y = log(subset(v_data2, algorithm=='ACO')$time),
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "Time")
+points(x = log(subset(v_data2, algorithm=='ACO_Local')$size),
+       y = log(subset(v_data2, algorithm=='ACO_Local')$time),
+       cex  = 1,
+       pch  = 18,
+       col='blue')
+legend("topleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+abline(coef=c(v_modelFitTime$coefficients[1],v_modelFitTime$coefficients[2]), col='red')
+abline(coef=c(v_modelFitTime$coefficients[1]+v_modelFitTime$coefficients[3],v_modelFitTime$coefficients[2]), col='blue')
+
+par(mfrow=c(2,2), mai=.3*c(2.5,1,1,1))
+plot(v_modelFitTime)
+```
+
+
+# Qualidade
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
+v_modelAncovaTime = aov((qualityRelative)~algorithm+log(size), data=v_data2)
+summary.aov(v_modelAncovaTime)
+v_r2 = summary.lm(v_modelAncovaTime)$r.square
+
+v_modelAncovaTime2 = aov((qualityRelative)~log(size)+algorithm, data=v_data2)
+summary.aov(v_modelAncovaTime2)
+v_r2Model2 = summary.lm(v_modelAncovaTime2)$r.square
+
+v_modelFitTime = lm((qualityRelative)~log(size)+algorithm, data=v_data2)
+
+plot(x = log(subset(v_data2, algorithm=='ACO')$size),
+     y = (subset(v_data2, algorithm=='ACO')$qualityRelative),
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "Time")
+points(x = log(subset(v_data2, algorithm=='ACO_Local')$size),
+       y = (subset(v_data2, algorithm=='ACO_Local')$qualityRelative),
+       cex  = 1,
+       pch  = 18,
+       col='blue')
+legend("bottomright", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+abline(coef=c(v_modelFitTime$coefficients[1],v_modelFitTime$coefficients[2]), col='red')
+abline(coef=c(v_modelFitTime$coefficients[1]+v_modelFitTime$coefficients[3],v_modelFitTime$coefficients[2]), col='blue')
+
+par(mfrow=c(2,2), mai=.3*c(2.5,1,1,1))
+plot(v_modelFitTime)
+```
+
 
 # 4. Discussão e Conclusões
 

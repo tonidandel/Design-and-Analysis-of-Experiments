@@ -15,7 +15,7 @@ v_data = aggregate(cbind(quality,time,size,avgTransportations,avgAccommodations,
 v_data$qualityRelative = v_data$quality/array(sapply(subset(v_data, algorithm=='ACO')$quality, function(v) return(rep(v,2))))
 
 
-par(mfrow=c(2,2), mai=.4*c(2.5,1,1,1))
+par(mfrow=c(1,2), mai=.4*c(2.5,1,1,1))
 
 plot(x = log(subset(v_data, algorithm=='ACO')$size),
      y = log(subset(v_data, algorithm=='ACO')$time),
@@ -94,7 +94,7 @@ plot(x = log(v_dataDiff$size),
 
 ## ANOVA with blocking
 
-summary.aov(aov(log(time)~algorithm, data=v_data2))
+summary.aov(aov(log(time)~algorithm, data=v_data))
 
 # Time - simple model
 v_modelAnovaTime <- aov(log(time)~algorithm+log(size), 
@@ -104,6 +104,15 @@ summary.lm(v_modelAnovaTime)
 
 par(mfrow=c(2,2), mai=.3*c(2.5,1,1,1))
 plot(v_modelAnovaTime)
+
+v_tTestTime = t.test(log(time)~algorithm,
+                        data=v_data,
+                        mu = 0,
+                        conf.level = 0.95, 
+                        alternative = 'two.sided',
+                        paired=TRUE
+)
+v_tTestTime
 
 # Time - iteraction effects
 v_modelAnovaTime <- aov(log(time)~algorithm*log(size), 
@@ -131,6 +140,8 @@ v_tTestQuality = t.test(qualityRelative~algorithm,
                         alternative = 'two.sided',
                         paired=TRUE
 )
+v_tTestQuality
+
 
 ## ANCOVA
 
@@ -147,16 +158,16 @@ summary.lm(v_modelAncovaTime2)
 
 v_modelFitTime = lm(log(time)~log(size)+algorithm, data=v_data2)
 
-plot(x = log(subset(v_data, algorithm=='ACO')$size),
-     y = log(subset(v_data, algorithm=='ACO')$time),
+plot(x = log(subset(v_data2, algorithm=='ACO')$size),
+     y = log(subset(v_data2, algorithm=='ACO')$time),
      cex  = 1,
      las  = 1,
      pch  = 16,
      col='red',
      xlab = "log size",
      ylab = "Time")
-points(x = log(subset(v_data, algorithm=='ACO_Local')$size),
-       y = log(subset(v_data, algorithm=='ACO_Local')$time),
+points(x = log(subset(v_data2, algorithm=='ACO_Local')$size),
+       y = log(subset(v_data2, algorithm=='ACO_Local')$time),
        cex  = 1,
        pch  = 18,
        col='blue')
@@ -172,35 +183,32 @@ plot(v_modelFitTime)
 
 
 # Quality model fit
-v_modelAncovaTime = aov(log(time)~algorithm+log(size), data=v_data2)
+v_modelAncovaTime = aov((qualityRelative)~algorithm+log(size), data=v_data2)
 summary.aov(v_modelAncovaTime)
 summary.lm(v_modelAncovaTime)
 
-v_modelAncovaTime2 = aov(log(time)~log(size)+algorithm, data=v_data2)
+v_modelAncovaTime2 = aov((qualityRelative)~log(size)+algorithm, data=v_data2)
 summary.aov(v_modelAncovaTime2)
 summary.lm(v_modelAncovaTime2)
 
-v_modelFitTime = lm(log(time)~log(size)+algorithm, data=v_data2)
+v_modelFitTime = lm((qualityRelative)~log(size)+algorithm, data=v_data2)
 
-plot(x = log(subset(v_data, algorithm=='ACO')$size),
-     y = log(subset(v_data, algorithm=='ACO')$time),
+plot(x = log(subset(v_data2, algorithm=='ACO')$size),
+     y = (subset(v_data2, algorithm=='ACO')$qualityRelative),
      cex  = 1,
      las  = 1,
      pch  = 16,
      col='red',
      xlab = "log size",
      ylab = "Time")
-points(x = log(subset(v_data, algorithm=='ACO_Local')$size),
-       y = log(subset(v_data, algorithm=='ACO_Local')$time),
+points(x = log(subset(v_data2, algorithm=='ACO_Local')$size),
+       y = (subset(v_data2, algorithm=='ACO_Local')$qualityRelative),
        cex  = 1,
        pch  = 18,
        col='blue')
-legend("topleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+legend("bottomright", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
 abline(coef=c(v_modelFitTime$coefficients[1],v_modelFitTime$coefficients[2]), col='red')
 abline(coef=c(v_modelFitTime$coefficients[1]+v_modelFitTime$coefficients[3],v_modelFitTime$coefficients[2]), col='blue')
-
-#abline(coef=c(v_modelFitTime$coefficients[1],v_modelFitTime$coefficients[2]), col='red')
-#abline(coef=c(v_modelFitTime$coefficients[1]+v_modelFitTime$coefficients[3],v_modelFitTime$coefficients[2]+v_modelFitTime$coefficients[4]), col='blue')
 
 par(mfrow=c(2,2), mai=.3*c(2.5,1,1,1))
 plot(v_modelFitTime)
