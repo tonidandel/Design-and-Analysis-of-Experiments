@@ -74,17 +74,13 @@ Os parâmetros experimentais desejados são:
 
 A primeira etapa do experimento consistiu na geração dos dados experimetais a partir dos dois algoritmos de otimização. Foi realizado o cálculo do tamanho amostral pensando-se em utilizar o teste da análise de variância para avalizar a existência de diferenças significativas entre as classes de problemas. Embora a técnica permita analisar as médias e variâncias de observações de diferentes grupos, generalizando o teste-t para mais de dois deles [@Campelo2015-01], ela é restrita apenas à indicação de existência ou não de diferenças entre os níveis avaliados, sem indicar quais níveis seriam diferentes [@MontgomeryRunger2011], tampouco a influência de variáveis concomitantes.
 
-Afim de avaliar o desempenho dos dois algoritmos analisados e qual é o melhor tendo os dois parâmetros de comparação abaixo:
-
-1. Tempo de execução dos algoritmos;
-
-2. Qualidade relativa do resultado apresentado na resolução dos problemas.
-
-
 Foram geradas aleatoriamente as instâncias de problemas com diferentes tamanhos. Dessa forma é possível avaliar a variação do desempenho dos métodos à medida que a complexidade aumenta. O tamanho de um problema é determinado pelo número médio de opções de destinos do roteiro e do número médio de opções de transporte e acomodação para cada destino.
 
+Este trabalho busca identificar se há diferenças entre os dois algoritmos analisados tendo os dois parâmetros de comparação abaixo:
 
-Busca-se a verificação de diferenças estatísticas significativas entre as configurações testadas. (((Uma análise exploratória qualitativa dos dados foi feita como etapa preliminar para os testes.))) 
+1 - Tempo de execução 
+
+Busca-se a verificação de diferenças estatísticas significativas entre as configurações testadas. Uma análise exploratória qualitativa dos dados foi feita como etapa preliminar para os testes. 
 
 ## 2.1. Análise Exploratória NÃO ENTENDI ESTA SEÇÃO
 
@@ -227,106 +223,18 @@ v_tTestTime = t.test(v_dataDiff$time,
 
 ```
 
+## 2.2. ANOVA
 
 ```{r, echo=FALSE, fig.height=3.8, fig.width=3.8, message=FALSE, warning=FALSE}
 
 
 ```
-## 2.2 Análise de Variância - ANOVA
- 
-Para a avaliar existência de diferenças significativas entre os dois parâmetros, será utilizado o teste estatístico ANOVA.
+colocar plots aqui.
 
-Essa técnica analisa médias e variâncias de observações de diferentes grupos para verificar se existe diferença estatístixa significativa entre as médias desses grupos. Assim, generaliza o teste t para mais de dois grupos, permitindo que sejam comparados simultâneamente [@Campelo2015-01], [@MontgomeryRunger2011]. Em outras palavras, a análise de variância é utilizada quando se quer decidir se os níveis apresentam médias diferentes em relação é uma média global $\mu$. As diferenças entre as médias dos níveis e a média global é  $\tau_i$ $\forall \  i$. 
+Sem considerar ainda o tamanho do problema como um covariante, parece, em um primeiro momento, após a análise de variância, que não há diferenças significativas entre os algoritmos. Neste ponto, evidencia-se a necessidade de uma nova abordagem, que pode ser capaz de detectar tais diferenças: uma alternativa é, justamente, a análise de covariancia.
 
-Vale ressaltar que a técnica é restrita apenas à indicação de existência ou não de diferenças entre os níveis avaliados, sem indicar quais níveis seriam diferentes. Além disso, quando a análise de variância tem como resultado um indicativo de refutação da hipótese nula $\eqref{eq:01}$ é que podem ser evidenciados os indícios de diferenças entre os níveis.
-
-
-\begin{equation}
-\left\{\begin{array}{rc}
-H_{0}:& \tau_i = 0, \ \ \ \forall i\\
-H_{1}:& \exists \ \ \tau_i \neq 0
-\end{array}\right.
-\label{eq:01}
-\end{equation}
-
-Esta etapa foi considerada como uma primeira verificação ao questionamento deste estudo por apresentar uma abordagem que pode minimizar o custo de coleta de amostras menor do que o teste de comparações múltiplas discutido na Seção 2.2. Portanto, caso não seja detectada alguma diferenças entre os níveis, as comparações múltiplas são dispensáveis, o que reduz o custo do experimento.
-
-## 2.3 Comparações Múltiplas
-
-Caso a análise ANOVA identifique a existência de diferenças entre os parâmetros analisados nos algoritmos, deve-se proceder com testes de comparação múltiplas. As comparações serão realizadas em relação ao algoritmo _ACO_, de maneira a verificar se a outra alternativa proposta é melhor.
-Desta forma, caso a análise de variância indique a existência de diferenças entre os níveis, será aplicado o teste de comparações múltiplas um-contra-todos (one-vs-all) de _Dunnett_, onde o _ACO com busca local_ será confrontado com o algoritmo _ACO_.
-
-Para realizar o teste de comparações múltiplas, deve-se manter o controle sobre os erros do tipo-$I$ em cada comparação de maneira com que ele não se acumule a cada teste sucessivo. Assim, os valores de $\alpha$ são corrigidos para cada teste através do método de correção de Bonferroni $\eqref{eq:02}$:
-
-\begin{equation}
-\alpha_{adj} = \frac{\alpha_{família}}{K} \,,
-\label{eq:02}
-\end{equation}
-
-no qual $K=1$ consiste no número de comparações a serem feitas que no caso do teste um-contra-todos de _Dunnett_. O número de comparações nesse caso é dado pela Equação \eqref{eq:03}:
-
-\begin{equation}
-K=a-1  \,;
-\label{eq:03}
-\end{equation}
-
-na qual $a=2$ indica oo número de níveis. Assim, utiliza-se o nível de significância ajustado $\alpha_{adj} = `r v_alphaAdj`$.
-
-## 2.4 Definição do Tamanho Amostral para ANOVA
-
-O experimento realizado possui duas etapas: ANOVA para verificar diferença entre as médias dos algoritmos, seguida de comparções múltiplas one-vs-all (se necessário). Cada uma dessas etapas requer diferentes tamanhos amostrais.
-
-O cálculo do tamanho amostral para a técnica ANOVA pode ser feito iterativamente até encontrar o número $n$ tal que:
-
-\begin{equation}
-F_{(1-\alpha)}=F_{\beta;\phi} \,,
-\label{eq:06}
-\end{equation}
-
-em que ambas distribuições $F$ têm $(a-1)$ graus de liberdade no numerador e $a(n-1)$ no denomiador. O parâmetro de não-centralidade $\phi$ é dado por:
-
-\begin{equation}
-\phi= \frac{\left(n\sum_{i=1}^{a}\tau^2_i\right)}{\hat\sigma^2} \,.
-\label{eq:07}
-\end{equation}
-
-O valor de $\tau$ para comparações "todos contra um" pode ser obtido a partir da relação $\eqref{eq:08}$
-
-\begin{equation}
-\tau = \left( -\frac{(a-1)\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a}, \frac{\delta^{\star}}{a} \right) \,.
-\label{eq:08}
-\end{equation}
-
-O resultado desse teste indica um tamanho amostral $n=?????$ observações em cada grupo.
-
-Para calcular o tamanho amostral das comparações múltiplas one-vs-all, serão utilizadas as mesmas relações para a comparação de duas amostras independentes emparelhadas, alterando-se apenas os valores de $\alpha$ para os valores corrigidos $\alpha_{adj}$, considerando-se as múltiplas hipóteses e $a-1$ comparações. Em comparações desse tipo, a potência é maximizada utilizando um número maior de observações para o grupo de controle, dado pela Equação \eqref{eq:05} [@Campelo2015-01]:
-
-\begin{equation}
-n_0 = n_i\sqrt{K} \,,
-\label{eq:05}
-\end{equation}
-
-onde $K =1 $ é o número de comparações, $n_0$ é o tamanho amostral do grupo controle e $n_i$ o número de observações dos demais grupos. Esse valor é calculado conforme a Equação $\eqref{eq:04}$:
-
-\begin{equation}
-n_i = \left(1 + \frac{1}{K}\right) \left( \frac{\hat{\sigma}}{\delta^{\star}}\right)^{2}(t_{\alpha_{adj}}+t_{\beta})^{2} \,,
-\label{eq:04}
-\end{equation}
-
-em que $t_{\alpha_{adj}}$ e $t_{\beta}$ são dependentes de $n$.
-
-Para solucionar o problema da dependência de $n$, os termos $t_{\alpha_{adj}}$ e $t_{\beta}$ foram substituídos por $z_{\alpha_{adj}}$ e $z_{\beta}$ e a equação foi testada iterativamente até a convergência (implementação em anexo no arquivo _calcN.R_). 
-
-O resultado obtido indica um tamanho amostral $n_0 = ???$ para o grupo controle e $n_i = ???$ o segundo.
-
-Serão necessárias $????$ coletas para a realização do ANOVA e $????$ para as comparações (excetuando-se o grupo controle), o que resultaria em uma sobreamostragem de $2$ unidades por grupo. Entretanto, o segundo experimento só é necessário caso o ANOVA indique diferença entre os parâmetros analisados.
-
-
-## 2.5 Análise de Covariância (ANCOVA)
-A análise de covariância é uma técnica $-$ assim como a chamada "blocagem" ou pareamento (em testes-t) $-$ bastante útil para a melhora da precisão de um experimento [@montgomery1984design]. Em diversos aspectos é similar à análise de variância (ANOVA), porém permite ter controle sobre a influência do covariante nas variâveis dependentes. 
-
-
-A covariável complementa o controle local e, obviamente, necessita estar correlacionada com a variável de resposta para que se possa fazer uso de tal análise. E quando a análise de variância é realizada com uma ou mais covariáveis, é usual chamar a análise de ANCOVA.
+# 3. Análise de Covariância (ANCOVA)
+A análise de covariância é uma técnica $-$ assim como a chamada "blocagem" ou pareamento (em testes-t) $-$ bastante útil para a melhora da precisão de um experimento [@montgomery1984design]. Em diversos aspectos é similar à análise de variância (ANOVA), porém permite ter controle sobre a influência do covariante nas variâveis dependentes. A covariável complementa o controle local e, obviamente, necessita estar correlacionada com a variável de resposta para que se possa fazer uso de tal análise. E quando a análise de variância é realizada com uma ou mais covariáveis, é usual chamar a análise de ANCOVA.
 
 Na ANCOVA a variável dependente é contínua (e.g. tempo, velocidade, etc.), enquanto que a variável independente é normalmente categória (e.g. "masculino/feminino", "fumante/não-fumante" etc. ). A análise de variância, por sua vez, poderá converter-se na ANCOVA quando for adicionado um covariante, que consiste em outra variável, que pode ser tanto categórica quanto contínua. 
 
@@ -338,6 +246,8 @@ Existem aliás, duas razões principais para sair-se da ANOVA e passar a ser con
 
 A ANCOVA, permite, portanto, um controle do erro experimental, aumentando sua precisão. Vale ressaltar que a técnica não é restrita apenas à indicação de existência ou não de diferenças entre os níveis avaliados.
 
+## 3.1 Modelo Estatístico linear da ANCOVA
+
 Considerando um experimento com um fator e uma covariável, o modelo estatístico da análise de covariância pode ser estabelecido como [@MontgomeryRunger2011]:
 \begin{equation}
 y_{ij} = \mu + \tau_{i} + \beta (x_{ij}- \bar{x_{..}}) + \epsilon_{ij} \,,
@@ -346,6 +256,7 @@ y_{ij} = \mu + \tau_{i} + \beta (x_{ij}- \bar{x_{..}}) + \epsilon_{ij} \,,
 em que:
 $\mu$ é uma constante, $\tau_{i}$ é o efeito do i-ésimo "tratamento", $X_{ij}$ é o valor observado da covariável e $\bar{x_{..}}$ a média dos valores $x_{ij}$ (da covariável). Além disso, $\beta$ consiste no coeficiente de regressão linear entre a covariável $X$ e a variável de resposta $Y$, com $\beta \neq 0$ e $\epsilon_{ij}$ é uma componente aleatória de erro, com $i = 1, \ldots , a$ e $j = 1, \ldots , n$. Neste caso a relação deve ser linear. Vale ressaltar que este modelo pressupõe que a variável de resposta e a covariável estão relacionadas linearmente. Para efeito de simplificação, contudo, a análise de covariância pode ser vista como uma análise "ajustada" de variância, e pode ser sumarizada na tabela $\eqref{{tab:001}}$:
 
+% Please add the following required packages to your document preamble:
 
 \begin{table}[]
 \centering
@@ -378,23 +289,24 @@ E_{xy} &=& S_{xy} - T_{xy}\,. \label{eq:010}
 
 Assim, rejeita-se a hipótese nula $H_{0}: \beta=0$ se $F_{0}> F_{\alpha , 1, a(n-1)-1} \,.$
 
+## 3.2 Cálculo do tamanho amostral para o ANOVA
 
-## 2.6 Tratamento e Validação dos Dados
-Os dados de coletados não apresentaram normalidade quanto à sua distribuição. Para contornar tal constatação, os dados passaram por transformação para uma escala XXXXXXX. 
+O cálculo do tamanho amostral para a técnica ANOVA pode ser feito iterativamente até encontrar o número $n$ tal que:
 
-Considerando o experimento realizado, foi criada uma rotina para validação dos dados obtidos e identificação de erros, onde o tempo de execução e valor de qualidade das respostas dos algoritmos na escala (((XXXXXlogarítma))) devem ser maior que $0$.
+\begin{equation}
+F_{(1-\alpha)}=F_{\beta;\phi} \,,
+\label{eq:06}
+\end{equation}
 
-1. LogTempo $> 0$
+em que ambas distribuições $F$ têm $(a-1)$ graus de liberdade no numerador e $a(n-1)$ no denomiador. O parâmetro de não-centralidade $\phi$ é dado por:
 
-2. LogQualidade $> 0$
+## 3.3 Tratamento e Validação dos Dados
 
-Caso os valores de uma execução não atendam essas condições, ela seria descartada. No entanto, nenhuma das amostras apresentou tal problema.
+# 4. Análise Estatística
 
-# 3. Análise Estatística
+## 4.1 Análise de Covariância
 
-## 3.1 Análise de Covariância
-
-## 3.2 Validação das Premissas
+## 4.2 Validação das Premissas
 
 ### Normalidade
 
@@ -402,6 +314,6 @@ Caso os valores de uma execução não atendam essas condições, ela seria desc
 
 ### Independência
 
-# 4. Discussão e Conclusões
+# 5. Discussão e Conclusões
 
 # Referências
