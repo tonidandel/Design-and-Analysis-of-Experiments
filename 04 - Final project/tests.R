@@ -135,9 +135,9 @@ plot(v_modelAnovaQuality)
 
 v_tTestQuality = t.test(qualityRelative~algorithm,
                         data=v_data,
-                        mu = 0,
+                        mu = -0.05,
                         conf.level = 0.95, 
-                        alternative = 'two.sided',
+                        alternative = 'less',
                         paired=TRUE
 )
 v_tTestQuality
@@ -146,6 +146,22 @@ v_tTestQuality
 ## ANCOVA
 
 v_data2 = v_data[seq(nrow(v_data)/2)*2 - rep(c(0,1),nrow(v_data)/4),]
+
+
+plot(x = log(subset(v_data2, algorithm=='ACO')$size),
+     y = log(subset(v_data2, algorithm=='ACO')$time),
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "Time")
+points(x = log(subset(v_data2, algorithm=='ACO_Local')$size),
+       y = log(subset(v_data2, algorithm=='ACO_Local')$time),
+       cex  = 1,
+       pch  = 18,
+       col='blue')
+legend("topleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
 
 # Time model fit
 v_modelAncovaTime = aov(log(time)~algorithm+log(size), data=v_data2)
@@ -180,6 +196,32 @@ abline(coef=c(v_modelFitTime$coefficients[1]+v_modelFitTime$coefficients[3],v_mo
 
 par(mfrow=c(2,2), mai=.3*c(2.5,1,1,1))
 plot(v_modelFitTime)
+
+# Time model - diferentes inclinações
+
+v_modelAncovaTime2 = aov(log(time)~algorithm*log(size), data=v_data2)
+summary.aov(v_modelAncovaTime2)
+v_r2Model2 = summary.lm(v_modelAncovaTime2)$r.square
+  
+v_modelFitTime = lm(log(time)~log(size)*algorithm, data=v_data2)
+
+plot(x = log(subset(v_data2, algorithm=='ACO')$size),
+     y = log(subset(v_data2, algorithm=='ACO')$time),
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "Time")
+points(x = log(subset(v_data2, algorithm=='ACO_Local')$size),
+       y = log(subset(v_data2, algorithm=='ACO_Local')$time),
+       cex  = 1,
+       pch  = 18,
+       col='blue')
+legend("topleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+
+abline(coef=c(v_modelFitTime$coefficients[1],v_modelFitTime$coefficients[2]), col='red')
+abline(coef=c(v_modelFitTime$coefficients[1]+v_modelFitTime$coefficients[3],v_modelFitTime$coefficients[2]+v_modelFitTime$coefficients[4]), col='blue')
 
 
 # Quality model fit
