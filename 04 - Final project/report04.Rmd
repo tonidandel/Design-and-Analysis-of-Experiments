@@ -85,9 +85,9 @@ Os dados experimentais do problema foram obtidos através de simulações. Foram
 
 Nos experimentos, foi medido o tempo gasto na execução de cada algoritmo. Para minimizar a influência de outros processos do sistema, a execução foi limitada a um único núcleo do processador, com prioridade de execução alta.
 
-Cada algoritmo de otimização produz como resultado um conjunto de soluções. A qualidade desse conjunto é medida através do Hipervolume [@cite] do conjunto na fronteira de Pareto, considerando como referência o ponto da solução Nadir na fronteira de Pareto (isto é, a pior solução teórica). Para cada instância avaliada, um novo ponto de referência é calculado através de uma heurística.
+Cada algoritmo de otimização produz como resultado um conjunto de soluções. A qualidade desse conjunto é medida através do Hipervolume [@Zitzler2003] do conjunto na fronteira de Pareto, considerando como referência o ponto da solução Nadir na fronteira de Pareto (isto é, a pior solução teórica). Para cada instância avaliada, um novo ponto de referência é calculado através de uma heurística.
 
-O método de Hipervolume é bastante sensível ao ponto de referência definido [@cite]. Sendo assim, a qualidade medida entre diferentes instâncias não tem significado quando comparadas entre si. No entanto, a métrica é eficiente para comparar a qualidade de diferentes conjuntos de solução encontrados no mesmo ponto. Sendo assim, é necessário avaliar a qualidade relativa das soluções em cada instância, e não o seu valor absoluto.
+O método de Hipervolume é bastante sensível ao ponto de referência definido [@Cao2015]. Sendo assim, a qualidade medida entre diferentes instâncias não tem significado quando comparadas entre si. No entanto, a métrica é eficiente para comparar a qualidade de diferentes conjuntos de solução encontrados no mesmo ponto. Sendo assim, é necessário avaliar a qualidade relativa das soluções em cada instância, e não o seu valor absoluto.
 
 ## 2.1 Definição do Tamanho Amostral
 
@@ -115,7 +115,7 @@ H_{1}:& \exists \ \ \tau_i \neq 0
 \label{eq:01}
 \end{equation}
 
-Esta etapa foi considerada como uma primeira verificação ao questionamento deste estudo por apresentar uma abordagem que pode minimizar o custo de coleta de amostras menor do que o teste de comparações múltiplas discutido na Seção 2.2. Portanto, caso não seja detectada alguma diferenças entre os níveis, as comparações múltiplas são dispensáveis, o que reduz o custo do experimento.
+A blocagem deve ser aplicada de maneira a eliminar o efeito da covariável do problema (tamanho), permitindo a análise da variável de principal interesse (algoritmo).
 
 
 ## 2.3 Análise de Covariância (ANCOVA)
@@ -343,7 +343,7 @@ plot(v_modelAnovaTime)
 
 ```
 
-Nesse caso, é possível verificar que, uma vez compensado o efeito do tamanho, é possível verificar um efeito do algoritmo utilizado no tempo total de execução. Ainda assim, esse efeito é bastante menor que o efeito do tempo, o que pode concluído observando a relação da soma quadrática dos fatores e dos resíduos. A soma quadrática do tamanho é significativamente maior, o que indica uma maior contribuição desse fator para explicar o efeito observado.
+Nesse caso, é possível verificar que, uma vez compensado o efeito do tamanho, é possível verificar um efeito do algoritmo utilizado no tempo total de execução. Ainda assim, esse efeito é bastante menor que o efeito do tempo, o que pode concluído observando a relação da soma quadrática dos fatores e dos resíduos. A soma quadrática do tamanho é significativamente maior, o que indica uma maior contribuição desse fator para explicar o efeito observado. A potência do teste foi calculada com o software G*Power, e é igual a 1.
 
 O gráfico de distribuição dos resíduos (e resíduos padronizados) em relação ao valor ajustado indica homocedasticidade. O segundo gráfico quantil-quantil indica que os dados transformados possuem uma distribuição praticamente normal, o que valida a premissa de normalidade. Esses resultados são confirmados pelos testes Fligner-Kileen e Shapiro-Wilk, respectivamente. O design aleatório da ordenação das instâncias nos testes realizados permite assumir independência entre as observações. Assim, as premissas do teste ANOVA são bem atendidas. Finalmente, o gráfico Residuals vs. Leverage não indica nenhum observação com Cook's distance muito diferente dos demais, o que poderia sugerir um possível outlier.
 
@@ -362,7 +362,7 @@ plot(v_modelAnovaQuality)
 
 ```
 
-O resultado do teste ANOVA condiz com o esperado após a análise exploratória. O algoritmo possui um efeito significativo na qualidade relativa, enquanto o tamanho do problema não possui significância para explicar as diferenças de qualidade entre os algoritmos.
+O resultado do teste ANOVA condiz com o esperado após a análise exploratória. O algoritmo possui um efeito significativo na qualidade relativa, enquanto o tamanho do problema não possui significância para explicar as diferenças de qualidade entre os algoritmos. A potência do teste foi calculada com o software G*Power, e é igual a 1.
 
 Os gráficos de distribuição dos resíduos e qq-plot possuem uma configuração que desperta dúvidas e pode indicar violações nas premissas. No entanto, essa configuração é consequência da transformação utilizada para avaliar qualidade relativa das soluções, que concentra a qualidade de todas as soluções do algorimo padrão no valor 1.
 Para contornar esse problema e avaliar a normalidade da distribuição e homocedasticidade dos resíduos, é então considerada a diferença entre qualidade relativa das soluções

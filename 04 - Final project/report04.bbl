@@ -1,4 +1,4 @@
-\begin{thebibliography}{3}
+\begin{thebibliography}{5}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -12,6 +12,18 @@ Felipe Campelo.
   2015.
 \newblock Version 2.11, Chapter 7; Creative Commons BY-NC-SA 4.0.
 
+\bibitem[Cao et~al.(2015)Cao, Smucker, and Robinson]{Cao2015}
+Yongtao Cao, Byran~J Smucker, and Timothy~J Robinson.
+\newblock {On using the hypervolume indicator to compare Pareto fronts:
+  Applications to multi-criteria optimal experimental design}.
+\newblock \emph{Journal of Statistical Planning and Inference}, 160:\penalty0
+  60--74, may 2015.
+\newblock ISSN 03783758.
+\newblock \doi{10.1016/j.jspi.2014.12.004}.
+\newblock URL
+  \url{http://www.users.miamioh.edu/smuckebj/pub{\_}2015{\_}Cao{\_}etal.pdf
+  http://linkinghub.elsevier.com/retrieve/pii/S0378375814002006}.
+
 \bibitem[Montgomery(1984)]{montgomery1984design}
 D.~C. Montgomery.
 \newblock \emph{Design and analysis of experiments}, volume~7.
@@ -21,5 +33,15 @@ D.~C. Montgomery.
 D.~C. Montgomery and G.~C. Runger.
 \newblock \emph{Applied Statistics and Probability for Engineers}, volume~5.
 \newblock John Wiley and Sons, 2011.
+
+\bibitem[Zitzler et~al.(2003)Zitzler, Thiele, Laumanns, {Da Fonseca}, and {Da
+  Fonseca}]{Zitzler2003}
+E.~Zitzler, L.~Thiele, M.~Laumanns, C.~{Da Fonseca}, and V.~{Da Fonseca}.
+\newblock {Performance assessment of multiobjective optimizers: an analysis and
+  review}.
+\newblock \emph{Evolutionary Computation, IEEE Transactions on}, 7\penalty0
+  (2):\penalty0 117--132, 2003.
+\newblock ISSN 1089778X.
+\newblock \doi{10.1109/TEVC.2003.810758}.
 
 \end{thebibliography}
