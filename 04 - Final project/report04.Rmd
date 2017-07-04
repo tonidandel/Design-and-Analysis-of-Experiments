@@ -549,7 +549,7 @@ par(mfrow=c(2,2), mai=.3*c(2.5,1,1,1))
 plot(v_modelAncovaTime2)
 ```
 
-O resultado desse modelo indica que o termo de iteração é significante para explicar o tempo de execução. Isso é um sinal de que a premissa pode ser violada. Realizando a regressão com um modelo com termos de iteração, o seguinte resultao é obtido:
+O resultado desse modelo indica que o termo de iteração é significante para explicar o tempo de execução. Isso é um sinal de que a premissa pode ser violada. Realizando a regressão com um modelo com termos de iteração, o seguinte resultado é obtido:
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
 
@@ -574,9 +574,27 @@ abline(coef=c(v_modelFitTime$coefficients[1],v_modelFitTime$coefficients[2]), co
 abline(coef=c(v_modelFitTime$coefficients[1]+v_modelFitTime$coefficients[3],v_modelFitTime$coefficients[2]+v_modelFitTime$coefficients[4]), col='blue')
 ```
 
+Analisando o gráfico e os coeficientes de regressão linear obtidos, é possível verificar que a premissa não é atendida. O resultado sugere que o efeito do algoritmo no tempo depende do tamanho de problema. Na regressão realizada, o algoritmo original tem um efeito positivo sobre o tempo para problemas menores, em relação ao algoritmo proposto. No entanto, após um determinado tamanho, essa relação se inverte.
 
+Esse resultado sugere que, para problemas maiores, o efeito do algoritmo original no tempo passa a ser pior em relação ao algoritmo proposto. No entanto, seria necessário outro experimento para investigar esse efeito.
 
 
 # 4. Discussão e Conclusões
+
+Os resultados encontrados refutam a hipótese de equivalência dos algorimos em relação à qualidade relativa entre eles. O intervalo de confiança de 95% observado indica vantagem superior a 6% no algoritmo proposto em relação ao original.
+
+Além disso, é possível observar que o tamanho do problema não afeta a qualidade relativa entre os algoritmos, dentro do universo considerado. Esse resultado sugere que ambos os algoritmos são afetados da mesma forma por variações no tamanho da instância considerada.
+
+Em relação ao tempo até convergência dos algoritmos, foi verificado que o tamanho do problema é o principal fator que influencia esse resultado. Compensada a influência do tamanho, um pequeno efeito dos algoritmos foi verificado, favorecendo o algoritmo original. No entanto, apesar de estatísticamente significante, esse efeito não tem um tamanho de efeito suficiente para ter relevância prática.
+
+Além disso, a análise realizada sugere um efeito de iteração entre algoritmo e tamanho do problema sobre o tempo de convergência. A regressão utilizada apresenta indícios de que, para problemas menores, o algoritmo original apresenta menores tempos. No entanto, para problemas maiores, o algoritmo proposto parece ter resultados melhores também no tempo. No entanto, é necessário um segundo experimento para confirmar essas observações, incluindo instância maiores.
+
+A interpretação desses resultados pode ser complementada por conhecimentos do problema. O algoritmo proposto é uma modificação do original que acrescenta uma busca local ao final de cada iteração. Para problemas pequenos, é bastante fácil encontrar as soluções ótimas do problema. Parece que a modificação proposta acrescenta um custo adicional de processamento, o que afeta o tempo para convergência.
+
+A medida que os problemas crescem, a rotina de busca local parece permitir que resultados melhores sejam encontrados antes que o método convirja, mas ainda com um tempo um pouco maior. Para problemas ainda maiores e mais complexos, a convergência é mais lenta para ambos os métodos. No entanto, a melhoria da qualidade decorrente da busca local parece ter vantagem aqui, acelerando a convergência e garantindo soluções melhores.
+
+Além disso, vale a pena observar que os problemas de maior interesse prático e aplicabilidade apresentam tamanhos maiores. Sendo assim, é mais interessante escolher um método que apresente vantagens nesses casos. Após o estudo, recomenda-se a aplicação do método proposto devido aos ganhos de qualidade sem diferença significativa no tempo. No entanto, também é sugerido um segundo experimento para observar o comportamento dos algoritmos em problemas maiores.
+
+Finalmente, o trabalho permitiu também explorar a técnica ANCOVA. Ela é muito adequada para problemas com covariáveis contínuas, e é especialmente necessária quando essas variáveis não são controláveis e apresentam diferentes níveis. No entanto, é necessário atenção para as premissas dos teste, em especial a premissa de igualdade dos coeficientes de regressão. A violação dessa premissa eleva as taxas de erro e pode levar a conclusões erradas.
 
 # Referências
