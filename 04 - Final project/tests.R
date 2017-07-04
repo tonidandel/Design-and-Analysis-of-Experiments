@@ -141,6 +141,11 @@ v_tTestQuality = t.test(qualityRelative~algorithm,
                         alternative = 'less',
                         paired=TRUE
 )
+v_tTestQuality = t.test((v_dataDiff$qualityRelative),
+                        mu = 0,
+                        conf.level = 0.95, 
+                        alternative = 'greater'
+)
 v_tTestQuality
 
 

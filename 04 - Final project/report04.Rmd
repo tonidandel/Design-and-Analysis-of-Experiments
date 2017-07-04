@@ -65,8 +65,8 @@ v_alpha = 0.05
 v_beta = 0.20
 v_power = 1-v_beta
 v_delta = 0.25
-v_dTime = 1
-v_dQuality = 1
+v_dTime = 0.5
+v_dQuality = 0.5
 ```
 Os parâmetros experimentais desejados são:
 
@@ -91,12 +91,12 @@ O método de Hipervolume é bastante sensível ao ponto de referência definido 
 
 ## 2.1 Definição do Tamanho Amostral
 
-O tamanho amostral do problema foi cálculado a partir dos requisitos experimentais estabelecidos. Uma vez que o tamanho de efeito de interesse prático foi definido em relação a variância, não era necessário conhecer a variância dos dados previamente. Assume-se que a variância entre os diferentes algorítmos é igual.
+O tamanho amostral do problema foi definido a partir de requisitos técnicos do projeto. Era desejável avaliar o efeito dos algortimos para problemas de diferentes tamanhos, partindo do caso mais simples até problemas de tamanho real. No entanto, limitações no tempo de execução do trabalho impediram coleta de dados maiores.
 
-Dessa forma, o tamanho amostral do experimento foi calculado através da equação:
+As instâncias geradas utilizaram então combinações de 1 a 4 destinos e 1 a 6 opções de tranportes e acomodação. Para essas características, foi gerado um conjunto de dados com 108 instâncias.
 
-$$n = 2 \left( \frac{1}{d^{\star}_t}\right)^{2}(t_{\alpha/2}+t_{\beta})^{2} \,,$$
-, solucionada iterativamente.
+A função power.t.test foi utilizada para calcular o tamanho necessário para os requisitos do projeto, considerando comparações pareadas que podem ser efetuadas após o teste ANOVA. O resultado indica que, para a potência e tamanho de efeito desejados, 108 observações são mais que suficientes.
+
 
 ## 2.2 Análise de Variância com Blocagem
 
@@ -118,27 +118,7 @@ H_{1}:& \exists \ \ \tau_i \neq 0
 Esta etapa foi considerada como uma primeira verificação ao questionamento deste estudo por apresentar uma abordagem que pode minimizar o custo de coleta de amostras menor do que o teste de comparações múltiplas discutido na Seção 2.2. Portanto, caso não seja detectada alguma diferenças entre os níveis, as comparações múltiplas são dispensáveis, o que reduz o custo do experimento.
 
 
-## 2.3 Comparações Múltiplas
-
-Caso a análise ANOVA identifique a existência de diferenças entre os parâmetros analisados nos algoritmos, deve-se proceder com testes de comparação múltiplas. As comparações serão realizadas em relação ao algoritmo _ACO_, de maneira a verificar se a outra alternativa proposta é melhor.
-Desta forma, caso a análise de variância indique a existência de diferenças entre os níveis, será aplicado o teste de comparações múltiplas um-contra-todos (one-vs-all) de _Dunnett_, onde o _ACO com busca local_ será confrontado com o algoritmo _ACO_.
-
-Para realizar o teste de comparações múltiplas, deve-se manter o controle sobre os erros do tipo-$I$ em cada comparação de maneira com que ele não se acumule a cada teste sucessivo. Assim, os valores de $\alpha$ são corrigidos para cada teste através do método de correção de Bonferroni $\eqref{eq:02}$:
-
-\begin{equation}
-\alpha_{adj} = \frac{\alpha_{família}}{K} \,,
-\label{eq:02}
-\end{equation}
-
-no qual $K=1$ consiste no número de comparações a serem feitas que no caso do teste um-contra-todos de _Dunnett_. O número de comparações nesse caso é dado pela Equação \eqref{eq:03}:
-
-\begin{equation}
-K=a-1  \,;
-\label{eq:03}
-\end{equation}.
-
-
-## 2.4 Análise de Covariância (ANCOVA)
+## 2.3 Análise de Covariância (ANCOVA)
 
 A análise de covariância é uma técnica $-$ assim como a blocagem ou pareamento (em testes-t) $-$ bastante útil para a melhora da precisão de um experimento [@montgomery1984design]. Em diversos aspectos é similar à análise de variância (ANOVA), porém permite ter controle sobre a influência do covariante nas variâveis dependentes. 
 
@@ -200,16 +180,16 @@ Assim, rejeita-se a hipótese nula $H_{0}: \beta=0$ se $F_{0}> F_{\alpha , 1, a(
 
 ## 3.1 Tratamento e Validação dos Dados
 
-Considerando o experimento realizado, foi criada uma rotina para validação dos dados obtidos e identificação de erros, onde o tempo de execução e valor de qualidade das respostas dos algoritmos na escala (((XXXXXlogarítma))) devem ser maior que $0$.
+Após a obtenção dos dados, foi feita uma rotina de validação para identificar possíveis erros. Para isso, as seguintes condições foram avaliadas em cada observação:
 
 1. Tempo $> 0$
-
 2. 0 > Qualidade $> 1$
 
-Caso os valores de uma execução não atendam essas condições, ela seria descartada. No entanto, nenhuma das amostras apresentou tal problema.
-
+Em seguida, as diferentes execuções realizadas para cada instância foram agrupadas através da média. Dessa forma, cada bloco considerado é resumido por única estatística.
 
 ## 3.2 Análise Exploratória dos Dados
+
+Foi então realizada um análise qualitativa dos dados. Para cada variável de resposta, foram plotados seus gráficos em função do tempo, identificando cada algoritmo.
 
 ```{r, echo=FALSE, fig.height=3.8, message=FALSE, warning=FALSE, results='show'}
 
@@ -222,7 +202,7 @@ v_data = aggregate(cbind(quality,time,size,avgTransportations,avgAccommodations,
 
 v_data$qualityRelative = v_data$quality/array(sapply(subset(v_data, algorithm=='ACO')$quality, function(v) return(rep(v,2))))
 
-par(mfrow=c(1,2), mai=.4*c(2.5,1,1,1))
+par(mfrow=c(1,2), mai=.4*c(2,2,1,0.5))
 
 plot(x = (subset(v_data, algorithm=='ACO')$size),
      y = (subset(v_data, algorithm=='ACO')$time),
@@ -256,11 +236,11 @@ legend("bottomleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  
 
 ```
 
-A escala não permite ter uma visualização adequada dos dados. Assim, é aplicada uma transformação logaritmica na variável Size para solucionar esse problema.
+A escala não permite ter uma visualização adequada dos dados. Assim, é aplicada uma transformação logarítmica na variável Size para solucionar esse problema.
 
 ```{r, echo=FALSE, fig.height=3.8, message=FALSE, warning=FALSE, results='show'}
 
-par(mfrow=c(1,2), mai=.4*c(2.5,1,1,1))
+par(mfrow=c(1,2), mai=.4*c(2,2,1,0.5))
 
 plot(x = log(subset(v_data, algorithm=='ACO')$size),
      y = (subset(v_data, algorithm=='ACO')$time),
@@ -295,12 +275,12 @@ legend("bottomleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  
 ```
 
 
-Para normalizar a distribuição dos dados e obter uma relação linear entre a covariável e o tempo, foi aplicada uma transformação normal na variável de resposta Time.
+Para normalizar a distribuição dos dados, foi aplicada uma transformação logarítmica também nas variáveis de resposta. Essa transformação também permite obter uma relação mais linear entre a covariável tamanho e o tempo,
 
 
 ```{r, echo=FALSE, fig.height=3.8, message=FALSE, warning=FALSE, results='show'}
 
-par(mfrow=c(1,2), mai=.4*c(2.5,1,1,1))
+par(mfrow=c(1,2), mai=.4*c(2,2,1,0.5))
 
 plot(x = log(subset(v_data, algorithm=='ACO')$size),
      y = log(subset(v_data, algorithm=='ACO')$time),
@@ -309,24 +289,24 @@ plot(x = log(subset(v_data, algorithm=='ACO')$size),
      pch  = 16,
      col='red',
      xlab = "log size",
-     ylab = "Time")
+     ylab = "log Time")
 points(x = log(subset(v_data, algorithm=='ACO_Local')$size),
      y = log(subset(v_data, algorithm=='ACO_Local')$time),
      cex  = 1,
      pch  = 18,
      col='blue')
-legend("topleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+legend(x=0, y=4.5, legend=c('ACO', 'ACO+\nLocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
 
 plot(x = log(subset(v_data, algorithm=='ACO')$size),
-     y = subset(v_data, algorithm=='ACO')$qualityRelative,
+     y = log(subset(v_data, algorithm=='ACO')$qualityRelative),
      cex  = 1,
      las  = 1,
      pch  = 16,
      col='red',
      xlab = "log size",
-     ylab = "Relative Quality")
+     ylab = "Log Relative Quality")
 points(x = log(subset(v_data, algorithm=='ACO_Local')$size),
-       y = subset(v_data, algorithm=='ACO_Local')$qualityRelative,
+       y = log(subset(v_data, algorithm=='ACO_Local')$qualityRelative),
        cex  = 1,
        pch  = 18,
        col='blue')
@@ -338,16 +318,22 @@ Os resultados parecem indicar uma relação linear entre tempo e tamanho de prob
 
 ## 3.2 Análise de Variância com Blocagem
 
-### Tempo
-Análise inicial sem considerar efeitos de tamanho do problema:
+É então aplicado o método ANOVA com blocagem para obter a significância estatística das variáveis consideradas. Para ser possível aplicar o modelo ANOVA, a variável contínua de tamanho deve ser considerada como um fator. Assim, o tamanho é avaliado como uma variável com 99 níveis (número de tamanhos diferentes nas 108 instâncias avaliadas).
+Os testes são realizados para as duas variáveis de resposta.
+
+### Tempo de Execução
+
+Inicialmente, a análise é realizada sem blocagem. Essa análise ignora os efeitos de tamanho do problema e tenta avaliar a diferença de tempo entre os métodos considerando apenas os algoritmos:
 ```{r, echo=FALSE, fig.height=3.8, fig.width=3.8, message=FALSE, warning=FALSE, results='show'}
 summary.aov(aov(log(time)~algorithm, data=v_data))
 ```
 
-Considerando efeitos:
+O resultado não indica nenhum efeito significativo dos algoritmos. Isso condiz com o esperado, uma vez que a análise visual indica que quaisquer possíveis efeitos dos algorimos são muito menores que o efeito devido à variações no tamanho.
+
+Incluindo o efeito do tamanho da instância no modelo, tem-se:
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
 # Time - simple model
-v_modelAnovaTime <- aov(log(time)~algorithm+log(size), 
+v_modelAnovaTime <- aov(log(time)~algorithm+as.factor(log(size)), 
                         data = v_data)
 summary.aov(v_modelAnovaTime)
 v_r2 = summary.lm(v_modelAnovaTime)$r.square
@@ -357,22 +343,16 @@ plot(v_modelAnovaTime)
 
 ```
 
+Nesse caso, é possível verificar que, uma vez compensado o efeito do tamanho, é possível verificar um efeito do algoritmo utilizado no tempo total de execução. Ainda assim, esse efeito é bastante menor que o efeito do tempo, o que pode concluído observando a relação da soma quadrática dos fatores e dos resíduos. A soma quadrática do tamanho é significativamente maior, o que indica uma maior contribuição desse fator para explicar o efeito observado.
 
-Considerando variável de interação entre tempo e tamanho do problema
-```{r, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
-# Time - iteraction effects
-v_modelAnovaTime <- aov(log(time)~algorithm*log(size), 
-                        data = v_data)
-summary.aov(v_modelAnovaTime)
-v_r2 = summary.lm(v_modelAnovaTime)$r.square
-
-par(mfrow=c(2,2), mai=.3*c(2.5,1,1,1))
-plot(v_modelAnovaTime)
-```
+O gráfico de distribuição dos resíduos (e resíduos padronizados) em relação ao valor ajustado indica homocedasticidade. O segundo gráfico quantil-quantil indica que os dados transformados possuem uma distribuição praticamente normal, o que valida a premissa de normalidade. Esses resultados são confirmados pelos testes Fligner-Kileen e Shapiro-Wilk, respectivamente. O design aleatório da ordenação das instâncias nos testes realizados permite assumir independência entre as observações. Assim, as premissas do teste ANOVA são bem atendidas. Finalmente, o gráfico Residuals vs. Leverage não indica nenhum observação com Cook's distance muito diferente dos demais, o que poderia sugerir um possível outlier.
 
 ### Qualidade da Solução
+
+A mesma análise realizada para o tempo de execução é aplicada para a qualidade da solução:
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
-v_modelAnovaQuality <- aov((qualityRelative)~algorithm+log(size), 
+v_modelAnovaQuality <- aov(log(qualityRelative)~algorithm+as.factor(log(size)), 
                            data = v_data)
 summary.aov(v_modelAnovaQuality)
 v_r2 =summary.lm(v_modelAnovaQuality)$r.square
@@ -380,42 +360,117 @@ v_r2 =summary.lm(v_modelAnovaQuality)$r.square
 par(mfrow=c(2,2), mai=.3*c(2.5,1,1,1))
 plot(v_modelAnovaQuality)
 
-v_tTestQuality = t.test(qualityRelative~algorithm,
-                        data=v_data,
+```
+
+O resultado do teste ANOVA condiz com o esperado após a análise exploratória. O algoritmo possui um efeito significativo na qualidade relativa, enquanto o tamanho do problema não possui significância para explicar as diferenças de qualidade entre os algoritmos.
+
+Os gráficos de distribuição dos resíduos e qq-plot possuem uma configuração que desperta dúvidas e pode indicar violações nas premissas. No entanto, essa configuração é consequência da transformação utilizada para avaliar qualidade relativa das soluções, que concentra a qualidade de todas as soluções do algorimo padrão no valor 1.
+Para contornar esse problema e avaliar a normalidade da distribuição e homocedasticidade dos resíduos, é então considerada a diferença entre qualidade relativa das soluções
+
+```{r, echo=FALSE, fig.height=3.5, message=FALSE, warning=FALSE, results='show'}
+v_dataDiff = aggregate(cbind(quality, time, qualityRelative)~size:instance, data=v_data, FUN=diff)
+par(mfrow=c(1,2), mai=.4*c(2,2,1,0.5))
+qqPlot(log(v_dataDiff$qualityRelative), main="Normal Q-Q")
+
+plot(x=log(v_dataDiff$qualityRelative), y=v_modelAnovaQuality$residuals[109:216], main="Residuals vs Fitted")
+```
+
+O gráfico indica que a distribuição das diferenças é bem próxima da distribuição normal. Não há também indícios de heterocedasticidade, o que valida as premissas do teste.
+
+Uma vez que foi verificado que o tamanho do problema não é significativo para a qualidade relativa da solução, é possível realizar um teste-t pareado para testar a hipótese de que o algoritmo proposto apresenta qualidade maior que o original, considerando um tamanho de efeito de 5%.
+
+```{r, echo=FALSE, fig.height=3.8, fig.width=3.8, message=FALSE, warning=FALSE, results='show'}
+v_tTestQuality = t.test((v_dataDiff$qualityRelative),
                         mu = 0,
                         conf.level = 0.95, 
-                        alternative = 'two.sided',
-                        paired=TRUE
+                        alternative = 'greater'
 )
 v_tTestQuality
 ```
 
-```{r, echo=FALSE, fig.height=3.8, fig.width=3.8, message=FALSE, warning=FALSE, results='show'}
-
-```
+O p-valor encontrado rejeita a hipótese de que a qualidade dos algoritmos são equivalentes. O intervalo de confiança de 95% obtido indica que a média da diferença relativa de qualidade é de pelo menos 6.137%, em favor do algoritmo proposto.
 
 ## 3.3 Análise de Covariância
 
-# Geração do Conjunto de Dados
-```{r, echo=FALSE, fig.height=3.8, fig.width=3.8, message=FALSE, warning=FALSE, results='show'}
-v_data2 = v_data[seq(nrow(v_data)/2)*2 - rep(c(0,1),nrow(v_data)/4),]
-```
-TODO: plots do novo conjunto
+A Análise de Covariância é uma maneira mais adequada de lidar com variáveis contínuas. Além disso, ela permite realizar a análise mesmo quando uma covariável contínua não pode ser controlada e as observações possuem diferentes valores para a mesma, de forma que não podem ser pareadas.
 
-# Tempo
+Para ilustrar esse cenário, o conjunto de dados foi truncado para que, para cada instância, apenas resultados de um algoritmo esteja disponível. O objetivo principal é demonstrar que, mesmo na situação onde não é possível realizar o pareamento, ainda é possível fazer a análise do efeito da variável de interesse. O novo cojunto de dados possui portanto metade das observações do conjunto anterior.
+
+O gráfico abaixo ilustra o novo conjunto de dados, já transformado:
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
 v_data2 = v_data[seq(nrow(v_data)/2)*2 - rep(c(0,1),nrow(v_data)/4),]
 
-# Time model fit
+par(mfrow=c(1,2), mai=.4*c(2,2,1,0.5))
+plot(x = log(subset(v_data2, algorithm=='ACO')$size),
+     y = log(subset(v_data2, algorithm=='ACO')$time),
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "log Time")
+points(x = log(subset(v_data2, algorithm=='ACO_Local')$size),
+       y = log(subset(v_data2, algorithm=='ACO_Local')$time),
+       cex  = 1,
+       pch  = 18,
+       col='blue')
+legend(x=1, y=4.5, legend=c('ACO', 'ACO+\nLocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+
+plot(x = log(subset(v_data2, algorithm=='ACO')$size),
+     y = log(subset(v_data2, algorithm=='ACO')$qualityRelative),
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "log qualityRelative")
+points(x = log(subset(v_data2, algorithm=='ACO_Local')$size),
+       y = log(subset(v_data2, algorithm=='ACO_Local')$qualityRelative),
+       cex  = 1,
+       pch  = 18,
+       col='blue')
+legend("topleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+```
+
+O modelo ANCOVA é primeiro ajustado em relação à uma das variáveis. O erro restante é então ajustado em relação as variáveis seguintes. Sendo assim, há uma relação de dependência da segunda variável em relação à primeira. Por isso, a ordem das variáveis utilizadas no modelo é importante. 
+
+A seguir, é realizada a análise dos dados para cada variável de resposta.
+
+# Tempo
+
+Inicialmente, é ajustado um modelo do tempo tomando o algoritmo como variável independente:
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
 v_modelAncovaTime = aov(log(time)~algorithm+log(size), data=v_data2)
 summary.aov(v_modelAncovaTime)
 v_r2 = summary.lm(v_modelAncovaTime)$r.square
+```
 
+Nesse modelo, não foi identificada nenhuma significância do algoritmo para explicar o tempo de execução, e apenas o tamanho tem significância. Isso condiz com o resultado esperado, uma vez que o efeito do algoritmo observado no gráfico é ordens de grandeza menor que o efeito do tamanho.
+
+Em seguida, ajusta-se um modelo tomando o tamanho como variável independente.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
+
+# Time model fit
 v_modelAncovaTime2 = aov(log(time)~log(size)+algorithm, data=v_data2)
 summary.aov(v_modelAncovaTime2)
 v_r2Model2 = summary.lm(v_modelAncovaTime2)$r.square
 
 v_modelFitTime = lm(log(time)~log(size)+algorithm, data=v_data2)
+
+par(mfrow=c(2,2), mai=.3*c(2.5,1,1,1))
+plot(v_modelFitTime)
+```
+
+Nesse modelo, é possível notar que, uma vez compensado o efeito do tamanho, o algoritmo possui sim um efeito significante no tempo de execução. Assim, a análise realizada leva às mesmas conclusões que o teste ANOVA aplicado na seção anterior.
+
+Os gráficos e testes realizados permitem avaliar a normalidade dos dados e homocedasticidade dos resíduos. Há indícios de pequenas violações na normalidade, mas o método ANCOVA é robusto a isso.
+
+Abaixo, é feita uma regressão linear dos resultados, que parece indicar que o algoritmo original possui tempos um pouco menores que o proposto.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
 
 plot(x = log(subset(v_data2, algorithm=='ACO')$size),
      y = log(subset(v_data2, algorithm=='ACO')$time),
@@ -424,7 +479,7 @@ plot(x = log(subset(v_data2, algorithm=='ACO')$size),
      pch  = 16,
      col='red',
      xlab = "log size",
-     ylab = "Time")
+     ylab = "log Time")
 points(x = log(subset(v_data2, algorithm=='ACO_Local')$size),
        y = log(subset(v_data2, algorithm=='ACO_Local')$time),
        cex  = 1,
@@ -433,18 +488,70 @@ points(x = log(subset(v_data2, algorithm=='ACO_Local')$size),
 legend("topleft", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
 abline(coef=c(v_modelFitTime$coefficients[1],v_modelFitTime$coefficients[2]), col='red')
 abline(coef=c(v_modelFitTime$coefficients[1]+v_modelFitTime$coefficients[3],v_modelFitTime$coefficients[2]), col='blue')
+```
+
+# Qualidade
+
+A mesma análise é feita para a qualidade dos algoritmos:
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
+v_modelAncovaQual = aov(log(qualityRelative)~algorithm+log(size), data=v_data2)
+summary.aov(v_modelAncovaQual)
+v_r2 = summary.lm(v_modelAncovaQual)$r.square
+
+#v_modelAncovaQual2 = aov(log(qualityRelative)~log(size)+algorithm, data=v_data2)
+#summary.aov(v_modelAncovaQual2)
+#v_r2Model2 = summary.lm(v_modelAncovaQual2)$r.square
+
+v_modelFitQuality = lm(log(qualityRelative)~log(size)+algorithm, data=v_data2)
 
 par(mfrow=c(2,2), mai=.3*c(2.5,1,1,1))
-plot(v_modelFitTime)
+plot(v_modelFitQuality)
+```
+
+O resultado novamente condiz com o resultado obtido no teste ANOVA. O algoritmo tem um efeito significativo sobre a qualidade relativa, enquanto o tamanho do problema não. As premissas de normalidade e homocedasticidade são validadas de maneira análoga ao teste ANOVA.
+
+A regressão linear abaixo permite observar a superioridade da média da qualidade relativa do algoritmo proposto, bem como o efeito (praticamente nulo) do tamanho do problema.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
+plot(x = log(subset(v_data2, algorithm=='ACO')$size),
+     y = log(subset(v_data2, algorithm=='ACO')$qualityRelative),
+     cex  = 1,
+     las  = 1,
+     pch  = 16,
+     col='red',
+     xlab = "log size",
+     ylab = "Log qualityRelative")
+points(x = log(subset(v_data2, algorithm=='ACO_Local')$size),
+       y = (log(subset(v_data2, algorithm=='ACO_Local')$qualityRelative)),
+       cex  = 1,
+       pch  = 18,
+       col='blue')
+legend("bottomright", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
+abline(coef=c(v_modelFitQuality$coefficients[1],v_modelFitQuality$coefficients[2]), col='red')
+abline(coef=c(v_modelFitQuality$coefficients[1]+v_modelFitQuality$coefficients[3],v_modelFitQuality$coefficients[2]), col='blue')
+
 ```
 
 
-# Considerando efeito de iteração
-```{r, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
+# Validação das Premissas
 
-v_modelAncovaTime2 = aov(log(time)~algorithm*log(size), data=v_data2)
+Conforme discutido na seção 2.3, o teste ANCOVA depende fortemente da premissa de igualdade do coeficiente das retas de regressão de cada grupo avaliado em relação à covariável. Para verificar se essa premissa é atendida, é considerado um modelo com termos de interação entre tempo e tamanho do problema.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
+# Time - iteraction effects
+v_modelAncovaTime2 <- aov(log(time)~algorithm*log(size), 
+                        data = v_data)
 summary.aov(v_modelAncovaTime2)
-v_r2Model2 = summary.lm(v_modelAncovaTime2)$r.square
+v_r2 = summary.lm(v_modelAncovaTime2)$r.square
+
+par(mfrow=c(2,2), mai=.3*c(2.5,1,1,1))
+plot(v_modelAncovaTime2)
+```
+
+O resultado desse modelo indica que o termo de iteração é significante para explicar o tempo de execução. Isso é um sinal de que a premissa pode ser violada. Realizando a regressão com um modelo com termos de iteração, o seguinte resultao é obtido:
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
 
 v_modelFitTime = lm(log(time)~log(size)*algorithm, data=v_data2)
 
@@ -468,38 +575,6 @@ abline(coef=c(v_modelFitTime$coefficients[1]+v_modelFitTime$coefficients[3],v_mo
 ```
 
 
-# Qualidade
-```{r, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
-v_modelAncovaTime = aov((qualityRelative)~algorithm+log(size), data=v_data2)
-summary.aov(v_modelAncovaTime)
-v_r2 = summary.lm(v_modelAncovaTime)$r.square
-
-v_modelAncovaTime2 = aov((qualityRelative)~log(size)+algorithm, data=v_data2)
-summary.aov(v_modelAncovaTime2)
-v_r2Model2 = summary.lm(v_modelAncovaTime2)$r.square
-
-v_modelFitTime = lm((qualityRelative)~log(size)+algorithm, data=v_data2)
-
-plot(x = log(subset(v_data2, algorithm=='ACO')$size),
-     y = (subset(v_data2, algorithm=='ACO')$qualityRelative),
-     cex  = 1,
-     las  = 1,
-     pch  = 16,
-     col='red',
-     xlab = "log size",
-     ylab = "Time")
-points(x = log(subset(v_data2, algorithm=='ACO_Local')$size),
-       y = (subset(v_data2, algorithm=='ACO_Local')$qualityRelative),
-       cex  = 1,
-       pch  = 18,
-       col='blue')
-legend("bottomright", legend=c('ACO', 'ACO+LocalSearch'), col=c("red", "blue"),  pch=c(16,18), cex=1)
-abline(coef=c(v_modelFitTime$coefficients[1],v_modelFitTime$coefficients[2]), col='red')
-abline(coef=c(v_modelFitTime$coefficients[1]+v_modelFitTime$coefficients[3],v_modelFitTime$coefficients[2]), col='blue')
-
-par(mfrow=c(2,2), mai=.3*c(2.5,1,1,1))
-plot(v_modelFitTime)
-```
 
 
 # 4. Discussão e Conclusões
