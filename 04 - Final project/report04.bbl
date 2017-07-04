@@ -1,4 +1,4 @@
-\begin{thebibliography}{5}
+\begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -23,6 +23,12 @@ Yongtao Cao, Byran~J Smucker, and Timothy~J Robinson.
 \newblock URL
   \url{http://www.users.miamioh.edu/smuckebj/pub{\_}2015{\_}Cao{\_}etal.pdf
   http://linkinghub.elsevier.com/retrieve/pii/S0378375814002006}.
+
+\bibitem[Dorigo and St{\"{u}}tzle(2004)]{Dorigo2004}
+Marco Dorigo and Thomas St{\"{u}}tzle.
+\newblock \emph{{Ant Colony Optimization}}.
+\newblock 2004.
+\newblock ISBN 0262042193.
 
 \bibitem[Montgomery(1984)]{montgomery1984design}
 D.~C. Montgomery.

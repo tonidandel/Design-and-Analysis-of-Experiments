@@ -53,12 +53,11 @@ As ferramentas atuais para planejamento de viagens permitem que usuários busque
 
 O conjunto de restrições do problema considera datas inicial e final, datas específicas para cada destino, ordenação dos destinos e características das acomodações e transportes. Pode ser considerado uma aplicação multiobjetivo do problema do caixeiro viajante com janelas de tempo e dependência temporal.
 
-Para realizar a otimização de roteiros, foi utilizado um algoritmo de colônia de formigas [@cite]. Uma melhoria para o algoritmo utilizando busca local foi proposta. O objetivo do trabalho é comparar os algoritmos e determinar se a melhoria proposta é melhor para solucionar o problema, avaliando tanto o tempo gasto na otimização e a qualidade do conjunto de soluções encontrado. Assim, as perguntas a serem respondidas são:
+Para realizar a otimização de roteiros, foi utilizado um algoritmo de colônia de formigas [@Dorigo2004]. Uma melhoria para o algoritmo utilizando busca local foi proposta. O objetivo do trabalho é comparar os algoritmos e determinar se a melhoria proposta é melhor para solucionar o problema, avaliando tanto o tempo gasto na otimização e a qualidade do conjunto de soluções encontrado. Assim, as perguntas a serem investigadas são:
 
-- TODO
-- TODO
+- Qual dos algoritmos é melhor para solucionar o problema, considerando qualidade da solução e tempo até convergência?
+- Qual é o efeito do tamanho do problema sobre a qualidade da solução relativa entre algoritmos e o tempo até convergência?
 
-No entanto, o tamanho do roteiro a ser avaliado também influencia esses resultados. Assim, é necessário considerar o tamanho da instância como uma covariável do problema. Para lidar com isso, serão utilizadas técnicas de blocagem, e também exploradas técnicas estatísticas de análise de covariância.
 
 ```{r,results='show',warning=FALSE,echo=FALSE}
 ## EXPERIMENTAL DEFINITIONS
