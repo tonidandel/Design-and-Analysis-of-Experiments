@@ -1,0 +1,248 @@
+---
+title: 'O uso da técnica bootstrap como alternativa ao teste-t paramétrico'
+author: 'Danny A. V. Tonidandel' 
+date: "02 de julho de 2017"
+output:
+  pdf_document:
+    fig_caption: yes
+  word_document: default
+header-includes:
+- \usepackage{fancyhdr}
+- \usepackage{amsmath}
+- \usepackage{amsfonts}
+- \usepackage[utf8]{inputenc}
+- \pagestyle{fancy}
+- \fancyfoot[CO,CE]{EEE933 - Planejamento e Análise de Experimentos}
+- \fancyfoot[LE,RO]{\thepage}
+csl: ieee.csl
+bibliography: bibliography2.bib
+--- 
+
+```{r setup,include=FALSE, results='hide',warning=FALSE,echo=FALSE}
+  if (!require(readr, quietly = TRUE)){
+    install.packages("readr")
+  }
+  if (!require(car, quietly = TRUE)){
+    install.packages("car")
+  }
+  if (!require(lmtest, quietly = TRUE)){
+    install.packages("lmtest")
+  }
+  if (!require(boot, quietly = TRUE)){
+    install.packages("boot")
+  }
+
+library(car)
+
+library(lmtest)
+
+library(boot)
+
+```
+
+# 1. Introdução
+O problema da comparação de duas médias pode ser colocado, resumidamente, da seguinte maneira: Considerando duas amostras aleatórias $x_1 \ldots x_{n}$ e $y_1 \ldots y_{n}$ de, respectivamente duas populações $X$ e $Y$, com médias $\mu_{1}$ e $\mu_{2}$ desconhecidas. A comparação entre as médias, a um nível de significância $\alpha$, da hipótese nula $H_{0}: \mu_{1} = \mu_{0}$ contrapondo-se a uma das hipóteses alternativas $H_{1}$:
+\begin{eqnarray}
+H_{1}&:& \mu_{1} > \mu{2} \,, \label{eq:01} \\
+H_{1}&:& \mu_{1} < \mu{2} \,, \label{eq:03} \\
+H_{1}&:& \mu_{1} \neq \mu{2} \,. \label{eq:02}
+\end{eqnarray}
+
+## 1.1. Bootstrap
+A metolologia boostrap foi introduzida por Efron [@efron1979], a partir das dos experimentos de Simon Newcomb [@newcomb1878] (Fig.1) que, ao analisar dados referentes à medidas de velocidade da luz, observou que o conjunto de dados continha dois _outliers_ que influenciavam bastante a média amostral. A técnica utilizada por Efron consistiu basicamente em obter, a partir de uma amostra da população, uma amostragem aleatória com reposição, "suavizando" a distribuição amostral das médias (gerando uma distribuição empírica, ou de bootstrap). A técnica permite, por esta razão, a estimação da distribuição amostral para (virtualmente) qualquer estatística a partir de um conjunto de dados único,  i.e., gerar artificialmente novas amostras a partir de um conjunto original.
+
+```{r,results='show',warning=FALSE,echo=FALSE}
+speed.of.light<-c(28, 26, 33, 24, 34, -44, 
+27, 16, 40, -2, 29, 22, 24, 21, 25, 30, 23, 29, 31, 19,
+24, 20, 36, 32, 36, 28, 25, 21, 28, 29,
+37, 25, 28, 26, 30, 32, 36, 26, 30, 22,
+36, 23, 27, 27, 28, 27, 31, 27, 26, 33,
+26, 32, 32, 24, 39, 28, 24, 25, 32, 25,
+29, 27, 28, 29, 16, 23) 
+
+par(mfrow=c(1,2), mai=.8*c(2.5,1,1,1))
+qqPlot(speed.of.light, main = "Fig.1-Experimento de Newcomb")
+hist(speed.of.light, main = "Fig.1-Experimento de Newcomb")
+```
+
+Normalmente a técnica é utilizada no caso da determinação de intervalos de confiança para uma amostra, quando o tamanho amostral é pequeno (e.g. $n<30$) e (presumidamente) de uma distribuição não-normal [neste caso, ou assume-se uma distribuição diferente para a população de interesse ou nenhuma].  
+
+A técnica pode igualmente ser utilizada em testes de hipóteses, e é frequentemente utilizada como alternativa à abordagem frequentista da inferência clássica. É, dessa forma, aplicada de duas formas:
+
+* Bootstrap Paramétrico: assumindo-se que a população tem uma determinada distribuição, "gerar" múltiplas amostras a partir dessa distribuição; 
+
+* Bootstrap não-Paramétrico: "gerar", artificalmente, múltiplas amostras a partir dos dados (diretamente da amostra).
+
+# 2. Teste de hipótese via bootstrap
+Para realizar o teste de hipótese via bootstrap, começa-se por gerar um número elevado $B$ ($>1000$) de réplicas das amostras a partir da disponível ($n=20$) com os valores das temperaturas e realizar testes-t pareados para as mesmas $B$ amostras (não é necessário, _a priori_, que as amostras possuam o mesmo tamanho). Resumidamemte, a construção de um teste para a comparação de duas médias a partir das ideias "bootstrap" é descrita no algoritmo seguinte [@piresandbranco1996]:
+
+Para duas amostras iniciais $x_1 \ldots X_{n}$ e $y_1 \ldots Y_{n}$ (ou uma amostra $(X_{i}, Y_{i})$ pareada):
+
+1.  Definir o teste de hipóteses a ser realizado: bilateral, unilateral à esquerda (inferioridade) ou unilateral à direita (superioridade);
+
+2. Definir $D_{i} = X_{i}-Y_{i}$, para $i=1,2 \ldots \,, n$
+
+3. para $k:1 \to B$ faça:
+
+ >* Obter duas novas amostras $\hat{X}_1 \ldots \hat{X}_{n}$ e $\hat{Y}_1 \ldots \hat{Y}_{n}$, realizando $B$ extrações aleatórias, com reposição, a partir das amostras iniciais;
+
+ >* Calcular a diferença das médias das amostras, a média das diferenças e a variância;
+
+ >* Calcular a estatística $T$ (sob $H_{0}$) para os $n-1$ graus de liberdade em cada iteração e gravar os resultados:
+
+\begin{equation}
+T = \frac{\overline{D}-\mu_{D}}{\frac{s_{D}}{\sqrt{n}}} \,;
+\label{eq:estatistica-t}
+\end{equation}
+
+4. Exibir resultados;
+
+5a. Como o valor-p é a probabilidade de obter algo mais "extremo" que o observado, ele deve ser calculado sob $H_{0}$ dividido pelas $B$ réplicas, de acordo com cada tipo de teste:
+\begin{eqnarray}
+ p-valor_{dir} &=& P[t>T_{Obs}|H_{0}] \,, \\
+ p-valor_{esq} &=& P[t<T_{Obs}|H_{0}] \,, \\
+ p-valor_{bil} &=& P[|t|>|T_{Obs}||H_{0}]\,.
+ \label{eq:valorp}
+\end{eqnarray}
+
+5b. Também é possível estimar o valor-p, segundo [@piresandbranco1996], a partir da analogia com os instervalos de confiança. Neste caso, $p$ deve ser tal que uma das alternativas para os quantis $t_{p}$ ou $t_{1-p}$ (para os testes de superioridade ou inferioridade) ou $t_{p/2}$ ou $t_{1-p/2}$ (teste bilateral) é nula, i.e:
+\begin{eqnarray}
+ p-valor2_{dir} &=& \frac{P[\hat{X_{i}}-\hat{Y_{i}}>0]}{B}  \,, \\
+ p-valor2_{esq} &=& \frac{P[\hat{X_{i}}-\hat{Y_{i}}<0]}{B} \,, \\
+  p-valor2_{bil} &=&  \frac{2}{B} \, min\left[ P(\hat{X_{i}}-\hat{Y_{i}}<0); P(\hat{X_{i}}-\hat{Y_{i}}>0)  \right] \,. 
+ \label{eq:valorpempirico}
+\end{eqnarray}
+
+## 2.1 Exemplo 1 - Eficiência de determinado medicamento
+Para eluciar a técnica de bootstrap para realizar um teste de hipóteses, considere um estudo realizado acerca da a eficiência de determinado medicamento antitérmico, configurando um experimento no qual a temperatura corporal (em graus Celsius) de $20$ indivíduos foi medida antes e depois da administração do medicamento. Foram utilizados dados disponíveis em [@testetpareado]. Vale ressaltar, em consonância com os objetivos do presente trabalho, que não serão consideradas questões mais profundas relativas ao planejamento do experimento. Os exemplos apresentados são meramente ilustrativos. 
+
+Definiu-se o teste de hipótese pareado convencional [@MontgomeryRunger2011], no qual cada par de médias avaliadas em diferentes instâncias constitui uma amostra independente [@Walker2011UnderstandingEA]. A hipótese nula é de que a diferença da temperaturas média após a adiministração do medicamento menos a temperarura média antes da administração é nula, enquanto a hipótese alternativa estabelece que o tratamento é eficaz em diminuir a temperatura média dos pacientes: 
+\begin{equation}
+\left\{\begin{array}{rc}
+H_{0}: \mu_{D} = 0\\
+H_{1}: \mu_{D} > 0
+\end{array}\right. \,,
+\label{eq:05}
+\end{equation}
+em que$mu_{D}$ representa a diferença das tempraturas médias "antes" e "depois" da aplicação do medicamento.
+
+## 2.2. Código em R para o teste de comparação via bootstrap
+O código em $R$ comentado, referente ao exemplo anterior, é apresentado em seguida, com os respectivos resultados:
+```{r, echo=TRUE, fig.height=3, fig.width=3, message=FALSE, warning=FALSE, results='show'}
+# COMPARAÇÃO DE TEMPERATURAS ANTES E APÓS APLICAÇÃO DE ANTITÉRMICO
+dados = readr::read_csv('temperaturas.csv') # carrega dados
+n = dim(dados)[1]
+miD = 0
+difObs = dados$antes - dados$depois 
+mediaObs = mean(difObs)
+varObs = sum((difObs - mediaObs)^2)/(n-1)
+tObs = (mediaObs - miD)/(sqrt(varObs/n))
+# BOOSTRAP - realiza o teste t pareado para as B amostras de boostrap
+B = 10000
+resultado = matrix(NA,1,B)
+for(i in 1:B){
+  amostraA = sample(dados$antes,n,replace = TRUE) # amostragem boostrap
+  amostraB = sample(dados$depois,n,replace = TRUE) # amostragem boostrap
+  diferenca = amostraA - amostraB 
+  mediaD = mean(diferenca) 
+  varD = sum((diferenca - mediaD)^2)/(n-1)
+  # Calculo da estattistica T sob H0
+  resultado[i] = (mediaD - miD)/(sqrt(varD/n)) 
+}
+#resultado
+hist(resultado, main="Distribuição Bootstrap")
+# Media Observada
+paste("Média Observada", round(mediaObs,digits=5), sep = " : ")
+# Calcula p-valor (sob H0) para o teste unilateral
+sob.H0 <- resultado - mean(resultado)
+pvalorD = sum(sob.H0 > tObs)/B
+paste("p-valor (sob H0)", round(pvalorD,digits=5), sep = " : ")
+# Calcula pvalor empirico à direita segundo (Pires e Branco, 1996) 
+pvalorD2 <- sum(mediaD > 0)/B
+paste("p-valor empiriro",round(pvalorD2,digits=5), sep = " : ")
+## IC para o teste bilateral à direita (superioridade)
+alpha = 0.05
+t_alpha = quantile(resultado,alpha)
+ICD = mediaObs - t_alpha * sqrt(varObs/n)
+print("Intervalo de confiança a 5%")
+paste(round(ICD,digits=5),"infinito", sep = " ---> ")
+```
+
+O que mostra que, para o nível de signicância especificado e pelo método do valor $p$ ($plavor < 0.05$), que a hipótese nula deve ser rejeitada. Em outras palavras, há evidências para afirmar que o remédio é eficaz em reduzir a temperatura média dos paciêntes.
+
+## 2.3. Comparação Bootstrap $\times$ Teste-t paramétrico
+Caso tenha-se indícios de que as duas amostras provêm de uma população normal, pode ser aplicado o tradicional teste-t pareado [@MontgomeryRunger2011]. No caso do exemplo das temperaturas, ao aplicar-se o teste de normalidade de Shapiro-wilk, tem-se como resultado o indicativo da premissa normalidade atendida. Aliás, é digno de nota que, neste caso, o valor-p ($p-valor= 0.00014$) e o intervalo de confiância encontrados são bem próximos quando da utilização da técnica de bootstrap, evidenciando sua utilidade:
+
+```{r,results='show',warning=FALSE,echo=FALSE, echo=FALSE, message=FALSE, warning=FALSE, results='show'}
+### Teste parametrico
+t.test(x = dados$antes, 
+       y = dados$depois,
+       alternative = "greater",
+       paired=TRUE)
+shapiro.test(dados$antes)
+shapiro.test(dados$depois)
+```
+
+# 3. Uso da técnica de boostrap para amostras não normais
+O poder da técnica de bootstrap mostra sua potencialidade quando aplicada a dados que não atendem às premissas básicas de normalidade, ou quando pouco (ou nada) se sabe a respeito do conjunto de dados. 
+
+Mostra-se a seguir, a aplicação da técnica baseado nos dados de dois sites $A$ e $B$, utilizados para hospedagens de sites com seus respectivos tempos de carregamento, disponível em <http://tinyurl.com/hu8efeh>.
+
+O planejamento experimental constou em utilizar dados históricos do site $B$ no intuito de verificar se atualizações no código implicaram em diminuição do tempo médio de carregamento de uma página hospedada no site $B$, o que forma um teste de hipóteses.
+
+Entretanto, ao realizar a estatística descritiva, assim como o teste de Shapiro-Wilk, têm-se um forte indício de que os dados não atendem à premissa de normalidade (com os valores $p= 8.1 \times 10^{-6}$ e $p= 0.0198$, respectivamente).
+```{r hospedagem1, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+# EFICIENCIA EM UM SITE DE HOSPEDAGEM
+dados = readr::read_csv('load.csv') # carrega dados do site B
+# Validação de Premissas
+par(mfrow=c(1,2), mai=.8*c(2.5,1,1,1))
+qqPlot(dados$antes, main ="dados site B", ylab="Antes")
+qqPlot(dados$depois, main="dados site B", ylab = "depois")
+# Testes de normalidade
+shapiro.test(dados$antes)
+shapiro.test(dados$depois)
+```
+
+Esse será, portanto, um bom candidato para a utilização da técnica bootstrap, considerando-se $B=10000$ réplicas. Os resultados são apresentados em seguida:
+```{r hospedagem2, message=FALSE, warning=FALSE, include=FALSE, results='hide'}
+n = dim(dados)[1]
+miD = 0
+difObs = dados$antes - dados$depois 
+mediaObs = mean(difObs)
+varObs = sum((difObs - mediaObs)^2)/(n-1)
+tObs = (mediaObs - miD)/(sqrt(varObs/n))
+# BOOSTRAP - realiza o teste t pareado para as B amostras de boostrap
+B = 10000
+resultado = matrix(NA,1,B)
+for(i in 1:B){
+  amostraA = sample(dados$antes,n,replace = TRUE) # amostragem boostrap
+  amostraB = sample(dados$depois,n,replace = TRUE) # amostragem boostrap
+  diferenca = amostraA - amostraB 
+  mediaD = mean(diferenca) 
+  varD = sum((diferenca - mediaD)^2)/(n-1)
+  # Calculo da estattistica T sob H0
+  resultado[i] = (mediaD - miD)/(sqrt(varD/n)) 
+}
+```
+```{r hospedagem3, echo=FALSE, fig.height=3, fig.width=3, message=FALSE, warning=FALSE, plots='show', results='show'}
+#resultado
+hist(resultado, main="Distribuição Bootstrap")
+# Media Observada
+paste("Média Observada", round(mediaObs,digits=5), sep = " : ")
+# Calcula p-valor (sob H0) para o teste unilateral
+sob.H0 <- resultado - mean(resultado)
+pvalorD = sum(sob.H0 > tObs)/B
+paste("p-valor (sob H0)", round(pvalorD,digits=5), sep = " : ")
+## IC para o teste bilateral à direita (superioridade)
+alpha = 0.05
+t_alpha = quantile(resultado,alpha)
+ICD = mediaObs - t_alpha * sqrt(varObs/n)
+print("Intervalo de confiança a 95%")
+paste(round(ICD,digits=5),"infinito", sep = " ---> ")
+```
+A partir do (método do) valor-p encontrado, há indícios para afirmar que o tempo médio de carregamento depois das alterações de cógido diminuiu. 
+
+# 4. Conclusões
+Embora seja necessário um estudo mais aprofundado, estendendo-o à obtenção de outras ferramentas necessárias ao planejamento e análise de um experimento real, pode-se concluir que a técnica de bootstrap não paramétrica para comparação de duas médias é, ao menos, uma alternativa a ser considerada para a realização de um teste de hipóteses para a comparação de duas médias.
+
+# Referências
